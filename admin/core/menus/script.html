@@ -1,0 +1,533 @@
+<script>
+    ajax_paging = true;
+    var ajax_url = {
+        add_left : 'loadFormAddCategory',
+        edit_left :'loadFormEditCategory',
+        trash_left : 'deleteCategory',
+
+        add_center : 'loadFormAddRecord',
+        edit_center : 'loadFormEditRecord',
+        trash_center : 'deleteRecord',
+
+        add_right : 'loadFormAddMenuProduct',
+        edit_right : 'loadFormEditMenuProduct',
+        trash_right : 'deleteMenuProduct',
+
+        recoveryRow : 'recoveryRecord',
+        terminalDelete : 'terminalDeleteRecord',
+        listRecord : 'listRecord'
+    };
+    var btn_refresh = $('.modal-control .control-btn-refresh');
+    var btn_add_left = $('.left-column .control-btn-add');
+    var btn_add_center = $('.center-column .control-btn-add');
+    var btn_add_right = $('.right-column .control-btn-add');
+
+    var btn_edit_left = $('.left-column .control-btn-edit');
+    var btn_edit_center = $('.center-column .control-btn-edit');
+    var btn_edit_right = $('.right-column .control-btn-edit');
+
+    var btn_trash_left = $('.left-column .control-btn-trash');
+    var btn_trash_center = $('.center-column .control-btn-trash');
+    var btn_trash_right = $('.right-column .control-btn-trash');
+
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+    var left_column_wrapper = $('.left-column').find('.column-wrapper');
+    var center_column_wrapper = $('.center-column').find('.column-wrapper');
+
+    //chỉnh kích thước khung wrapper
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight - 28;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent = $('.table-listing-bound');
+    var offsetTopContent = sectionContent.offset().top;
+    sectionContent.height(wrapperHeight - offsetTopContent - 10);
+    left_column_wrapper.height(wrapperHeight - offsetTopContent - 13);
+    center_column_wrapper.height(wrapperHeight - offsetTopContent - 13);
+    right_column_wrapper.height(wrapperHeight - offsetTopContent - 13);
+    function deactivate_control(type){
+        switch (type){
+            case 'left':
+                btn_edit_left.addClass('deactivate');
+                btn_trash_left.addClass('deactivate');
+                break;
+            case 'center':
+                btn_edit_center.addClass('deactivate');
+                btn_trash_center.addClass('deactivate');
+                break;
+            case 'right':
+                btn_edit_right.addClass('deactivate');
+                btn_trash_right.addClass('deactivate');
+                break;
+            default :
+                break;
+        }
+    }
+
+    // hàm load khi chạy scrip ajax
+    (function(){
+        if (sectionContent.find('.enscroll-trach').length < 1) {
+            sectionContent.find('.table-listing-bound').enscroll({
+                addPaddingToPane: false
+            });
+        }
+    })();
+
+    /// cap nhat menu moi
+    function updateMenu(){
+        $('#submit_form').trigger('click'); 
+    }
+    //
+    $(document).on('submit','#update-menu', function(e){
+        $.ajax({
+          url: 'index.php',
+          type: 'POST',
+          data: new FormData(this),
+          processData: false,
+          contentType: false,
+          success : function(html)
+          {
+              $('.table-listing-bound').html(html);  
+          }
+        });
+        e.preventDefault();
+    });
+    ///
+    function active_control(type){
+        switch (type){
+            case 'left':
+                btn_edit_left.removeClass('deactivate');
+                btn_trash_left.removeClass('deactivate');
+                break;
+            case 'center':
+                btn_edit_center.removeClass('deactivate');
+                btn_trash_center.removeClass('deactivate');
+                break;
+            case 'right':
+                btn_edit_right.removeClass('deactivate');
+                btn_trash_right.removeClass('deactivate');
+                break;
+            default :
+                break;
+        }
+    }
+    function recycleRow(record_id){
+        if(record_id && confirm('Bạn xác nhận khôi phục bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.recoveryRow,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('right');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    function terminalDelete(record_id){
+        if(record_id && confirm('Bạn xác nhận xóa vĩnh viễn bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.terminalDelete,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('right');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+
+    //add left
+    btn_add_left.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.add_left});
+    });
+
+    //edit left
+    btn_edit_left.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var cat_id = parseInt($('.cat_name.active').parent('li').data('cat'));
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.edit_left, cat_id : cat_id})
+    });
+
+    //delete left
+    btn_trash_left.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var cat_active = $('.cat_name.active').parent('li');
+        var cat_id = parseInt(cat_active.data('cat'));
+        var cat_count = cat_active.data('count-record');
+        if(cat_count > 0){
+            alert('Bạn không thể xóa nhóm này vì nó vẫn còn chứa các bản ghi. Vui lòng xóa bản ghi trước');
+            return false;
+        }
+        if(confirm('Bạn muốn xóa nhóm này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action : ajax_url.trash_left,cat_id : cat_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        cat_active.remove();
+                        deactivate_control('left');
+                    }
+                }
+            })
+        }
+    });
+    /* click dup bản ghi hiển thị chi tiết*/
+    function detailRecord(){
+        var record_id = $('.record-item.active').data('record_id');
+        var modal = new Modal();
+        modal.width = 600;
+        modal.height = 400;
+        modal.miniLoad('ajax.php', {action: ajax_url.edit_center, record_id: record_id})
+    }
+
+    //add_center
+    btn_add_center.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.width = 600;
+        modal.height = 400;
+        modal.miniLoad('ajax.php',{action:ajax_url.add_center});
+    });
+    //edit center
+    btn_edit_center.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        var modal = new Modal();
+        modal.width = 600;
+        modal.height = 400;
+        modal.miniLoad('ajax.php',{action:ajax_url.edit_center,record_id:record_id})
+    });
+    //delete center
+    btn_trash_center.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        if(confirm('Bạn muốn xóa bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action:ajax_url.trash_center,record_id : record_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        //deactivate các nút bên phải
+                        deactivate_control('center');
+                    }
+                }
+            })
+        }
+    });
+
+    //add right
+    btn_add_right.unbind('click').click(function(){
+        var modal = new Modal();
+        //lấy ra menu_id
+        var selected_menu = $('#selected_menu');
+        if(!selected_menu.length) {
+            alert('Chọn một thực đơn để thêm nguyên liệu!');
+            return false;
+        }
+        var menu_id = selected_menu.val();
+        modal.miniLoad('ajax.php',{action:ajax_url.add_right, menu : menu_id});
+    });
+    //edit right
+    btn_edit_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        //lấy ra menu_id
+        var selected_menu = $('#selected_menu');
+        if(!selected_menu.length) {
+            alert('Chọn một thực đơn để chỉnh sửa nguyên liệu!');
+            return false;
+        }
+        var menu_id = selected_menu.val();
+        var record_id = $('.menu-product-item.active').data('record_id');
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.edit_right,record_id:record_id, menu : menu_id})
+    });
+
+    //delete right
+    btn_trash_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('#menu_product_listing .menu-product-item.active').data('record_id');
+        var men_id = $('#menu_product_listing .menu-product-item.active').data('menu_id');
+        if(confirm('Bạn muốn xóa bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : 
+                {
+                    action:ajax_url.trash_right,
+                    record_id : record_id,
+                    men_id : men_id
+                    },
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_product_'+record_id).remove();
+                        //deactivate các nút bên phải
+                        deactivate_control('right');
+                    }
+                }
+            })
+        }
+    });
+
+    $('.list-vertical-crm').find('li').unbind('click').click(function() {
+        var url = 'index.php';
+        if($(this).data('cat') == 'trash'){
+            url = 'ajax.php';
+        }
+        if ($(this).find('.cat_name').hasClass('active')) {
+            return false;
+        }
+        var cat_id = $(this).data('cat');
+        $('label.cat_name').removeClass('active');
+        $(this).find('.cat_name').addClass('active');
+        if($(this).hasClass('list-vertical-item')){
+            active_control('left')
+        }else{
+            deactivate_control('left');
+        }
+        //load danh sách bên right column
+        $.ajax({
+            type : 'post',
+            url : url,
+            data : {action : ajax_url.listRecord, cat_id : cat_id},
+            success : function (html) {
+                center_column_wrapper.html(html);
+                //deactivate các phím sửa xóa bên phải
+                deactivate_control('center');
+                fixScrollMenu();
+            }
+        })
+    });
+
+    //Dạng category đa cấp, nhấn vào parent node thì toggle child node
+    $('li[cat-parent]').find('.collapse-li').unbind('click').click(function () {
+        $cat_parent = $(this).closest('li[cat-parent]').attr('cat-parent');
+//        console.log($cat_parent);
+        if($(this).hasClass('fa-plus-square-o'))
+            $(this).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+        else
+            $(this).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+        $('.list-vertical-item[data-parent="' + $cat_parent + '"]').toggle('medium');
+
+    });
+    //left column scroll
+    $('.left-column .section-content').enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    //table scroll
+    sectionContent.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+
+    //fix tất cả table listing
+    function fixScrollMenu() {
+
+        center_column_wrapper.find('.table-listing-bound').height(center_column_wrapper.height() - 5);
+        //cấp phát lại table scroll
+        if(center_column_wrapper.find('.enscroll-track').length < 1){
+            center_column_wrapper.find('.table-listing-bound').enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+        sectionContent.enscroll({
+            showOnHover: true,
+            minScrollbarLength: 28,
+            addPaddingToPane : false
+        });
+        if(right_column_wrapper.find('.enscroll-track').length <1){
+            right_column_wrapper.find('.table-listing-bound').enscroll({
+               showOnHover: false,
+                minScrollbarLength:28,
+                addPaddingToPane:false
+            });
+        }
+        right_content = $('.right-column');
+        right_content.find('.pos_bottom').enscroll({
+            showOnHover: false,
+            minScrollbarLength:28,
+            addPaddingToPane:false
+        });
+    }
+
+    //function
+    function active_record(record_id){
+        var record_item = $('#record_'+record_id);
+        //console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        $('#table-listing tr').removeClass('active');
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control('center');
+
+        //Bổ sung thêm load chi tiết menu ở bên phải
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {action : 'loadMenuDetail', record_id : record_id},
+            dataType : 'html',
+            success : function(text) {
+                loadingProgress('hide');
+                right_column_wrapper.html(text);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            }
+        })
+    }
+
+    //Hàm bổ sung của module  - getProductUnit
+    /**
+     * Hàm có nhiệm vụ thay đổi đơn vị tính của nguyên liệu trong form loadFormAddMenuProduct
+     * Được gọi khi dropdown nguyên liệu thay đổi
+     */
+    function getProductUnit() {
+        var pro_id = $('#mep_product_id').val();
+        var unit = list_unit[pro_id];
+        $('#mep_quantity').next('.input-group-addon').html(unit);
+    }
+    /**
+     * Hàm active_menu_product : active các control bên phải
+     */
+    function active_menu_product (record_id) {
+        var record_item = $('#record_product_'+record_id);
+        //console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        $('#menu_product_listing tr').removeClass('active');
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control('right');
+    }
+
+    //context menu
+    $.contextMenu({
+        selector : '.menu-normal',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới',
+                callback : function(key, opt){
+                    btn_add_center.trigger('click');
+                }
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin',
+                callback : function (key,opt){
+                    var trigger = opt.$trigger;
+                    active_record(trigger.data('record_id'));
+                    btn_edit_center.trigger('click');
+                }
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa',
+                callback : function(key,opt){
+                    var trigger = opt.$trigger;
+                    //console.log(trigger.data('record_id'));
+                    active_record(trigger.data('record_id'));
+                    btn_trash_center.trigger('click');
+                }
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục ',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                disabled : true,
+                className : 'not-selectable'
+            }
+        }
+    });
+    $.contextMenu({
+        selector : '.menu-trash',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục',
+                callback : function (key, opt) {
+                    recycleRow(opt.$trigger.data('record_id'))
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function (key, opt){
+                    terminalDelete(opt.$trigger.data('record_id'));
+                }
+            }
+        }
+    })
+
+</script>

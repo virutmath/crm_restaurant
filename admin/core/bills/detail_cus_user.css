@@ -1,0 +1,30 @@
+.detail-tit-bill {padding: 5px; text-align: center; display: block; font-size: 14px; font-weight: bold; text-transform: uppercase;}
+.detail_content {width:98%; margin: auto;}
+.detail_content_lft {width: 65%; float: left;min-height: 50%;border: 1px solid #ccc; box-sizing: border-box;max-height: 400px; overflow-x: hidden;}
+.detail_content_lft::-webkit-scrollbar{width:7px;}
+.detail_content_lft::-webkit-scrollbar-thumb{background: #ddd; border-radius: 50px;}
+.detail_content_lft::-webkit-scrollbar-thumb:hover{background: #999;}
+.detail_content_lft table {width: 100%;}
+.detail_content_lft table td {border:1px solid #ddd; text-align: center;font-size: 11px !important; padding: 5px; box-sizing: border-box;}
+.detail_content label {font-weight: 400; padding:10px 5px; float: left;}
+.form-box {font-size: 12px; width:100%;}
+.form-box td {padding: 3px 1px; box-sizing: border-box;}
+.col-30 {width: 30%;}
+.inp1-2 {width: 38%; text-align: center;}
+.box-ava-cus {width: 100%; display: block;border:1px solid #ddd; text-align: center; box-shadow: inset 1px 1px 0px 1px #ccc;}
+.inp1 {width:98%; font-size:11px;padding:2px;}
+.inp-sel {background: #f4f4f4;}
+.inp-tarea {width:100%; height: 50px;}
+.ava-cus {padding-top: 10px;}
+.print-close span {line-height: 30px;}
+.bill-close {float: right;cursor: pointer; opacity: .4;}
+.bill-close:hover {opacity: 1;}
+
+
+
+
+
+
+
+
+

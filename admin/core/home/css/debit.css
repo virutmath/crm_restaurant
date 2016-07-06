@@ -1,0 +1,12 @@
+body {
+    padding : 15px 15px 0 15px;
+}
+form[name="debit_form"] input[type="text"] {
+    font-size: 16px;
+    line-height: 24px;
+    text-align: right;
+}
+.form-group.debit-submit {
+    margin-left: 88px;
+    margin-top: 10px;
+}

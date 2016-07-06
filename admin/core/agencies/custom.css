@@ -1,0 +1,26 @@
+#modal{
+    width: 450px;!important;
+    height: 270px;!important;
+}
+#detail-agency {
+    position: absolute;
+    bottom: 0;
+    width: 205px;
+    font-size: 11px;
+    overflow: hidden;
+}
+.agency-address, .agency-phone {
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 220px;
+    display: block;
+    overflow: hidden;
+}
+#detail-agency img {
+    width: 50px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}

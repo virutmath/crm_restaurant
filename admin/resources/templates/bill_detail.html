@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    {$load_header}
+</head>
+<body>
+<div id="wrapper-full">
+    <div class="col-xs-12" id="content-column">
+        <div class="detail_content_left">
+            <div class="title_detail_bill col-xs-12">{$title_detail_left}</div>
+            <div class="col-xs-12 section-content">{$left_column}</div>
+            {$phuphi}
+        </div>
+        <div class="detail_content_righ">
+            <div class="title_detail_bill col-xs-12">{$title_detail_right}</div>
+            <div class="col-xs-12">{$right_content}</div>
+        </div>
+        <div class="clear_"></div>
+    </div>
+    {$custom_script}
+    <div id="modal"></div>
+    <div id="overlay"></div>
+    <div id="m-window"></div>
+    <div id="loading">
+        <i class="fa fa-spin fa-cog"></i>
+        <span id="loading-text">Đang tải dữ liệu...</span>
+    </div>
+</div>
+</body>
+</html>

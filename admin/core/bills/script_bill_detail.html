@@ -1,0 +1,64 @@
+<script>
+    //chỉnh kích thước khung wrapper ngay khi load js
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight;
+    // chiều cao của id wrapper
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    // lấy khoảng cách đến top của thẻ section-content
+    var sectionContent = $('.section-content');
+    var offsetTopContent = sectionContent.offset().top;
+    // lấy chiều cao của .pp-vat
+    var phuphi_vat  = $('.pp-vat').height();
+    sectionContent.height(wrapperHeight - offsetTopContent - phuphi_vat - 50);
+     // tao thanh scoll
+    var scroll_table = $('.table-listing-bound');
+    scroll_table.height(wrapperHeight - offsetTopContent - phuphi_vat - 50);
+    // scroll table
+    //table scroll
+    scroll_table.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    // record item active
+    function active_record(record_id){
+        var record_item    = $('#record_'+record_id);
+        if(record_item.hasClass('active')) return false;
+        $('#table-listing tr').removeClass('active');
+        record_item.addClass('active');
+    }
+    // dong cua so
+    var bill_close = $('.bill-close');
+    bill_close.click(function(){
+        window.parent.communicateParentWindow('close_detail','');
+    });
+    // xem chi tiet khach hang
+    var detail_customer = $('.detail_customer');
+    detail_customer.click(function(){
+        var cus_id  = $(this).data('cus_id');
+        var mindow = new Mindows();
+        mindow.width = 550;
+        mindow.height = 300;
+        mindow.resize = true;
+        mindow.iframe('form_detail_cus_use.php?cus_id='+cus_id,'<b>Thông tin khách hàng</b>');
+    });
+    // xem chi tiet nhan vien
+    var detail_user = $('.detail_user');
+    detail_user.click(function(){
+        var user_id = $(this).data('use_id');
+        var mindow = new Mindows();
+        mindow.width = 550;
+        mindow.height = 300;
+        mindow.resize = true;
+        mindow.iframe('form_detail_cus_use.php?user_id='+user_id,'<b>Thông tin nhân viên</b>');
+    });
+    // dong cửa sổ window
+    function communicateParentWindow(action){
+        switch(action){
+            case 'close_detail' :
+            $('.mwindow-close').trigger('click');
+            break;
+        }
+    }
+</script>

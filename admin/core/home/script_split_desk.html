@@ -1,0 +1,194 @@
+<script>
+    var array_list_menu = array_list_menu || {};
+    function MenuItem(data, reset_number){
+        reset_number = reset_number || false;
+        this.men_id = data.men_id;
+        this.men_name = data.men_name;
+        this.men_unit = data.men_unit;
+        this.men_price = data.men_price;
+        if(reset_number)
+            this.men_number = 0;
+        else
+            this.men_number = data.men_number;
+    }
+
+    var deskSplit = {
+        fromDeskTableElement : $('#mindow-listing-menu').find('table'),
+        toDeskTableElement : $('#listing-import').find('table'),
+        fromNumber : $('#from_number'),
+        toNumber : $('#to_number'),
+        fromTotalMoney : $('#from_desk_total'),
+        toTotalMoney : $('#to_desk_total'),
+        fromMenuActive : null,
+        fromMenuActiveID : null,
+        toMenuActive : null,
+        toMenuActiveID : null,
+        fromDesk : {
+            listMenu : {},
+            totalMoney : 0
+        },
+        toDesk : {
+            listMenu : {},
+            totalMoney : 0
+        },
+        init : function (array_data) {
+            for(var i in array_data) {
+                this.fromDesk.listMenu[i] = new MenuItem(array_data[i]);
+            }
+            this.initScroll();
+        },
+        //hàm active thực đơn - tham số truyền vào menu id, type : from or to
+        activeMenu : function (men_id, type) {
+            var table = this[type + 'DeskTableElement'];
+            //bỏ active những tr đang active
+            table.find('tr.active').removeClass('active');
+            this[type + 'MenuActive'] = table.find('tr#record_' + men_id).addClass('active');
+            this[type + 'MenuActiveID'] = men_id;
+        },
+        //hàm di chuyển thực đơn - 2 tham số : type (from or to), all (true-false)
+        moveMenu : function (type, all) {
+            //chuyển dữ liệu
+            var source_type = type, destination_type = (type == 'from' ? 'to' : 'from');
+            var id_active = this[source_type + 'MenuActiveID'];
+
+            //kiểm tra xem source có phần tử này ko
+            if(!this.issetMenuItem(source_type,id_active)) {
+                return false;
+            }
+            var menuItemActive = this.getMenuItem(source_type,id_active);
+            //nếu menuItem không tồn tại trong destination desk thì tạo mới 1 item cho destination desk
+            if(!this.issetMenuItem(destination_type,id_active)){
+                this[destination_type + 'Desk'].listMenu[id_active] = new MenuItem(menuItemActive, true);
+            }
+            var move_number = all ? this[source_type + 'Desk'].listMenu[id_active].men_number : Math.abs(parseInt(this[source_type + 'Number'].val()));
+            if(move_number >= this[source_type + 'Desk'].listMenu[id_active].men_number) {
+                //console.log(move_number);
+                move_number = this[source_type + 'Desk'].listMenu[id_active].men_number;
+                this[source_type + 'Number'].val(move_number);
+            }
+            move_number = parseInt(move_number);
+
+            this[source_type + 'Desk'].listMenu[id_active].men_number -= move_number;
+            this[destination_type + 'Desk'].listMenu[id_active].men_number += move_number;
+            if(this[source_type + 'Desk'].listMenu[id_active].men_number == 0) {
+                delete this[source_type + 'Desk'].listMenu[id_active];
+            }
+            //tính lại tiền
+            this.calculateMoney();
+            //build lại table
+            this.buildTable();
+        },
+        calculateMoney : function () {
+            var sum_from = 0;
+            for(var i in this.fromDesk.listMenu) {
+                sum_from += parseInt(this.fromDesk.listMenu[i].men_price * this.fromDesk.listMenu[i].men_number);
+            }
+            this.fromDesk.totalMoney = sum_from;
+            //tính tiền toDesk
+            var sum_to = 0;
+            for(i in this.toDesk.listMenu) {
+                sum_to += parseInt(this.toDesk.listMenu[i].men_price * this.toDesk.listMenu[i].men_number);
+            }
+            this.toDesk.totalMoney = sum_to;
+        },
+
+        //hàm kiểm tra menuItem có tồn tại trong mảng hay ko
+        issetMenuItem : function (type_desk, id) {
+            return this[type_desk + 'Desk'].listMenu.hasOwnProperty(id);
+        },
+        //hàm lấy ra menuItem từ listMenu theo ID của menu
+        getMenuItem : function (type_desk,id) {
+            if(this.issetMenuItem(type_desk,id)) {
+                return this[type_desk + 'Desk'].listMenu[id];
+            }else {
+                return false;
+            }
+        },
+        //xây dựng table từ dữ liệu list menu
+        buildTable : function() {
+            //xóa dữ liệu cũ
+            //html table head
+            var thead_str = '<thead>' +
+                    '<tr>' +
+                        '<th>STT</th>' +
+                        '<th>Tên thực đơn</th>' +
+                        '<th>ĐVT</th>' +
+                        '<th>SL</th>' +
+                    '</tr>' +
+                    '</thead>';
+            this.fromDeskTableElement.html(thead_str);
+            this.toDeskTableElement.html(thead_str);
+            var stt = 0;
+            var tr_string = '';
+            for(var i in this.fromDesk.listMenu) {
+                stt++;
+                tr_string = '<tbody>' +
+                        '<tr id="record_'+this.fromDesk.listMenu[i].men_id+'" class="menu-normal record-item" onclick="deskSplit.activeMenu('+this.fromDesk.listMenu[i].men_id+',\'from\')">' +
+                            '<td width="15" class="center">' +
+                                '<span style="color:#142E62; font-weight:bold">'+stt+'</span>' +
+                            '</td>' +
+
+                            '<td class="center">'+this.fromDesk.listMenu[i].men_name+'</td>' +
+                            '<td class="center">'+this.fromDesk.listMenu[i].men_unit+'</td>' +
+                            '<td class="center">'+this.fromDesk.listMenu[i].men_number+'</td>' +
+                        '</tr>' +
+                        '</tbody>';
+                this.fromDeskTableElement.append(tr_string);
+            }
+            stt = 0;
+            for(i in this.toDesk.listMenu) {
+                stt++;
+                tr_string = '<tbody>' +
+                        '<tr id="record_'+this.toDesk.listMenu[i].men_id+'" class="menu-normal record-item" onclick="deskSplit.activeMenu('+this.toDesk.listMenu[i].men_id+',\'to\')">' +
+                        '<td width="15" class="center">' +
+                        '<span style="color:#142E62; font-weight:bold">'+stt+'</span>' +
+                        '</td>' +
+
+                        '<td class="center">'+this.toDesk.listMenu[i].men_name+'</td>' +
+                        '<td class="center">'+this.toDesk.listMenu[i].men_unit+'</td>' +
+                        '<td class="center">'+this.toDesk.listMenu[i].men_number+'</td>' +
+                        '</tr>' +
+                        '</tbody>';
+                this.toDeskTableElement.append(tr_string);
+            }
+            this.fromTotalMoney.html(number_format(this.fromDesk.totalMoney));
+            this.toTotalMoney.html(number_format(this.toDesk.totalMoney));
+            this.initScroll();
+        },
+        //lưu lại - submit lên server
+        submit : function () {
+            var data = {
+                action : 'splitDesk',
+                from_desk_id : $('#from_desk').val(),
+                to_desk_id : $('#to_desk').val(),
+                from_list_menu : deskSplit.fromDesk.listMenu,
+                to_list_menu : deskSplit.toDesk.listMenu
+            };
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : data,
+                dataType : 'json',
+                success : function (resp) {
+                    if(resp.success) {
+                        //đóng cửa sổ
+                        window.parent.communicateParentWindow('splitDesk',data);
+                    }
+                }
+            })
+        }
+    };
+
+    deskSplit.initScroll = function () {
+        $('.table-listing-bound').each(function () {
+            if (!$(this).parent().find('.enscroll-track').length) {
+                $(this).enscroll({
+                    showOnHover: true,
+                    minScrollbarLength: 28,
+                    addPaddingToPane: false
+                })
+            }
+        });
+    };
+    deskSplit.init(array_list_menu);
+</script>

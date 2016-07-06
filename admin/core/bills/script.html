@@ -1,0 +1,485 @@
+<script>
+     //chỉnh kích thước khung wrapper ngay khi load js
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent = $('.section-content');
+    var offsetTopContent = sectionContent.offset().top;
+    sectionContent.height(wrapperHeight - offsetTopContent - 125);
+// khai báo
+// scroll table
+    var scroll_table = $('.table-listing-bound');
+    scroll_table.height(wrapperHeight - offsetTopContent - 125);
+    //table scroll
+    scroll_table.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    //fix tất cả table listing
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        var scroll_table = $('.table-listing-bound');
+        scroll_table.height(wrapperHeight - offsetTopContent - 125);
+        scroll_table.enscroll({
+            showOnHover: false,
+            minScrollbarLength: 28,
+            addPaddingToPane : false
+        });
+    }
+
+
+
+    var ajax_url = {
+        add_left : 'loadFormAddCategory',
+        edit_left :'loadFormEditCategory',
+        add_right : 'loadFormAddRecord',
+        edit_right : 'loadFormEditRecord',
+        trash_right : 'deleteRecord',
+        recoveryRow : 'recoveryRecord',
+        terminalDelete : 'terminalDeleteRecord',
+        listRecord : 'listRecord'
+    }
+    
+    var btn_info_left       = $('.left-column .info');
+    var btn_info_right      = $('.right-column .info');
+    var btn_refresh         = $('.modal-control .control-btn-refresh'); 
+    var btn_trash_left      = $('.left-column .control-btn-trash');
+    var btn_trash_right     = $('.right-column .control-btn-trash');   
+    var btn_detail_left     = $('.left-column .control-detail');
+    var btn_detail_right    = $('.right-column .control-detail');
+    var btn_bill_in_left    = $('.left-column .control-bill-in');
+    var btn_bill_in_right   = $('.right-column .control-bill-in');
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+    var btn_list_trash_left = $('.left-column .control-list-trash ');
+    var btn_list_trash_right = $('.right-column .control-list-trash ');
+    var find_customer       = $('.col-xs-6-bth-lft .filters');
+    var find_brand          = $('.col-xs-6-bth-rgh .filters')
+    // tim kiem + loc hoa don cua khach hang + nha cung cap
+    // loc hoa don cua khach hang
+    find_customer.click(function(){
+        var table           = $('#table_bill_in');
+        var id_customer     = $('#select-customer').val();
+        var time_start      = $('.frm-dt-lft.lft').val();
+        var time_end        = $('.frm-dt-rgh.lft').val();
+        var active          = 0;
+        if($('#pay-bill').is(':checked')){
+            active  = 1;
+        }
+        $.ajax({
+            url : 'index.php',
+            type : 'post',
+            data : 
+            {
+                id_customer : id_customer,
+                time_start  : time_start,
+                time_end    : time_end,
+                active      : active
+            },
+            dataType : 'html',
+            success : function(html){
+                table.html(html);
+                fixScrollMenu();
+            }
+        });
+    });
+    // lọc danh sách hóa đơn nhập
+    find_brand.click(function(){
+        var table           = $('#table_bill_out');
+        var id_brand        = $('#select-brand').val();
+        var time_start      = $('.frm-dt-lft.rgh').val();
+        var time_end        = $('.frm-dt-rgh.rgh').val();
+        $.ajax({
+            url : 'index.php',
+            type : 'post',
+            data : 
+            {
+                id_brand    : id_brand,
+                time_start  : time_start,
+                time_end    : time_end
+            },
+            dataType : 'html',
+            success : function(html){
+                table.html(html);
+                fixScrollMenu();
+            }
+        });
+    });
+    // click nut thung rac hoa don nhap
+    btn_list_trash_right.click(function(){
+        var mindow = new Mindows();
+        mindow.width = 500;
+        mindow.height = 350;
+        mindow.resize = true;
+        mindow.iframe('list_trash.php?type_bill=1','<b>Danh sách hóa đơn nhập hàng trong thùng rác</b>');
+    });
+    // click nut thung rac hoa don ban
+    btn_list_trash_left.click(function(){
+        var mindow = new Mindows();
+        mindow.width = 500;
+        mindow.height = 350;
+        mindow.resize = true;
+        mindow.iframe('list_trash.php?type_bill=0','<b>Danh sách hóa đơn bán hàng trong thùng rác</b>');
+    });
+    // click nut xem chi tiet hoa dơn ban
+    btn_detail_left.click(function(){
+       if($(this).hasClass('deactivate')){
+            return false;
+       }
+        showDetail('left');
+    });
+    //  click nut xem chi tiet hoa đơn nhập
+    btn_detail_right.click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        showDetail('right');
+    });
+    
+    // them class deactivate vào nut thùng rác
+    function deactivate_control(type){
+        if(type == 'left'){
+            btn_trash_left.addClass('deactivate');
+        }else{
+            btn_trash_right.addClass('deactivate');
+        }
+    }
+    // remove class cho các nút chức năng trên từng bảng
+    function active_control(type){
+        if(type == 'left'){
+            btn_detail_left.removeClass('deactivate');
+            btn_trash_left.removeClass('deactivate');
+            btn_bill_in_left.removeClass('deactivate');
+        }else{
+            btn_detail_right.removeClass('deactivate');
+            btn_trash_right.removeClass('deactivate');
+            btn_bill_in_right.removeClass('deactivate');
+        }
+    }
+    ///*hat u y nha 31 ngo 79 pho 8-3 trúc cấp 2 bãi cháy dầu 50k
+    // khai bao
+    var ajax_url = {
+        loadModalSelectCustomer: '/admin/core/customers/index_modal.php',
+        loadModalSelectBrand: '/admin/core/suppliers/index.php'
+    };
+    //load form khach hang
+    $('#find-customer').unbind('click').click(function () {
+        var mindow = new Mindows();
+        mindow.width = 930;
+        mindow.height = 450;
+        mindow.resize = true;
+        mindow.iframe(ajax_url.loadModalSelectCustomer,'<b>Quản lý thông tin khách hàng</b>');
+    });
+    // load form nha cung cap
+    $('#find-brand').unbind('click').click(function () {
+        var modal = new Modal('medium', ajax_url.loadModalSelectBrand, 'Quản lý thông tin nhà cung cấp');
+        modal.width = 930;
+        modal.height = 400;
+        modal.load()
+    });
+    // danh sach khach va nha cung cap
+    function communicateParentWindow(action, data) {
+        switch (action) {
+            case 'selectCustomer':
+                $('#select-customer option').each(function(){
+                    if($(this).val() == data.cus_id){
+                        $(this).attr('selected','selected');
+                    }
+                })
+                $('.mwindow-close').trigger('click');
+            break;
+            case 'selectBrand':
+                $('#select-brand option').each(function(){
+                    if($(this).val() == data.brand_id){
+                        $(this).attr('selected','selected');
+                    }
+                })
+                closeModal();
+            break;
+            // dong mwindow
+            case 'close_detail' :
+                $('.mwindow-close').trigger('click');
+            break;
+            // khoi phuc hoa don
+            case 'close_trash' :
+                $('.mwindow-close').trigger('click');
+                window.location.reload();
+            break;
+            // xem chi tiet hoa don trong thung rac
+            case 'close_detail_trash' :
+                $('.mwindow-close').trigger('click');
+                var bill = '';
+                switch (data.postion)
+                {
+                    case 'bill_in' : bill = 'bán';
+                    break;
+                    case 'bill_out' : bill = 'nhập';
+                    break;    
+                }
+                var mindow = new Mindows();
+                mindow.width = 1100;
+                mindow.height = 500;
+                mindow.resize = true;
+                mindow.iframe('bill_detail.php?data_record_id='+data.data_record_id+'&position='+data.postion,'<b>Chi tiết hóa đơn '+bill+' hàng </b>');
+            break;
+            // xem thong tin hoa don trong thung rac
+            case 'open_information_trash' :
+                $('.mwindow-close').trigger('click');
+                var mindow = new Mindows();
+                mindow.width = 400;
+                mindow.height = 230;
+                mindow.resize = true;
+                mindow.iframe('bill_information.php?data_record_id='+data.data_record_id+'&position='+data.postion,'<b>Xem thông tin cập nhật</b>');
+            break;
+        }
+    }
+    
+    // thong tin chi tiet hoa don
+    function showDetail (elm) {
+        var position = elm;
+        var table_wrapper = $('#table-listing-'+position);
+        var data_record_id = table_wrapper.find('.record-item.active').data('record_id') || 0;
+        var bill = '';
+        switch (position)
+        {
+            case 'left': bill = 'bán';
+            break;
+            case 'right' : bill = 'nhập';
+            break;
+        }
+        var mindow = new Mindows();
+        mindow.width = 1100;
+        mindow.height = 550;
+        mindow.resize = true;
+        mindow.iframe('bill_detail.php?data_record_id='+data_record_id+'&position='+position,'<b>Chi tiết hóa đơn '+bill+' hàng </b>');   
+    }
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+
+    //delete left
+    btn_trash_left.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var parent  = $('.left-column');
+        var customer_active = parent.find('.record-item.active');
+        var billIn_id = parseInt(customer_active.data('record_id'));
+        var debit = parseInt(customer_active.data('debit'));
+        if(debit != 0) {
+            alert('Không thể xóa hóa đơn này, vì hóa đơn này được sử dụng thanh toán công nợ!');
+            return false;
+        }
+        if(confirm('Bạn muốn xóa hóa đơn bán này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action : 'deleteBillIn',billIn_id : billIn_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                       parent.find('#record_'+billIn_id).remove();
+                        deactivate_control('left');
+                        window.location.reload();
+                    } 
+                }
+            })
+            
+        }
+    })
+    //delete right
+    btn_trash_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var parent  = $('.right-column');
+        var billOut_id = parent.find('.record-item.active').data('record_id');
+        var debit = parseInt(parent.find('.record-item.active').data('debit'));
+        if(debit != 0) {
+            alert('Không thể xóa hóa đơn này, vì hóa đơn này được sử dụng thanh toán công nợ!');
+            return false;
+        }
+        if(confirm('Bạn muốn xóa hóa đơn nhập này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action:'deleteBillOut',billOut_id : billOut_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        parent.find('#record_'+billOut_id).remove();
+                        deactivate_control('right');
+                        window.location.reload();
+                    }
+                }
+            })
+            
+        }
+    })
+
+    $('.list-vertical-crm').find('li').unbind('click').click(function() {
+        if ($(this).find('.cat_name').hasClass('active')) {
+            return false;
+        }
+        var cat_id = $(this).data('cat');
+        $('label.cat_name').removeClass('active');
+        $(this).find('.cat_name').addClass('active');
+        if($(this).hasClass('list-vertical-item')){
+            active_control('left')
+        }else{
+            deactivate_control('left');
+        }
+        //load danh sách bên right column
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {action : ajax_url.listRecord, cat_id : cat_id},
+            success : function (html) {
+                right_column_wrapper.html(html);
+                //deactivate các phím sửa xóa bên phải
+                deactivate_control('right');
+            }
+        })
+    });
+    function record_active(record_id){
+        var record_item = $('.detail_content_lft').find('#record_'+record_id);
+        record_item.siblings().removeClass('active');
+        if($('.restore, .del_permanently, .view_detail, .information').hasClass('deactivate')){
+            $('.restore, .del_permanently, .view_detail, .information').removeClass('deactivate'); 
+        }
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        record_item.addClass('active');
+    }
+    //
+    
+    //function
+    function active_record(record_id,type){
+        var table_wrapper = $('#table-listing-'+type);
+        var record_item = table_wrapper.find('#record_'+record_id);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        table_wrapper.find('tr').removeClass('active');
+        record_item.addClass('active');
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control(type);
+    }
+    // date time input
+    $('.datetime-local').datepicker({
+        format : 'dd/mm/yyyy'
+    })
+    
+    //context menu
+    $.contextMenu({
+        selector : '.menu-normal',
+        items : {
+            info : {
+                name : '<i class="fa fa-list-alt"></i> Xem thông tin chi tiết',
+                callback : function (key,opt){
+                    var trigger = opt.$trigger;
+                    var class_column = trigger.parents();
+                    if(class_column.hasClass('left-column')){
+                        active_record(trigger.data('record_id'),'left');
+                        btn_info_left.trigger('click');
+                    }
+                    if(class_column.hasClass('right-column')){
+                        active_record(trigger.data('record_id'),'right');
+                        btn_info_right.trigger('click');
+                    }
+                }
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa',
+                callback : function(key,opt){
+                    var trigger = opt.$trigger;
+                    //active_record(trigger.data('record_id'));
+                    var class_column = trigger.parents();
+                    if(class_column.hasClass('left-column')){
+                        active_record(trigger.data('record_id'),'left');
+                        btn_trash_left.trigger('click');
+                    }
+                    if(class_column.hasClass('right-column')){
+                        active_record(trigger.data('record_id'),'right');
+                        btn_trash_right.trigger('click');
+                    }
+                }
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục ',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                disabled : true,
+                className : 'not-selectable'
+            }
+        }
+    });
+    $.contextMenu({
+        selector : '.menu-trash',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục',
+                callback : function (key, opt) {
+                    record_active(opt.$trigger.data('record_id'));
+                    if(opt.$trigger.parents('.detail_content_lft').siblings('.print-close').has('.restore.out')){
+                        $('.restore.out').trigger('click');
+                        //recycleBillOut.(opt.$trigger.data('record_id'));
+                    }
+                    if(opt.$trigger.parents('.detail_content_lft').siblings('.print-close').has('.restore.in')){
+                        $('.restore.in').trigger('click');
+                    }
+                    //recycleRow(opt.$trigger.data('record_id'));
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function (key, opt){
+                    record_active(opt.$trigger.data('record_id'));
+                    if(opt.$trigger.parents('.detail_content_lft').siblings('.print-close').has('.del_permanently.out')){
+                        $('.del_permanently.out').trigger('click');
+                    }
+                    if(opt.$trigger.parents('.detail_content_lft').siblings('.print-close').has('.del_permanently.in')){
+                        $('.del_permanently.in').trigger('click');
+                    }
+                }
+            }
+        }
+    })
+
+</script>

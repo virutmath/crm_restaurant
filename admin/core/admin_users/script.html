@@ -1,0 +1,306 @@
+<script>
+    var btn_refresh = $('.modal-control .control-btn-refresh');
+    var btn_add_left = $('.left-column .control-btn-add');
+    var btn_add_right = $('.right-column .control-btn-add');
+    var btn_edit_left = $('.left-column .control-btn-edit');
+    var btn_edit_right = $('.right-column .control-btn-edit');
+    var btn_trash_left = $('.left-column .control-btn-trash');
+    var btn_trash_right = $('.right-column .control-btn-trash');
+    var btn_permission = $('#btn-module-permission');
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+
+    //chỉnh kích thước khung wrapper
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight - 28;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent = $('.table-listing-bound');
+    var offsetTopContent = sectionContent.offset().top;
+    sectionContent.height(wrapperHeight - offsetTopContent - 10);
+
+    //table scroll
+    sectionContent.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : true
+    });
+    //fix tất cả table listing
+    function fixScrollMenu() {
+        center_listing.find('.table-listing-bound').height(center_listing.height() - 5);
+        //cấp phát lại table scroll
+        if(center_listing.find('.enscroll-track').length < 1){
+            center_listing.find('.table-listing-bound').enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+        if(listing_menu.find('.enscroll-track').length < 1) {
+            listing_menu.find('.table-listing-bound').height(listing_menu.height() - 30).enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+    }
+
+    $('.list-vertical-crm').find('li').click(function(){
+
+        if($(this).find('.user_group_name').hasClass('active')){
+            return false;
+        }
+        var group_user = $(this).data('group-user');
+        $('label.user_group_name').removeClass('active');
+        $(this).find('.user_group_name').addClass('active');
+        //nếu là nhóm tài khoản thì hiển thị nút sửa xóa
+        if($(this).hasClass('list-vertical-item')){
+            btn_edit_left.removeClass('deactivate');
+            btn_trash_left.removeClass('deactivate');
+            //hiển thị nút phân quyền
+            btn_permission.removeClass('deactivate');
+        }else{
+            btn_edit_left.addClass('deactivate');
+            btn_trash_left.addClass('deactivate');
+            btn_permission.addClass('deactivate');
+        }
+        //load danh sách bên right column
+        var request_url = 'index.php';
+        if(group_user == 'trash') {
+            request_url = 'ajax.php';
+        }
+        $.ajax({
+            type : 'post',
+            url : request_url,
+            data : {action : 'getListUser', group : group_user},
+            success : function (html) {
+                right_column_wrapper.html(html);
+                //deactivate các phím sửa xóa bên phải
+                btn_edit_right.addClass('deactivate');
+                btn_trash_right.addClass('deactivate');
+            }
+        })
+    });
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+    btn_add_left.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormAddGroupUser'});
+    });
+    btn_add_right.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormAddUser'});
+    });
+    btn_trash_left.unbind('click').click(function(){
+        var group_li = $('label.user_group_name.active').parent('li');
+        var group_id = parseInt(group_li.data('group-user'));
+        var group_count = parseInt(group_li.data('count-user'));
+        if($(this).hasClass('deactivate')){
+            return false;
+        }else if(group_count > 0){
+            alert('Bạn không thể xóa nhóm này, vì nó vẫn còn chứa các tài khoản. Vui lòng xóa các tài khoản đăng nhập trước');
+            return false;
+        }else{
+            if(confirm('Bạn có muốn xóa nhóm tài khoản này?')){
+                $.ajax({
+                    type : 'post',
+                    url : 'ajax.php',
+                    data : {action : 'deleteGroupUser',group : group_id},
+                    dataType : 'json',
+                    success : function(resp){
+                        if(resp.success){
+                            group_li.remove();
+                            $('li[data-group-user="all"]').trigger('click');
+                        }else{
+                            alert(resp.error);
+                        }
+                    }
+                })
+            }
+        }
+    });
+    btn_edit_left.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var group_li = $('label.user_group_name.active').parent('li');
+        var group_id = parseInt(group_li.data('group-user'));
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormEditGroup',group : group_id});
+    });
+    btn_edit_right.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var user_id = parseInt($('#table-listing tr.active').data('user-id'));
+        editRow(user_id);
+    });
+    btn_trash_right.unbind('click').click(function(){
+        var row_user = $('#table-listing tr.active');
+        var user_id = parseInt(row_user.data('user-id'));
+        if($(this).hasClass('deactivate')){
+            return false;
+        }else{
+            deleteRow(user_id);
+        }
+    });
+    function deleteRow(user_id){
+        if(confirm('Bạn có muốn xóa tài khoản đang chọn?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action : 'deleteUser',user : user_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        //disable các nút sửa xóa
+                        btn_edit_right.addClass('deactivate');
+                        btn_trash_right.addClass('deactivate');
+                        //remove user khỏi bảng
+                        $('tr#record_'+user_id).remove();
+                        window.location.reload();
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    function selectRow(user_id){
+        //hiện các phím chức năng
+        btn_edit_right.removeClass('deactivate');
+        btn_trash_right.removeClass('deactivate');
+        $('#table-listing tr').removeClass('active');
+        $('tr#record_'+user_id).addClass('active');
+    }
+
+    function editRow(user_id){
+        //bật khung modal sửa record
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormEditUser',user : user_id});
+    }
+    function recycleRow(user_id){
+        if(user_id && confirm('Bạn có muốn khôi phục tài khoản này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: 'recycleRow',user : user_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#tr_'+user_id).remove();
+                        window.location.reload();
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    function module_permission(){
+        var modal = new Modal();
+        var group = $('label.user_group_name.active').parent('li').data('group-user');
+        if(group == 1){
+            alert('Bạn không thể chỉnh sửa quyền của nhóm quản lý mặc định!');
+            return false;
+        }
+        modal.miniLoad('ajax.php',{action:'loadFormPermission',group:group});
+    }
+    //context menu thùng rác
+    $.contextMenu({
+        selector : '.context-menu-trash',
+        items: {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới tài khoản',
+                className : 'not-selectable'
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Chỉnh sửa tài khoản',
+                className : 'not-selectable'
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa tài khoản',
+                className : 'not-selectable'
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục tài khoản',
+                callback : function (key, opt){
+                    var trigger = opt.$trigger;
+                    recycleRow(trigger.data('user-id'));
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function(key,opt){
+                    if(confirm('Bạn muốn xóa vĩnh viễn bản ghi này?')){
+                        var trigger = opt.$trigger;
+                        $.ajax({
+                            type : 'post',
+                            url : 'ajax.php',
+                            data : {action:'terminalDeleteUser',user : trigger.data('user-id')},
+                            dataType : 'json',
+                            success : function(resp){
+                                if(resp.success){
+                                    trigger.remove();
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    });
+    //context menu user
+    $.contextMenu({
+        selector : '.context-menu-user',
+        items: {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới tài khoản',
+                callback : function(key, opt){
+//                    var trigger = opt.$trigger;
+//                    console.log(trigger.data('user-id'))
+                    btn_add_right.trigger('click');
+                }
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Chỉnh sửa tài khoản',
+                callback : function (key,opt){
+                    var trigger = opt.$trigger;
+                    editRow(trigger.data('user-id'));
+                }
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa tài khoản',
+                callback : function(key,opt){
+                    var trigger = opt.$trigger;
+                    deleteRow(trigger.data('user-id'));
+                }
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục tài khoản',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                disabled : true,
+                className : 'not-selectable'
+            }
+        }
+    })
+</script>

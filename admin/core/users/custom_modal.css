@@ -1,0 +1,11 @@
+.column-wrapper {
+    position: relative;
+}
+.grid_header {
+    position: absolute;
+    top: -25px;
+    right: 0;
+}
+.modal-wrapper .modal-footer .module-name {
+    width : auto;
+}

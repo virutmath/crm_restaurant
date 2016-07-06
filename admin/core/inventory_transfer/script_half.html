@@ -1,0 +1,284 @@
+<script>
+    var ajax_url = {
+        trash_left          : 'deleteInventory',
+        trash_right         : 'deleteMoneyStockTransfer',
+        fillerInventory     :'fillerInventory',
+        fillerStockTransfer :'fillerStockTransfer'
+    };
+    // khai báo các nút chức năng
+    var btn_refresh     = $('.modal-control .control-btn-refresh');
+    var btn_add_left    = $('.left-column .control-btn-add');
+    var btn_add_right   = $('.right-column .control-btn-add');
+    var btn_edit_left   = $('.left-column .control-btn-edit');
+    var btn_edit_right  = $('.right-column .control-btn-edit');
+    var btn_trash_left  = $('.left-column .control-btn-trash');
+    var btn_trash_right = $('.right-column .control-btn-trash');
+
+    var right_column_wrapper    = $('.right-column').find('.column-wrapper');
+    var left_column_wrapper     = $('.left-column').find('.column-wrapper');
+
+
+    //chỉnh kích thước khung wrapper ngay khi load js
+    var windowHeight        = windowHeight || $(window).height();
+    var wrapperHeight       = windowHeight;
+    var wrapperContent      = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent      = $('.section-content');
+    var offsetTopContent    = sectionContent.offset().top;
+    sectionContent.height(wrapperHeight - offsetTopContent - 78);
+
+    //table scroll
+    $('.table-listing-bound').enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    //fix tất cả table listing
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        if(left_column_wrapper.find('.enscroll-track').length < 1){
+            left_column_wrapper.find('.table-listing-bound').enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+        if(right_column_wrapper.find('.enscroll-track').length < 1) {
+            right_column_wrapper.find('.table-listing-bound').enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+    }
+
+    // hàm bật và tắt nút và delete
+    function deactivate_control(type){
+        if(type == 'left'){
+            btn_edit_left.addClass('deactivate');
+            btn_trash_left.addClass('deactivate');
+        }else{
+            btn_edit_right.addClass('deactivate');
+            btn_trash_right.addClass('deactivate');
+        }
+    }
+
+    function active_control(type){
+        if(type == 'left'){
+            btn_edit_left.removeClass('deactivate');
+            btn_trash_left.removeClass('deactivate');
+        }else{
+            btn_edit_right.removeClass('deactivate');
+            btn_trash_right.removeClass('deactivate');
+        }
+    }
+
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+    // load form thêm mới phiếu kiểm kê
+    function addInventory () {
+        var mindow      = new Mindows;
+        mindow.width    = 1000;
+        mindow.height   = 562;
+        mindow.resize   = true;
+        mindow.iframe('add_inventory.php','Thêm phiếu kiểm kê kho hàng');
+    }
+    // load form thêm mới phiếu kiểm kê
+    function addStockTransfer () {
+        var mindow      = new Mindows;
+        mindow.width    = 1000;
+        mindow.height   = 562;
+        mindow.resize   = true;
+        mindow.iframe('add_stock_transfer.php','Thêm phiếu chuyển kho hàng');
+    }
+    // click chuyen den thung rac phieu kiem ke
+    function list_trash_inventory() {
+        //mở ra mwindow
+        var mwindow     = new Mindows();
+        mwindow.width   = 600;
+        mwindow.height  = 435;
+        mwindow.resize  = true;
+        mwindow.iframe('trash_inventory.php','Thùng rác phiếu kiểm kê');
+        fixScrollMenu();
+    }
+    // click chuyen den thung rac phieu chuyen hang
+    function list_trash_stock_trans() {
+        //mở ra mwindow
+        var mwindow     = new Mindows();
+        mwindow.width   = 600;
+        mwindow.height  = 435;
+        mwindow.resize  = true;
+        mwindow.iframe('trash_stock_transfer.php','Thùng rác phiếu chuyển kho');
+        fixScrollMenu();
+    }
+    /* hàm đóng cửa sổ mwindow */
+    function communicateParentWindow($action, $data) {
+        mwindow_close = $('.mwindow-close');
+        switch ($action) {
+            case 'closeAddInventory':
+                    mwindow_close.trigger('click');
+                break;
+            case 'closeAddStockTransfer':
+                    mwindow_close.trigger('click');
+                break;
+        }
+    }
+
+    //delete left
+    btn_trash_left.unbind('click').click(function(){
+        if ($(this).hasClass('deactivate')) return false;
+        var record_id = $('#table-listing-left').find('.record-item.active').data('record_id');
+        if (confirm('Bạn muốn xóa bản ghi này?')) {
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data: {action: ajax_url.trash_left, record_id: record_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_' + record_id).remove();
+                        btn_refresh.trigger('click');
+                        //deactivate các nút bên phải
+                        deactivate_control('right');
+                    }
+                }
+            })
+        }
+    });
+
+
+    //delete right
+    btn_trash_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('#table-listing-right').find('.record-item.active').data('record_id');
+        if(confirm('Bạn muốn xóa bản ghi này?')){
+            $.ajax({
+                type    : 'post',
+                url     : 'ajax.php',
+                data    : {action:ajax_url.trash_right,record_id : record_id},
+                dataType: 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        btn_refresh.trigger('click');
+                        //deactivate các nút bên phải
+                        deactivate_control('right');
+                    }
+                }
+            })
+        }
+    });
+    //function
+    function active_record(record_id){
+        var record_item     = $('#record_'+record_id);
+        //console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        var column_content  = record_item.closest('.column-half');
+        var table_listing   = column_content.find('.table-listing');
+//        console.log(table_listing);
+        table_listing.find('tr').removeClass('active');
+        var control_btn     = table_listing.attr('id').replace('table-listing-', '');
+//        console.log(control_btn);
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control(control_btn);
+    }
+    function active_record_r(record_id){
+        var record_item     = $('.right-column').find('#record_'+record_id);
+        //console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        var column_content  = record_item.closest('.column-half');
+        var table_listing   = column_content.find('.table-listing');
+//        console.log(table_listing);
+        table_listing.find('tr').removeClass('active');
+        var control_btn     = table_listing.attr('id').replace('table-listing-', '');
+//        console.log(control_btn);
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control(control_btn);
+    }
+    // khi double click vào record active sẽ hiển thị chi tiết ben trái
+    function detail_inventory(record_id){
+        var mwindow     = new Mindows();
+        mwindow.width   = 600;
+        mwindow.height  = 500;
+        mwindow.resize  = true;
+        mwindow.iframe('detail_inventory.php','Chi tiết phiếu kiểm kê kho hàng',{record_id : record_id});
+        fixScrollMenu();
+    }
+    // khi double click vào record active sẽ hiển thị chi tiết bên phải
+    function detail_stock_transfer(record_id){
+        var mwindow     = new Mindows();
+        mwindow.width   = 700;
+        mwindow.height  = 500;
+        mwindow.resize  = true;
+        mwindow.iframe('detail_stock_transfer.php','Chi tiết phiếu chuyển kho hàng',{record_id : record_id});
+        fixScrollMenu();
+    }
+
+    //Các hàm xử lý riêng
+    /**
+     * Hàm dùng để fill dữ liệu từ danh sách phiếu kiểm kê
+     */
+    function fill_data_Inventory(){
+        var start_date_in   = $('#start_date_inventory').val();
+        var end_date_in     = $('#end_date_inventory').val();
+        var list_staff      = $('#list_staff').val();
+        $.ajax({
+            type: 'post',
+            url : 'ajax.php',
+            data:{
+                start_date_in:start_date_in,
+                end_date_in  : end_date_in,
+                list_staff_id: list_staff,
+                action:ajax_url.fillerInventory
+            },
+            dataType:'html',
+            success : function(resp){
+                $('.left-column').find('.section-content').html(resp);
+                fixScrollMenu();
+            }
+        });
+    }
+    // Hàm dùng fill dữ liệu phiếu chuyển kho hàng
+    function fill_data_stock_transfer(){
+        var start_date_in = $('#start_date_stock_transfer').val();
+        var end_date_in   = $('#end_date_stock_transfer').val();
+        var list_staff    = $('#list_staff_stock').val();
+        $.ajax({
+            type: 'post',
+            url : 'ajax.php',
+            data:{
+                start_date_in:start_date_in,
+                end_date_in  : end_date_in,
+                list_staff_id: list_staff,
+                action:ajax_url.fillerStockTransfer
+            },
+            dataType:'html',
+            success : function(resp){
+                $('.right-column').find('.section-content').html(resp);
+                fixScrollMenu();
+            }
+        });
+    }
+    function getLeftRight(item_child) {
+        var table_id = item_child.closest('.table-listing').attr('id');
+        return table_id.replace('table-listing-', '');
+    }
+
+
+</script>

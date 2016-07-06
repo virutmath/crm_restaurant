@@ -1,0 +1,224 @@
+<script>
+    var dataPoint = [];
+    var dataPoint_thu = [];
+    var dataPoint_chi = [];
+    if ( title.all )
+    {
+        for ( var i in array_date_time )
+        {
+            var tmp_thu = {
+                x : array_date_time[i].x * 1000,
+                y : array_date_time[i].thu
+            }
+            var tmp_chi = {
+                x : array_date_time[i].x * 1000,
+                y : array_date_time[i].chi
+            }
+            dataPoint_thu.push(tmp_thu);
+            dataPoint_chi.push(tmp_chi);
+        }
+        // end for array_date_time
+        var chartTC = new CanvasJS.Chart("chartContainer",
+        {
+            title:{
+                text: title.title
+            },
+            animationEnabled: true,
+            axisX: {
+                valueFormatString: "DD/MM/YYYY"
+            },
+            toolTip:{
+                shared:true
+            },
+            axisY:{
+                gridColor: "Silver",
+                tickColor: "silver"
+            },
+            data: [{
+                type: "column",
+                xValueType: "dateTime",
+                showInLegend: true,
+                name: "Doanh Thu",
+                dataPoints: dataPoint_thu
+            },
+            {
+                type: "column",
+                showInLegend: true,
+                xValueType: "dateTime",
+                name: "Chi Phí",
+                dataPoints: dataPoint_chi
+            }],
+            legend:{
+                cursor:"pointer",
+                itemclick:function(e){
+                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    }
+                    else{
+                        e.dataSeries.visible = true;
+                    }
+                    chartTC.render();
+                }
+            }
+        });
+        chartTC.render();
+    }else{
+        for ( var i in array_date_time )
+        {
+            var tmp = {
+                x : array_date_time[i].x * 1000,
+                y : array_date_time[i].y
+            }
+            dataPoint.push(tmp);
+        }
+        // end for array_date_time
+        var chartJS = new CanvasJS.Chart("chartContainer",
+        {
+            title:{
+                text: title.title
+            },
+            animationEnabled: true,
+            axisX: {
+                valueFormatString: "DD/MM/YYYY",
+                interval:1,
+                intervalType: "month",
+                title : 'Thời gian'
+            },
+            axisY:{
+                includeZero: false,
+                title : 'VND'
+            },
+            data: [{
+                type: "area",
+                xValueType: "dateTime",
+                dataPoints: dataPoint
+            }]
+        });
+        chartJS.render();
+    }
+    var left_column_wrapper = $('.left-column').find('.column-wrapper');
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+    var filter_data = $('.filter-data');
+    //chỉnh kích thước khung wrapper
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var offsetTopContent = wrapperContent.offset().top;
+    left_column_wrapper.height(wrapperHeight - offsetTopContent - 50);
+    right_column_wrapper.height(wrapperHeight - offsetTopContent - 50);
+
+    var scroll_table = $('.table-listing-bound');
+    scroll_table.height(wrapperHeight - offsetTopContent - 250);
+    //table scroll
+    scroll_table.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+
+    //fix tất cả table listing
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        var scroll_table = $('.table-listing-bound');
+        scroll_table.height(wrapperHeight - offsetTopContent - 250);
+        scroll_table.enscroll({
+            showOnHover: false,
+            minScrollbarLength: 28,
+            addPaddingToPane : false
+        });
+    }
+
+    // date time input
+    $('.datetime-local').datepicker({
+        format : 'dd/mm/yyyy'
+    });
+    // loc du lieu submit
+    filter_data.click(function(){
+        var module              = $(this).parent().data('module') || '';
+        var from_date           = $('.from-date').val();
+        var to_date             = $('.to-date').val();
+        var customer_report     = $('.customer-report').val() || ''; // khach hang
+        var user_report         = $('.user-report').val() || '';// nhan vien
+        var adm_user_report     = $('.adm-user-report').val() || ''; // thu ngan
+        var brand_report        = $('.brand-report').val() || ''; // nha cung cap
+        var store_report        = $('.store-report').val() || ''; // kho hang
+        var type_bill           = 0;
+        if($('#pay_bill').is(':checked')) type_bill = 1;
+        if (module != '')
+        {
+            $.ajax({
+                url : module+'.php',
+                type : 'post',
+                data :
+                {
+                    from_date : from_date,
+                    to_date : to_date,
+                    customer_report : customer_report,
+                    user_report : user_report,
+                    adm_user_report : adm_user_report,
+                    brand_report : brand_report,
+                    store_report : store_report,
+                    type_bill : type_bill
+                },
+                dataType :'json',
+                success : function(resp)
+                {
+                    if ( resp.table )
+                    {
+                        $('.table-listing-bound').html(resp.table);
+                        $('.total-cost strong').html(number_format(resp.total_cost));
+                        $('.bill strong').html(number_format(resp.bill));
+                        $('.fund strong').html(number_format(resp.fund));
+                        var date_time = resp.dt;
+                        
+                        //
+                        if ( resp.type_report )
+                        {
+                            while(dataPoint_thu.length) {
+                                dataPoint_thu.shift();
+                            }
+                            while(dataPoint_chi.length) {
+                                dataPoint_chi.shift();
+                            }
+                            for(var i in date_time)
+                            {
+                                var tmp_thu = {
+                                    x : date_time[i].x * 1000,
+                                    y : date_time[i].thu
+                                }
+                                var tmp_chi = {
+                                    x : date_time[i].x * 1000,
+                                    y : date_time[i].chi
+                                }
+                                dataPoint_thu.push(tmp_thu);
+                                dataPoint_chi.push(tmp_chi);
+                            }
+                            updateChartTC();
+                        }else{
+                            while(dataPoint.length) {
+                                dataPoint.shift();
+                            }
+                            for(var i in date_time)
+                            {
+                                var tmp = {
+                                    x : date_time[i].x * 1000,
+                                    y : date_time[i].y
+                                }
+                                dataPoint.push(tmp);
+                            }
+                            updateChartJS();
+                        }
+                        fixScrollMenu();
+                    }// end if ( resp.table )
+                }
+            });
+        }
+    });
+    function updateChartJS() {
+        chartJS.render();
+    }
+    function updateChartTC() {
+        chartTC.render();
+    }
+</script>

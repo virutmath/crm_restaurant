@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    {$load_header}
+</head>
+<body>
+<div id="wrapper-full">
+    <div class="col-xs-12" id="content-column">
+        <form name="move_desk" action="" method="post">
+            <div class="row">
+                <div class="left_column col-xs-5">
+                    <div class="left_column_title">
+                        <span class="fl">Tách từ bàn:</span>
+                        <label class="fl">{$desk_name}</label>
+                        <input type="hidden" value="{$record_id}" id="from_desk">
+                    </div>
+                    <div class="clearfix"></div>
+                    {$left_column}
+                </div>
+                <div class="center_column col-xs-2">
+                    <div class="center_control">
+                        <div class="row">
+                            <input type="text" class="form-control text-right" id="from_number" value="1"/>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-default" id="from_move" onclick="deskSplit.moveMenu('from',false)"> > </button>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-default" id="from_move_all" onclick="deskSplit.moveMenu('from',true)"> >> </button>
+                        </div>
+                        <div class="row">
+                            <input type="text" class="form-control text-right" id="to_number" value="1"/>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-default" id="to_move" onclick="deskSplit.moveMenu('to',false)"> < </button>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-default" id="to_move_all" onclick="deskSplit.moveMenu('to',true)"> << </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right_column col-xs-5">
+                    <div class="right_column_title">
+                        <span class="fl">Sang bàn:</span>
+                        <select class="form-control" name="to_desk" id="to_desk">
+                            {loop="$list_desk"}
+                            <option value="{$value.des_id}">{$value.des_name}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div id="listing-import">
+                        <div class="table-listing-bound">
+                            <table class="table table-bordered table-hover table-listing">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên thực đơn</th>
+                                    <th>ĐVT</th>
+                                    <th>SL</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-xs-12 footer-button">
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-xs-5">
+                <span class="col-xs-4">Tổng tiền</span>
+                <span class="col-xs-8 text-center money_total" id="from_desk_total">{$from_desk_total}</span>
+            </div>
+            <div class="col-xs-2"></div>
+            <div class="col-xs-3">
+                <span class="col-xs-6">Tổng tiền</span>
+                <span class="col-xs-6 text-center money_total" id="to_desk_total">0</span>
+            </div>
+            <div class="col-xs-2 text-right">
+                <button type="button" class="btn btn-default">
+                    <i class="fa fa-close"></i>
+                    Đóng
+                </button>
+                <button class="btn btn-default" onclick="deskSplit.submit()">
+                    <i class="fa fa-save"></i>
+                    Lưu lại
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var array_list_menu = {$json_menu};
+    </script>
+    {$custom_script}
+    <div id="modal"></div>
+    <div id="overlay"></div>
+    <div id="m-window"></div>
+    <div id="loading">
+        <i class="fa fa-spin fa-cog"></i>
+        <span id="loading-text">Đang tải dữ liệu...</span>
+    </div>
+</div>
+</body>
+</html>

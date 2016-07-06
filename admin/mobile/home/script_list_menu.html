@@ -1,0 +1,345 @@
+<script>
+// khai bao
+    var partAjax = '../../core/home/ajax.php';
+    var deskId  = $('.desk-infomation').data('desk_id');
+    var catMenu = $('.name-price.cat-menu');
+    var detailMenu = $('.child-menu .name-price');
+    var cancelMenu = $('.cancel');
+    var addMenutoDesk = $('.add');
+    var detailDesk = $('.detail_desk');
+    var numberMenu = $('.number'); 
+    var priceMenu = $('.price-type');
+    var customerDesk = $('.desk-customer');
+    var userDesk = $('.desk-user');
+    var noteDesk = $('.desk-note');
+    var dateTime = $('.date-time');
+    var listMenuTittle = $('.menu-list .tittle');
+    var listMenu = $('.list-menu-active');
+    var control = $('.control');
+    var cancelDesk = $('.cancel-desk');
+// finish 
+    function finish()
+    {
+        window.location="list_desk.php";
+    }
+// show cancel and delete menu
+    function deleteCancelMenu(elm)
+    {
+        $(elm).siblings('.number-total').slideDown();
+    }
+// click add menu -> back page list menu
+    function callAddMenu()
+    {
+        $('#mindow').css({
+            'z-index' : 4,
+            'display' : 'inline-block'
+        });
+        if ( deskId == 0 ) return false;
+        window.location="menu_list.php?desk_id="+deskId;
+    }
+// destroy desk
+    cancelDesk.click(function(){
+        $('#mindow').css({
+            'z-index' : 4,
+            'display' : 'inline-block'
+        });
+        var desk_id = $('.desk-infomation').data('desk_id');
+        if ( desk_id == 0 ) return false; 
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                action : 'deleteDesk',
+                desk_id : desk_id    
+            },
+            dataType : 'json',
+            success : function (resp)
+            {
+                if ( resp.success )
+                {
+                    window.location="list_desk.php";
+                }
+            } 
+        });
+    });
+// click cancel in menu active 
+    function cancelDel(elm)
+    {
+        $(elm).parents('.number-total').slideUp();
+    }
+// click delete menu in menu active
+    function delMenu(elm){
+        var parrentLi = $(elm).parents('li');
+        var menu_id = parrentLi.find('.menu-list-name').data('menu_id');
+        if ( menu_id == 0 || deskId == 0 ) return false;
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                action : 'removeMenuFromDesk',
+                desk_id : deskId,  
+                menu_id : menu_id
+            },
+            dataType : 'json',
+            success : function (resp)
+            {
+                if (resp.success)
+                {
+                    var totalPrice = 0;
+                    $('#menu_'+menu_id).remove();
+                    $('.menu-list ul li').each(function(){
+                       var price = $(this).find('.menu-list-price').data('price_menu') || 0;
+                       var number = $(this).find('.number-menu').data('number_menu') || 0;
+                       totalPrice += (price * number) ;
+                    });
+                    $('.total-price-bill .menu-list-price').html(number_format(totalPrice));
+                }
+            }
+        });
+    }
+// update note of desk
+    noteDesk.change(function(){
+        var note = $(this).val();
+        if ( deskId == 0 || note == '') return false;
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                action : 'updateNote',
+                note : note,
+                desk_id : deskId
+            },
+            dataType : 'json',
+            success : function(resp){
+                if(resp.success == 0){
+                    return false;
+                }
+            }
+        });
+    });
+// update staff of desk
+    userDesk.change(function(){
+        var useID           = $(this).val();
+        if(useID == 0 || deskId == 0) return false;
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                action : 'updateStaff',
+                staff_id : useID,
+                desk_id : deskId   
+            },
+            dataType : 'json',
+            success : function(resp){
+                if(resp.success == 0){
+                    return false;
+                }
+            }
+        });
+    });    
+// update customer of desk
+    customerDesk.change(function(){
+        var cusID           = $(this).val();
+        if(cusID == 0 || deskId == 0) return false;
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                action : 'updateCustomer',
+                cus_id : cusID,
+                desk_id : deskId   
+            },
+            dataType : 'json',
+            success : function(resp){
+                if(resp.success == 0){
+                    return false;
+                }
+            }
+        });
+    });
+// number changer -> changer total money
+    numberMenu.change(function(){
+        var number = $(this).val();
+        var parentBox = $(this).parents('.number-total');
+        var typePrice = parentBox.find('.price-type').val();
+        var menuId  = parentBox.siblings('.name-price').find('.menu-list-name').data('menu_id');
+        $.ajax({
+            url : 'menu_list.php',
+            type : 'post',
+            data : 
+            {
+                menuId : menuId, 
+                numberMenu : number,
+                priceMenu : typePrice    
+            },
+            dataType : 'html',
+            success : function (html)
+            {
+                parentBox.find('.total-price span').html(html);
+            }
+        });
+    });
+// price change -> changer total money
+    priceMenu.change(function(){
+        var priceType = $(this).val();
+        var parentBox = $(this).parents('.number-total');
+        var numberMenu = parentBox.find('.number').val();
+        var menuId  = parentBox.siblings('.name-price').find('.menu-list-name').data('menu_id');
+        $.ajax({
+            url : 'menu_list.php',
+            type : 'post',
+            data : 
+            {
+                menuId : menuId, 
+                numberMenu : numberMenu,
+                priceMenu : priceType    
+            },
+            dataType : 'html',
+            success : function (html)
+            {
+                parentBox.find('.total-price span').html(html);
+            }
+        });
+    });
+//click cat menu -> slideDown list menu child
+    catMenu.click(function(){
+        if ( $(this).find('i.fa').hasClass('fa-plus') )
+        {
+            $(this).siblings('.child-menu').slideDown();
+            $(this).find('i.fa').removeClass('fa-plus').addClass('fa-minus');
+        }
+        else
+        {
+            $(this).siblings('.child-menu').slideUp();
+            $(this).find('i.fa').removeClass('fa-minus').addClass('fa-plus');
+        }
+    });
+// click on one menu -> slideDown number , price, total price, add to desk , cancel
+    detailMenu.click(function(){
+        if ( $(this).find('i.fa').hasClass('fa-angle-right') )
+        {
+            $(this).siblings('.number-total').slideDown();
+            $(this).find('i.fa').removeClass('fa-angle-right').addClass('fa-angle-down');
+        }
+    });
+// click cancel in one menu -> this menu slideUP
+    cancelMenu.click(function(){
+        var parentSiblings = $(this).parents('.number-total').siblings('.name-price');
+        $(this).parents('.number-total').slideUp();
+        if ( parentSiblings.find('i.fa').hasClass('fa-angle-down') )
+        {
+            parentSiblings.find('i.fa').removeClass('fa-angle-down').addClass('fa-angle-right');
+        }
+    });
+// click add to menu -> this menu slideUP 
+    addMenutoDesk.click(function(){
+        var menu_id = $(this).data('menu_id');   
+        var Parrent  = $('#box-menu-'+menu_id);
+        var number = Parrent.find('.number').val();
+        var priceType  = Parrent.find('.price-type').val();
+        if ( menu_id == 0 || number == 0 || deskId == 0 || priceType == '') return false;
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                action : 'addMenuToDesk',
+                desk_id : deskId,
+                menu_id : menu_id,
+                number : number,
+                price_type : priceType 
+            },
+            dataType : 'json',
+            success : function(resp) 
+            {
+                if ( resp.cud_desk_id )
+                {
+                    Parrent.slideUp();
+                    Parrent.parents('li#menu-'+menu_id).find('i.fa').removeClass('fa-angle-down').addClass('fa-angle-right');
+                }
+            }
+        });
+    });
+// click view detail desk
+    function deskDetail (){
+    //detailDesk.onclick = function(){
+        var parrentElement = $('.wrapper .padding-bottom-control');
+        if ( deskId == 0 ) return false;
+        $.ajax({
+            url : partAjax,
+            type : 'post',
+            data : 
+            {
+                desk_id:deskId,
+                action: 'getCurrentDeskDetail'
+            },
+            dataType : 'json',
+            success : function (resp)
+            {
+                if ( resp.array_menu )
+                {
+                    
+                    var FormDesk = '<div class="desk-infomation" data-desk_id="'+resp.cud_desk_id+'">'+
+                                        '<span class="tittle">'+resp.des_name+' - '+resp.sec_name+'</span>'+
+                                        'Giờ vào: <input class="date-time" readonly="readonly" data-time_int="'+resp.cud_start_time+'" value="'+resp.start_time_string+'"/>'+
+                                        'Ghi chú: <input class="desk-note date-time" value="'+resp.cud_note+'"/>'+
+                                        'Khách hàng:<select class="select desk-customer date-time" disabled="disable">'+
+                                            '<option value="'+resp.cud_customer_id+'">'+resp.customer_name+'</option>'+
+                                        '</select>'+
+                                        'Nhân viên:<select class="select desk-user date-time" disabled="disable">'+
+                                            '<option value="'+resp.cud_staff_id+'">'+resp.staff_name+'</option>'+
+                                        '</select>'+
+                                    '</div>'+
+                                    '<div class="menu-list">'+
+                                        '<span class="tittle">món đã chọn</span>'+
+                                        '<ul class="list-menu-active">';
+                    var arrayMenu = resp.array_menu;
+                    var totalPrice = 0;
+                    
+                    for ( var item in arrayMenu )
+                    {
+                         
+                        FormDesk        += '<li id="menu_'+arrayMenu[item].cdm_menu_id+'">'+
+                                                '<div class="name-price menu-active" onclick=deleteCancelMenu(this);>'+
+                                                    '<div class="menu-list-name" data-menu_id="'+arrayMenu[item].cdm_menu_id+'">'+arrayMenu[item].men_name+'</div>'+
+                                                    '<span class="menu-list-price" data-price_menu="'+arrayMenu[item].cdm_price+'">'+number_format(arrayMenu[item].cdm_price)+'</span>'+
+                                                    '<span class="number-menu" data-number_menu="'+arrayMenu[item].cdm_number+'">'+arrayMenu[item].cdm_number+'</span>'+
+                                                    '<div class="clear"></div>'+
+                                                '</div>'+
+                                                '<div class="number-total" id="box-menu-'+arrayMenu[item].cdm_menu_id+'" style="display: none;">'+
+                                                    '<div class="total-price">'+
+                                                         '<div class="bill-of-sale" onclick="delMenu(this);">'+
+                                                            '<span class="delete">Xóa món</span>'+
+                                                        '</div>'+
+                                                        '<div class="bill-of-sale" onclick="cancelDel(this);">'+
+                                                            '<span class="cancel">Cancel</span>'+
+                                                        '</div>'+
+                                                        '<div class="clear"></div>'+
+                                                    '</div>'+
+                                                '</div>'+
+                                            '</li>';                
+                        totalPrice += ( arrayMenu[item].cdm_number * arrayMenu[item].cdm_price );            
+                    }
+                    FormDesk                += '<li class="total-price-bill">'+
+                                                    '<div class="name-price">'+
+                                                        '<div class="menu-list-name">Tổng hóa đơn : </div>'+
+                                                        '<span class="menu-list-price">'+number_format(totalPrice)+'</span>'+
+                                                        '<div class="clear"></div>'+
+                                                    '</div>'+
+                                                '</li>';
+                    FormDesk            += '</ul>'+
+                                        '</div>';
+                    parrentElement.html(FormDesk);
+                    var ctr = '<span class="back-menu-list" onclick="callAddMenu();">thêm món</span>'+
+                              '<span class="next-bill-pay" onclick="finish();">Hoàn tất</span>';
+                    control.html(ctr);
+                }
+            }  
+        });
+    }
+</script>

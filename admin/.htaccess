@@ -1,0 +1,12 @@
+ErrorDocument 404 /404error.php
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule startRecorder$  /admin/resources/js/recorder/temp/record.php
+RewriteRule playRecorder$   /admin/resources/js/recorder/temp/output.wav
+RewriteRule startRecorderWoman$  /admin/resources/js/recorder/temp/record_woman.php
+RewriteRule playRecorderWoman$   /admin/resources/js/recorder/temp/output_woman.wav
+RewriteRule ^ajax(\/?)$   /admin/resources/ajax/loadAjax.php
+RewriteRule ^ajax/([a-zA-Z0-9]*)(\/?)$  /admin/resources/ajax/loadAjax.php?name=$1&%{QUERY_STRING}

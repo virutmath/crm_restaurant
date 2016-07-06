@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>Login Admin</title>
+    {$load_header}
+</head>
+<body>
+<div class="wrapper">
+    <div class="menu-desk padding-bottom-control">
+    {$i=1}
+    {loop="$list_desk"}
+        <div class="list-in-home">
+            <div class="in-out"><span class="in-home position-sections{$i++}">{$value.sec_name} ({$value.count})</span></div>
+            <div class="list-desk">
+                <ul>
+                {loop="$value.list_desk"}
+                {if="$value.active"}
+                    <li class="desk-active" data-id="{$value.des_id}" data-name="{$value.full_name}">
+                        <span>{$value.des_name}</span>
+                    </li>
+                {else}
+                    <li data-id="{$value.des_id}" data-name="{$value.full_name}">
+                        <span>{$value.des_name}</span>
+                    </li>
+                {/if}
+                {/loop}
+                <div class="clear"></div>
+                </ul>
+            </div>
+        </div>
+    {/loop}
+    </div>
+</div>
+{$bottom_control}
+<div id="mindow"></div>
+{$custom_script}
+</body>
+</html>

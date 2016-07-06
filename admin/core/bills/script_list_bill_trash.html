@@ -1,0 +1,170 @@
+<script>
+var restore         = $('.restore');
+var del_permanently = $('.del_permanently');
+var view_detail     = $('.view_detail');
+var information     = $('.information');
+var list_trash      = $('#list_trash');
+    //chỉnh kích thước khung wrapper ngay khi load js
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    
+    var sectionContent = $('.section-content');
+    sectionContent.height(wrapperHeight - 40);  
+    
+    // tao thanh scoll
+    var scroll_table = $('.table-listing-bound');
+    scroll_table.height(wrapperHeight - 40);
+    // scroll table
+    //table scroll
+    scroll_table.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });   
+    // dong mindow 
+    var bill_close = $('.bill-close');
+    bill_close.click(function(){
+        window.parent.communicateParentWindow('close_detail');
+    });
+    // active record
+    function active_record(record_id){
+        var record_item = list_trash.find('#record_'+record_id);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        list_trash.find('tr').removeClass('active');
+        record_item.addClass('active');
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control();
+    }
+    // bo class deactivate 
+    function active_control(){
+        restore.removeClass('deactivate');
+        del_permanently.removeClass('deactivate');
+        view_detail.removeClass('deactivate');
+        information.removeClass('deactivate');
+    }
+    // khoi phuc ban ghi
+    restore.click(function(){
+       if($(this).hasClass('deactivate')) return false;
+       var record_id = list_trash.find('.record-item.active').data("record_id");
+       var table     = list_trash.find('.record-item.active').data("table");
+       if(record_id && confirm('Bạn xác nhận khôi phục bản ghi này?')){
+            $.ajax({
+                url : 'ajax.php',
+                type : 'post',
+                data : 
+                {
+                    action : 'restoreBill',
+                    record_id : record_id,
+                    table : table
+                },
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success == 1){   
+                        window.parent.communicateParentWindow('close_trash');
+                    }        
+                }
+            })
+            //
+        }
+    });
+    // xóa bản ghi
+    //del_permanently xoas vinh vien
+    del_permanently.click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var record_id = list_trash.find('.record-item.active').data("record_id");
+        var table     = list_trash.find('.record-item.active').data("table");
+        
+        if(record_id && table && confirm('Bạn có thực sự muốn xóa vĩnh viễn bản ghi này không?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                dataType : 'json',
+                data : 
+                {
+                    action : 'deleteRecord',
+                    record_id : record_id, 
+                    table : table
+                },
+                success : function (resp) {
+                    if(resp.success == 1){
+                        window.parent.communicateParentWindow('close_trash','');
+                    }
+                }
+            })
+            
+        }
+        else{
+            return false;
+        }
+    });
+    // xem chi tiet hoa don trong thung rac
+    // xem chi tiet hoas don
+    view_detail.click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var record_id = list_trash.find('.record-item.active').data("record_id");
+        var table     = list_trash.find('.record-item.active').data("table");
+        window.parent.communicateParentWindow('close_detail_trash',{'data_record_id':record_id,'postion':table});
+    });
+    function show_bill_detai(){
+        var record_id = list_trash.find('.record-item.active').data("record_id");
+        var table     = list_trash.find('.record-item.active').data("table");
+        window.parent.communicateParentWindow('close_detail_trash',{'data_record_id':record_id,'postion':table});
+    }
+    // xem thông tin của hóa đơn
+    information.click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var record_id = list_trash.find('.record-item.active').data("record_id");
+        var table     = list_trash.find('.record-item.active').data("table");
+        window.parent.communicateParentWindow('open_information_trash',{'data_record_id':record_id,'postion':table});
+    });
+    // nhay phai chuot trong thung rac
+    $.contextMenu({
+        selector : '.menu-normal',
+        items : {
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục ',
+                callback : function (key, opt){
+                    var trigger = opt.$trigger;
+                    active_record(trigger.data('record_id'));
+                    restore.trigger('click');
+                }
+            },
+            info : {
+                name : '<i class="fa fa-list-alt"></i> Xem thông tin chi tiết',
+                callback : function (key,opt){
+                    var trigger = opt.$trigger;
+                    active_record(trigger.data('record_id'));
+                    view_detail.trigger('click');
+                }
+            },
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            sep1 : '<hr>',
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function(key, opt){
+                    var trigger = opt.$trigger;
+                    active_record(trigger.data('record_id'));
+                    del_permanently.trigger('click');
+                }
+            }
+        }
+    });
+</script>

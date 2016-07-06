@@ -1,0 +1,230 @@
+<script>
+    var ajax_url = {
+        add_left : 'loadFormAddRecord',
+        edit_left :'loadFormEditRecord',
+        trash_left : 'deleteRecord',
+        recoveryRow : 'recoveryRecord',
+        terminalDelete : 'terminalDeleteRecord',
+        showRecord : 'showRecord'
+    };
+    var btn_refresh = $('.modal-control .control-btn-refresh');
+    var btn_add_left = $('.left-column_promo .control-btn-add');
+    var btn_edit_left = $('.left-column_promo .control-btn-edit');
+    var btn_trash_left = $('.left-column_promo .control-btn-trash');
+    var right_column_wrapper = $('.right-column_promo').find('.column-wrapper');
+    var left_column_wrapper = $('.left-column_promo').find('.column-wrapper');
+
+    // chinh kich thuoc
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent = $('.section-content');
+    var offsetContent = sectionContent.offset().top;
+    sectionContent.height(wrapperHeight - offsetContent - 40);
+
+    var LeftContent = sectionContent.find('.table-listing-bound');
+    var offsetTopContent = LeftContent.offset().top;
+    LeftContent.height(wrapperHeight - offsetTopContent - 40);
+
+    function deactivate_control(type){
+        if(type == 'left'){
+            btn_edit_left.addClass('deactivate');
+            btn_trash_left.addClass('deactivate');
+        }
+    }
+
+    function active_control(type){
+        if(type == 'left'){
+            btn_edit_left.removeClass('deactivate');
+            btn_trash_left.removeClass('deactivate');
+        }
+    }
+    function recycleRow(record_id){
+        if(record_id && confirm('Bạn xác nhận khôi phục bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.recoveryRow,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('left');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    function terminalDelete(record_id){
+        if(record_id && confirm('Bạn xác nhận xóa vĩnh viễn bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.terminalDelete,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('left');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    function communicateParentWindow($action, $data) {
+        switch ($action) {
+            case 'closeImportModal' :
+                $('.mwindow-close').trigger('click');
+                break;
+        }
+    }
+
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+    //edit left
+    btn_edit_left.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')) return false;
+        var mindow = new Mindows;
+        mindow.width = 1000;
+        mindow.height = 562;
+        mindow.resize = true;
+        var record_id = $('.record-item.active').data('record_id');
+        mindow.iframe('edit.php?record_id=' + record_id,'Cập nhật chiến dịch khuyến mãi');
+
+
+    });
+
+    //delete left
+    btn_trash_left.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        if(confirm('Bạn muốn xóa bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action:ajax_url.trash_left,record_id : record_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('left');
+                        btn_refresh.trigger('click');
+                    }
+                }
+            })
+        }
+    });
+    // goi form add promotions
+    function addPromo () {
+        var mindow = new Mindows;
+        mindow.width = 1000;
+        mindow.height = 562;
+        mindow.resize = true;
+        mindow.iframe('add.php','Thêm chiến dịch khuyến mãi');
+    }
+    // click chuyen den thung rac
+    function list_trash(control) {
+        //mở ra modal
+        var mindow = new Mindows();
+        mindow.width = 800;
+        mindow.height = 400;
+        mindow.resize = true;
+        mindow.iframe('trash.php','Thùng rác - chiến dịch khuyến mãi');
+        fixScrollMenu();
+    }
+
+    // xử lý sự kiện onclick xóa record-item
+    $('.menu-normal.record-item').unbind('click').click(function(){
+       var record_id = $(this).data('record_id');
+        //load danh sách bên right column
+        $.ajax({
+            type : 'post',
+            url : 'index.php',
+            data : {action : ajax_url.showRecord, record_id : record_id},
+            success : function (content) {
+                right_column_wrapper.html(content);
+                fixScrollMenu()
+            }
+        })
+    });
+    left_column_wrapper.find('.table-listing-bound').enscroll({
+        showOnHover: false,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    //fix tất cả table listing
+    function fixScrollMenu() {
+        sectionContent = right_column_wrapper.find('.table-listing-bound');
+        sectionContent.height(wrapperHeight - offsetTopContent - 10);
+        //cấp phát lại table scroll
+        if(sectionContent.find('.enscroll-track').length < 1){
+            sectionContent.enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+        if(left_column_wrapper.find('.enscroll-track').length < 1) {
+            left_column_wrapper.find('.table-listing-bound').enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane: false
+            });
+        }
+    }
+    //function
+    function active_record(record_id){
+        var record_item = $('#record_'+record_id);
+        //console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        $('#table-listing tr').removeClass('active');
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control('left');
+    }
+
+    // chuot phai table trash
+    $.contextMenu({
+        selector : '.menu-trash',
+        items : {
+            view : {
+                name : '<i class="fa fa-user-md"></i> Xem thông tin',
+                callback : function (key, opt) {
+                    viewTrashMoneyUser(opt.$trigger.data('record_id'))
+                }
+            },
+            detail : {
+                name : '<i class="fa fa-info-circle"></i> Xem chi tiết',
+                callback : function (key, opt) {
+
+                }
+            },
+            sep1 : '<hr>',
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục',
+                callback : function (key, opt) {
+                    recycleRow(opt.$trigger.data('record_id'))
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function (key, opt){
+                    terminalDelete(opt.$trigger.data('record_id'))
+                }
+            }
+        }
+    })
+</script>

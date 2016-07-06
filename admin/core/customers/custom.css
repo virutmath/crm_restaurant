@@ -1,0 +1,63 @@
+.footer-button {
+    background-color: #f0f0f0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    box-shadow: 0 -1px 2px #d0d0d0;
+}
+.footer-button .control-btn {
+    border : 1px solid transparent;
+    font-size: 12px;
+    margin-bottom: 0;
+    margin-top: 2px;
+}
+.footer-button .control-btn:hover {
+    border : 1px solid #999;
+}
+.button_tab{
+    margin-top: 3px;
+}
+.button_tab ul{
+    padding: 0;
+    margin: 0;
+}
+.button_tab ul li {
+    list-style: none;
+    float: left;
+    margin-right: 20px;
+}
+.button_tab ul li a{
+    float: left;
+    border-left: 4px solid transparent;
+    padding: 4px 10px;
+    color: #a9a9a9;
+    text-decoration: none;
+    font-weight: bold;
+}
+.button_tab ul li a:hover{
+    color: #333;
+}
+#button_tab_active{
+    border-left: 3px solid #005fb3;
+    color : #333;
+}
+.box-search{
+    padding: 10px 0 3px 0 ;
+}
+.info_customer{
+    position: absolute;
+    bottom: 0;
+    width: 98%;
+    height: 150px;
+    text-align: center;
+}
+.title_info{
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+.content_text{
+    margin: 0 auto;
+    font-size: 24px;
+    color: #ff0000;
+}

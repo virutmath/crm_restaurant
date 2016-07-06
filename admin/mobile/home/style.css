@@ -1,0 +1,116 @@
+* {margin: 0; padding:0;}
+body,html, .wrapper {width: 100%; height: 100%;}
+body {font-family: Arial; font-size: 14px; background: url(../themes/images/unnamed.png);}
+li {list-style: none;}
+a {text-decoration: none;}
+.text-center {text-align: center;}
+.text-right {text-align: right;}
+.clear {clear:both;}
+.padding-bottom-control {padding-bottom:60px;}
+.login {width:100%; height:100%;}
+.logo-restaurant {width: 50%; height: 50%; background: url(../themes/images/Chef.png) no-repeat center center; margin: auto; background-size: 165px 200px;}
+.login-restaurant {width: 100%; height: 50%; padding: 0px 20px; }
+.input-icon {padding: 10px 0; position: relative; display: block; box-sizing: border-box;}
+.username-icon, .password-icon {width:15%; height: 100%; display: inline-block; background: url(../themes/images/images.png) no-repeat center center; background-size: 40px 40px; position: absolute; top:0; left:10px;}
+.password-icon {background: url(../themes/images/lock.png) no-repeat center center; background-size: 35px 35px;}
+.sbm-login {padding-top:30px;}
+.sbm-login .form-control {padding-left: 0 !important; background: rgba(255, 255, 255, 0.52); color: #fff; font-weight: bold;}
+.form-control {height: 45px; border-radius:5px; padding-left: 65px; font-size: 16px;}
+.logo-name {width: 100%; height: 45%;padding-top:40px; box-sizing: border-box;}
+.logo {width: 50%; margin: 0 auto 5%; height: 75%; background: url(../themes/images/Java.png) no-repeat center center; border: 2px solid #fff; border-radius:100%}
+.restaurant-name {color: #fff; text-align: center; font-size: 20px;}
+.wrapper {overflow: scroll; position: relative; box-sizing: border-box; box-shadow:0 0 50px -4px #000 inset; font-size: 20px; z-index: 1;}
+.menu-bar {width: 100%; height: 51%; position: absolute; bottom: 0;  padding:3%; box-sizing: border-box;}
+.item {font-size:15px; width: 29.4%; height: 100%; float: left; border-radius:5px; border: 2px solid #783939;box-shadow:4px 4px 40px -8px #000;}
+.float-right {float:right;}
+.center {margin-left: 3%;}
+.menu-bar-top {width: 100%;}
+.menu-bar-bottom {width: 100%; margin-top: 5%;}
+
+.icon {padding: 15px 0; background: #783939; text-align: center;color: #fff;box-sizing: border-box; height: 50%;}
+.menu-name {color: #fff; text-align: center; padding:15px 0;  box-sizing: border-box; background: #591111;}
+
+.control {width: 100%;border-top: 2px solid #591111; position: fixed; bottom: 0; background: rgba(0, 0, 0, 0.18); font-size: 20px; z-index: 3;}
+.back {height:100%; width: 100%; color: #fff; float: left; padding:10px; box-sizing: border-box; text-align: center;}
+.next {float: right; text-align: right; border-left:1px solid #591111;}
+
+.menu-desk {width: 100%; color: #fff; font-size: 20px; box-sizing: border-box;}
+.in-out {height: 60px;}
+.in-home, .out-home { background: rgba(0, 0, 0, 0.18); border:1px solid #591111; width: 100%;text-align: center; padding: 15px 0; box-sizing: border-box; display: inline-block;}
+.list-desk {width: 100%;}
+
+.list-desk ul li {font-size: 16px; float: left; width: 30%;margin: 10px 5px; box-sizing: border-box;border: 1px solid #783939; text-align: center;}
+.list-desk ul li span {color: #fff; width: 100%; display: inline-block;box-sizing: border-box; padding-bottom:10px; padding-top:90px; background: url(../themes/images/176.png) no-repeat center 10px; background-size: 90px 65px;}
+.list-desk ul li.desk-active span {background: url(../themes/images/102.png) no-repeat center 1px;background-size: 100px 90px;}
+.scrolltop {position:fixed; top: 0; background: rgba(0, 0, 0, 0.82);}
+
+.desk-infomation {width: 100%;color: #fff; border-bottom: 2px solid #783939; padding: 5px; box-sizing: border-box;}
+.desk-infomation input {font-size:16px; border: 2px solid #783939; padding: 5px; box-sizing: border-box; width: 100%;}
+.desk-infomation select {font-size:16px; border: 2px solid #783939; padding: 4px; box-sizing: border-box; width: 100%;}
+.bill-of-sale {width: 50%; padding:5px; box-sizing: border-box; float: left;}
+
+.tittle {text-transform: uppercase; width: 100%; text-align: center; display: inline-block; padding: 10px 0;}
+.date-time {background: #D6D6D6;}
+.select {height: 32px;}
+.menu-list {width: 100%; box-sizing: border-box; padding:5px; color: #fff; font-size: 18px;}
+.menu-list ul {width: 100%;}
+.menu-list ul li {width: 100%;border-bottom: 1px solid #783939; border-radius: 5px;}
+.menu-list-name {white-space: nowrap; float:left; text-transform: capitalize;display: inline-block; width: 50%; overflow: hidden; padding-right:5px; box-sizing: border-box;}
+.menu-list-price {float:right; padding-right: 15px; display: inline-block;}
+.name-price {width:100%; padding:13px; box-sizing: border-box;}
+.name-price i {float: right; margin-top:5px;}
+.number-total {width: 100%; padding: 5px 0 10px; background: rgba(0, 0, 0, 0.12); display: none; font-size: 14px;}
+.number, .price-type {width: 50%; padding: 5px; box-sizing: border-box; font-size:16px;}
+.price-type {font-size:14px; padding: 5px 0px;}
+.number-total .bill-of-sale {border:0;}
+.total-price {padding:5px; box-sizing: border-box; display: inline-block; width: 100%; text-align: center;}
+.total-price span {font-size: 16px;}
+.add, .delete {background: #00B700;font-weight: bold; padding:7px; width: 100%;box-sizing: border-box; border: 1px solid #591111; border-radius:5px; display: inline-block; text-align: center;}
+.cancel {background: red; width: 100%;font-weight: bold; padding:7px; box-sizing: border-box; border: 1px solid #591111; border-radius:5px; display: inline-block; text-align: center;}
+.control span {color: #fff; text-transform: uppercase; height: 60px; box-sizing: border-box; display: inline-block; text-align: center; line-height: 60px;}
+span.back-menu-list, span.next-bill-pay {width: 50%; float: left;}
+span.next-bill-pay {border-left: 1px solid #591111; box-sizing: border-box;}
+.total-price-bill {border-bottom:0 !important; border-top: 2px solid #fff;   box-shadow: 0 0 50px -10px #fff inset;}
+.number-menu {padding: 0 10px; box-sizing: border-box;}
+.delete-menu {padding:10px; background: red; color: #fff; font-weight: bold; text-transform: capitalize; border-radius: 3px;}
+.number-total .total-price {padding-top:10px;}
+.child-menu {display: none;}
+.parrent-slide {background: rgba(0, 0, 0, 0.50) !important;}
+.cat-menu {background: rgba(0, 0, 0, 0.35);}
+.cancel-desk {width:50%; float: left; border-right: 1px solid #591111; box-sizing: border-box;}
+.detail_desk {width:50%; float:right;}
+#mindow {width: 100%; height: 100%; display: none; z-index: 0; position: fixed; top:0; left:0;}
+
+
+@media screen and (max-width:768px) {
+    .logo-name {height:100%;width:40%; float: left;}
+    .logo {height:70%; width: 60%;}
+    .menu-bar {height: 100%;width:60%; right:0; padding: 1.2% 3%;}
+    .list-desk ul li {margin: 10px 7px 10px 11px;}
+    .center {margin-left: 6%;}
+}
+
+@media screen and (max-width:360px) {
+    .logo-name {height:40%;padding-top: 25px; width: 100%;}
+    .logo {height:80%; width: 55%;}
+    .menu-bar {height: 55%; padding: 5%; width: 100%; padding: 3%;}
+    .list-desk ul li {margin: 10px 5px;}
+    .center {margin-left: 6%;}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

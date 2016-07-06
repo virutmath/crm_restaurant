@@ -1,0 +1,45 @@
+#content-column {
+    padding : 5px 10px;
+}
+.center_column {
+    text-align: center;
+}
+#to_desk {
+    width: 200px;
+    float: right;
+}
+.left_column_title, .right_column_title {
+    font-size: 13px;
+    float: left;
+    width: 100%;
+    line-height: 24px;
+    height: 24px;
+    margin-bottom: 3px;
+}
+.center_control {
+    max-width: 60px;
+    margin: 50px auto;
+}
+#to_number {
+    margin-top : 30px;
+}
+#from_move, #from_move_all, #to_move, #to_move_all {
+    margin-top : 5px;
+    width : 100%;
+}
+.table-listing-bound {
+    height: 295px;
+    box-shadow: 0 0 1px;
+}
+.footer-button {
+    line-height: 24px;
+}
+.footer-button button {
+    font-size: 12px;
+    border : none;
+    padding : 3px 7px;
+}
+.money_total{
+    font-weight: bold;
+    font-size: 16px;
+}

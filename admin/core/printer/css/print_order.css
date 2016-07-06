@@ -1,0 +1,73 @@
+.page-wrap {
+    padding: 10px;
+}
+.print-header {
+    margin-bottom: 5px;
+}
+.print-control span {
+    cursor: pointer;
+    margin-right: 20px;
+}
+.print-list-menu {
+    height: 200px;
+    border: 1px solid #CCCCCC;
+    margin-bottom: 5px;
+}
+#table-listing {
+    margin-bottom: 0;
+}
+#table-listing tr td:nth-child(6n+1) {
+    border-left-color: transparent;;
+}
+#table-listing tr td:nth-child(6n) {
+    border-right-color: transparent;;
+}
+.print-header b{
+    text-transform: uppercase;
+}
+#print-note-input {
+    border: 1px solid #ccc;
+    line-height: 24px;
+    height: 24px;
+    margin-bottom: 10px;
+}
+.print-footer {
+    padding-top: 5px;
+    border-top: 1px solid #aaa;
+}
+.control-footer span{
+    cursor: pointer;
+    margin-left: 15px;
+}
+.control-footer .fa {
+    font-size: 16px;
+}
+.control-footer .fa.fa-print {
+    color : #777;
+}
+.control-footer .fa.fa-sign-out{
+    color : #bf414d;
+}
+@media print {
+    .page-wrap {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    #print-area {
+        margin: 10px auto;
+        max-width : 600px;
+    }
+    #print-area .font-small {
+        font-size: 9px;
+    }
+    #print-area.hidden {
+        display: block !important;
+        visibility: visible !important;
+    }
+    #print-area label {
+        text-transform: uppercase;
+    }
+    #print-area table th {
+        text-align: center;
+    }
+}

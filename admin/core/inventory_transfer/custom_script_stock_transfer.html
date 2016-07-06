@@ -1,0 +1,106 @@
+<script>
+    var ajax_url = {
+        recoveryStockTransfer : 'recoveryStockTransfer',
+        terminalDeleteStockTransfer : 'terminalDeleteStockTransfer '
+    };
+    //function
+    function active_record(record_id){
+        var record_item = $('#record_'+record_id);
+        //console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        var column_content = record_item.closest('#mindow-listing-inventory');
+        var table_listing = column_content.find('.table-listing');
+//        console.log(table_listing);
+        table_listing.find('tr').removeClass('active');
+        var control_btn = table_listing.attr('id').replace('table-listing-', '');
+//        console.log(control_btn);
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control(control_btn);
+    }
+    function active_control(type){
+        if(type == 'left'){
+            btn_edit_left.removeClass('deactivate');
+            btn_trash_left.removeClass('deactivate');
+        }else{
+            btn_edit_right.removeClass('deactivate');
+            btn_trash_right.removeClass('deactivate');
+        }
+    }
+    // hàm xử lý khôi phục bản ghi khi bị xóa trong thùng rác
+    function recoveryStockTransfer(record_id){
+        if(record_id && confirm('Bạn xác nhận khôi phục bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.recoveryStockTransfer,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        window.location.reload();
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    // hàm xóa vĩnh viễn bản ghi
+    function terminalDeleteStockTransfer(record_id){
+        if(record_id && confirm('Bạn xác nhận xóa vĩnh viễn bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.terminalDeleteStockTransfer,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        window.location.reload();
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    //chuột phải cho thùng rác
+    $.contextMenu({
+        selector : '.menu-trash',
+        items : {
+
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục',
+                callback : function (key, opt) {
+                    recoveryStockTransfer(opt.$trigger.data('record_id'))
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function (key, opt){
+                    terminalDeleteStockTransfer(opt.$trigger.data('record_id'))
+                }
+            },
+            view : {
+                name : '<i class="fa fa-user-md"></i> Xem thông tin',
+                callback : function (key, opt) {
+                    viewTrashMoneyUser(opt.$trigger.data('record_id'))
+                }
+            },
+            detail : {
+                name : '<i class="fa fa-info-circle"></i> Xem chi tiết',
+                callback : function (key, opt) {
+
+                }
+            }
+
+        }
+    })
+</script>

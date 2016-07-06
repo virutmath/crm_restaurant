@@ -1,0 +1,284 @@
+<script>
+    var ajax_url = {
+        getListDesk: 'getListDesk'
+    };
+    var btn_refresh = $('.modal-control .control-btn-refresh');
+    var btn_add_left = $('.left-column .control-btn-add');
+    var btn_add_right = $('.right-column .control-btn-add');
+    var btn_edit_left = $('.left-column .control-btn-edit');
+    var btn_edit_right = $('.right-column .control-btn-edit');
+    var btn_trash_left = $('.left-column .control-btn-trash');
+    var btn_trash_right = $('.right-column .control-btn-trash');
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+    // cuon list-desk
+    $('.list-desk').height(right_column_wrapper.height()).enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : true
+    });
+
+    function deactivate_control(type){
+        if(type == 'left'){
+            btn_edit_left.addClass('deactivate');
+            btn_trash_left.addClass('deactivate');
+        }else{
+            btn_edit_right.addClass('deactivate');
+            btn_trash_right.addClass('deactivate');
+        }
+    }
+
+    function active_control(type){
+        if(type == 'left'){
+            btn_edit_left.removeClass('deactivate');
+            btn_trash_left.removeClass('deactivate');
+        }else{
+            btn_edit_right.removeClass('deactivate');
+            btn_trash_right.removeClass('deactivate');
+        }
+    }
+    function recycleRow(record_id){
+        if(record_id && confirm('Bạn xác nhận khôi phục bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: 'recoveryRecord',record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('right');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+
+    //add left
+    btn_add_left.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormAddSection'});
+    });
+
+    //edit left
+    btn_edit_left.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var sec_id = parseInt($('.section_name.active').parent('li').data('section'));
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormEditSection', sec_id : sec_id})
+    })
+
+    //delete left
+    btn_trash_left.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var sec_active = $('.section_name.active').parent('li');
+        var sec_id = parseInt(sec_active.data('section'));
+        var sec_count = sec_active.data('count-desk');
+        if(sec_count > 0){
+            alert('Bạn không thể xóa khu vực này vì nó vẫn còn chứa các bàn. Vui lòng xóa bàn trước');
+            return false;
+        }
+        if(confirm('Bạn muốn xóa khu vực này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action : 'deleteSection',sec_id : sec_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        sec_active.remove();
+                        deactivate_control('left');
+                    }
+                }
+            })
+        }
+    })
+
+    //add right
+    btn_add_right.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormAddDesk'});
+    })
+
+    //edit right
+    btn_edit_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var des_id = $('.desk-item.active').data('record_id');
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:'loadFormEditDesk',des_id:des_id})
+    });
+
+    //delete right
+    btn_trash_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var des_id = $('.desk-item.active').data('record_id');
+        if(confirm('Bạn muốn xóa bàn này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action:'deleteDesk',des_id : des_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+des_id).remove();
+                        //deactivate các nút bên phải
+                        deactivate_control('right');
+                    }
+                }
+            })
+        }
+    })
+
+    $('.list-vertical-crm').find('li').unbind('click').click(function() {
+
+        if ($(this).find('.section_name').hasClass('active')) {
+            return false;
+        }
+        var sec_id = $(this).data('section');
+        $('label.section_name').removeClass('active');
+        $(this).find('.section_name').addClass('active');
+        //nếu là nhóm tài khoản thì hiển thị nút sửa xóa
+        if($(this).hasClass('list-vertical-item')){
+            active_control('left')
+        }else{
+            deactivate_control('left');
+        }
+        //load danh sách bên right column
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {action: ajax_url.getListDesk, sec_id : sec_id},
+            success : function (html) {
+                right_column_wrapper.html(html);
+                //deactivate các phím sửa xóa bên phải
+                deactivate_control('right');
+            }
+        })
+    });
+
+
+
+    //function
+    function active_desk(a){
+        if($(a).hasClass('active')){
+            return false;
+        }
+        $('.desk-item').removeClass('active');
+        $(a).addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if($(a).hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control('right');
+    }
+
+    function loadServiceDesk() {
+        //kiem tra neu co list_service_desk thi moi thuc hien
+        if(list_service_desk != 'undefined') {
+            var age_id = $('#agency_list').val();
+            var list_svdesk = list_service_desk[age_id];
+            var option_svdesk = '';
+            for(var i in list_svdesk) {
+                option_svdesk += '<option value="'+i+'">'+list_svdesk[i]+'</option>';
+            }
+            $('#sec_service_desk').html(option_svdesk);
+        }
+    }
+
+
+    //context menu
+    $.contextMenu({
+        selector : '.menu-normal',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới bàn ăn',
+                callback : function(key, opt){
+                    btn_add_right.trigger('click');
+                }
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin bàn',
+                callback : function (key,opt){
+                    var trigger = opt.$trigger;
+                    active_desk('#record_'+trigger.data('record_id'));
+                    btn_edit_right.trigger('click');
+                }
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa bàn',
+                callback : function(key,opt){
+                    var trigger = opt.$trigger;
+                    active_desk('#record_'+trigger.data('record_id'));
+                    btn_trash_right.trigger('click');
+                }
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục tài khoản',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                disabled : true,
+                className : 'not-selectable'
+            }
+        }
+    });
+    $.contextMenu({
+        selector : '.menu-trash',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới bàn ăn',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin bàn',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa bàn',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục bàn',
+                callback : function (key, opt) {
+                    recycleRow(opt.$trigger.data('record_id'))
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                disabled : true,
+                className : 'not-selectable'
+            }
+        }
+    })
+
+</script>

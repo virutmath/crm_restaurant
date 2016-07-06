@@ -1,0 +1,126 @@
+html,body {width: 100% !important; height: 100%!important; display: block;}
+.col-xs-6-lft, .col-xs-6-rgh {float:left;box-sizing: border-box;line-height: 25px;}
+.ttl-hd {border:0; text-align: center;font-weight: bold; font-size: 11px;width: 60%;}
+.col-xs-6-lft {width: 65%;}
+.col-xs-6-rgh {width: 35%;}
+.col-xs-6-rgh .ttl-hd {text-align: right; float: right; padding-right:7px;}
+.col-xs-6-lft-l {padding-left: 10px;}
+.col-xs-6-lft-r .ttl-hd {padding-right: 0;}
+.col-xs-6-both {border-top:1px solid #ddd;box-sizing: border-box;}
+.col-xs-6-bth-lft, .col-xs-6-bth-rgh {width: 50%; border:1px solid #ddd; border-top:0; float:left;}
+.col-xs-6-bth-rgh {border-left:0;}
+.col-xs-6-bth-frm-lft {border-right:1px solid #ddd; padding:10px; padding-left:5px; float: left; box-sizing: border-box; width: 70%;padding-bottom: 0;}
+.col-xs-6-bth-frm-rgh {padding:10px; padding-left: 5px;float: right; width: 30%;padding-bottom: 0; overflow: hidden;}
+
+.frm-lft-left {float:left; width:73%;}
+.frm-lft-right {float: right;width: 27%; box-sizing: border-box;padding-left: 10px;}
+.table-condensed {font-size: 11px;}
+.frm-dt-lft, .frm-dt-rgh {width: 46%;font-size: 11px; border:1px solid #ddd;padding:2px;}
+.frm-dt-lft {float:left;}
+.frm-dt-rgh {float: right;}
+.frm-ic-ct {width: 8%; text-align: center; display: inline-block; padding:3px;}
+.frm-sel-lft {font-size: 11px; width: 87%; padding:3px; border:1px solid #ddd; float:left;margin-top:10px;}
+.frm-ic-seach {cursor: pointer;text-align:center; padding:4px 3px; width: 10%; background: #ccc; color: #fff;border:1px solid #ddd; float: right;margin-top:10px;}
+.frm-lft-right p {color:#fff; padding: 3px 5%; cursor: pointer; white-space: nowrap;}
+.exc-out {background: #ddd;}
+.filters {background: #008040;}
+.col-xs-6-bth-frm-rgh ul {margin: 0; padding:0;}
+.col-xs-6-bth-frm-rgh ul li {list-style: none; white-space: nowrap;}
+.col-xs-6-bth-frm-rgh label {margin:0; padding:0; font-weight: normal; cursor: pointer;}
+
+.col-xs-6-bth-frm-rgh-lft { padding:10px; padding-left:10%; float: left; box-sizing: border-box; width: 83%;padding-bottom: 0;}
+@media screen and (min-width:900px) and (max-width:1024px){
+     
+     .col-xs-6-bth-frm-rgh-lft, .col-xs-6-bth-frm-lft{
+      padding:5px; 
+      padding-bottom:0; 
+     }
+     .col-xs-6-bth-frm-rgh, .frm-lft-right p {
+        font-size: 11px;
+        padding: 4px 2%;
+        margin-bottom:5px;
+    }
+    .col-xs-6-bth-frm-rgh {
+        margin-bottom:0;
+        padding: 4px 1%;
+    }
+    .frm-lft-right {
+        padding-left:5px;
+    }
+    .frm-sel-lft,.frm-ic-seach {
+        margin-top:5px;
+    }
+    .col-xs-6-bth-frm-rgh input[type="radio"] {
+        margin: 1px 0 0;
+    }
+    .col-xs-6-bth-frm-rgh {
+        width: 31%;
+    }
+    .col-xs-6-bth-frm-lft {
+        width: 69%;
+    }
+    .col-xs-6-bth-frm-rgh-lft {
+        padding-left: 13%;
+    }
+    
+}
+
+#bill_detail {width: 100%; height: 100%; background: rgba(0, 0, 0, 0); position: fixed; top: 0; left: 0; z-index: 9;}
+#cus-form {width: 100%; height: 100%; background: rgba(0, 0, 0, 0); position: fixed; top: 0; left: 0; z-index: 10;}
+.control-detail {float:left; margin-top: -2px;}
+.content-bill-detail {padding-bottom: 10px;width: 80%; display:block; background: #fff; margin: 5% auto; box-shadow: 0 0 10px #999; position: relative;}
+.content-form-cus {padding-bottom: 10px;width: 40%; display:block; background: #fff; box-shadow: 0 0 10px #999; position: relative;margin: 10% auto;}
+
+
+.detail-close {position: absolute; top: 5px; right: 5px; cursor: pointer; opacity: .4;}
+.detail-close:hover {opacity: 1;}
+
+
+.tit {background: #357ebd; font-weight: bold; color:#fff;}
+.detail_content_rgh {width: 35%; float: right; padding-left: 5px; padding-right: 5px; box-sizing: border-box;}
+.inp-date-cnkh {padding:0 3px; background: #f4f4f4;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.filter-system-ticket {padding-top:30px;}
+.total-pos {position: absolute; bottom: -30px; left: 0; width: 100%;}
+.section-content{position: relative;}
+
+
+.number_show_bill_out, .number_show_bill_in {float: right; margin: 10px 5px;}
+.save_setting {padding-left:5px; cursor: pointer; opacity: .4;}
+.save_setting:hover {opacity: 1;}
+#modal .detail_content_lft {width: 98%; margin: 0 auto; float:none; min-height: 80%;}
+#modal i {margin-left: 5px;}
+.print-close span {cursor: pointer;}
+.restore.deactivate, .del_permanently.deactivate, .deactivate.view_detail, .deactivate.information {color: #ccc; cursor: not-allowed;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dpl-none {display:none !important;}
+.clear_ {clear: both;}

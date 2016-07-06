@@ -1,0 +1,29 @@
+html,body,#wrapper-full {width: 100%; height: 100%;}
+.frm-dt-lft, .frm-dt-rgh {width: 20%;font-size: 11px;border: 1px solid #ddd;padding: 2px;}
+.frm-ic-ct {width: 5%;text-align: center;display: inline-block;padding: 3px;}
+.exc-out {color: #fff;padding: 5px 3%;cursor: pointer;white-space: nowrap;background: #FF962D;}
+.filters {color: #fff;padding: 5px 3%;cursor: pointer;white-space: nowrap;background: #00EC00; margin-left: 3%;margin-right: .6%;}
+#wrapper-full {position: relative;}
+.footer-button {width: 100%;position: absolute !important; bottom: 5px;}
+.name_obj {float:left;padding: 3px;}
+.bill-close {float:right; padding: 3px;}
+.bill-close:hover {cursor:pointer; background: silver;}
+.filter_bill_datetime {padding:10px 0;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

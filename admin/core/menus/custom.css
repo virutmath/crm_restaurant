@@ -1,0 +1,16 @@
+.pos_bottom{
+    position: absolute;
+    bottom: 0;
+    padding: 0 5px;
+    height: 50%;
+    overflow: hidden;
+    width: 98%;
+}
+.right-column .table-listing-bound {
+    height: 245px !important;
+}
+#update-menu label {font-weight: normal; padding:0;}
+.file_menu, #submit_form {display: none !important;}
+.cat_name.cat_sub{
+    margin-left: 20px;
+}

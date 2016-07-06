@@ -1,0 +1,301 @@
+<script>
+    var ajax_url = {
+        removeProducts     : 'removeProducts',
+        loadModalSelectStaff: '/admin/core/users/index_modal.php'
+    };
+    var mindowScript = {
+        listing_import  : $('#listing-import'),
+        listing_product : $('#mindow-listing-product'),
+        footer_control  : $('.footer-control')
+    };
+    mindowScript.productItem = function () {
+        this.pro_id         = 0;
+        this.pro_name       = '';
+        this.pro_quantity   = 0;
+    };
+    mindowScript.productList    = {};
+    mindowScript.productActive  = 0;
+
+    mindowScript.initProductList = function (productlist) {
+        mindowScript.productList = productlist;
+    };
+
+    mindowScript.productIsSet = function (pro_id) {
+        return this.productList.hasOwnProperty(pro_id);
+    };
+
+    mindowScript.addProducts = function (pro_id) {
+
+        //kiểm tra trong mảng productList đã có product này chưa
+        if (this.productIsSet(pro_id)) {
+            //active products nay
+            this.activeProductImportById(pro_id);
+            return true;
+        }
+        var productItem         = new mindowScript.productItem();
+        productItem.pro_id      = pro_id;
+        var record_data         = this.listing_product.find('#record_' + pro_id);
+        productItem.record_id   = record_data.data('record_id');
+        productItem.pro_name    = record_data.data('pro_name');
+        //kiểm tra số lượng từ kho đang được lựa chọn
+        var store_id = $('#from_store').val();
+        $.ajax({
+            type    : 'post',
+            url     : 'ajax.php',
+            data    : {action: 'checkQuantity', product_id: productItem.pro_id, store_id: store_id},
+            dataType: 'html',
+            async   : false,
+            success : function (resp) {
+                productItem.pro_quantity = resp;
+            }
+        });
+
+        this.productList[pro_id] = productItem;
+        var count_tr = this.listing_import.find('tbody').find('tr').length;
+        count_tr++;
+        var tr_string = '<tr id="record_' + productItem.pro_id + '" class="product-normal record-item" data-record_id="' + productItem.pro_id + '" onclick="mindowScript.activeProductImportById(' + productItem.pro_id + ')">' +
+                '<td class="center" width="40px">' + count_tr + '</td>' +
+                '<td class="center" width="40px">' + productItem.record_id + '</td>' +
+                '<td class="center">' + productItem.pro_name + '</td>' +
+                '<td class="center" width="100px">' + productItem.pro_quantity + '</td>' +
+                '<td class="center" width="100px">' + '<input data-record_id="' + productItem.pro_id + '" type="text" value="0" class="product_type" id="menu_type_' + productItem.pro_id + '">' + '</td>' +
+                '</tr>';
+        mindowScript.listing_import.find('table').append(tr_string);
+        mindowScript.activeProductImport(productItem);
+        mindowScript.fixScroll();
+        mindowScript.fixAutoNumeric();
+    };
+    // Update số lượng khi chọn kho hàng
+    mindowScript.buildTable = function () {
+        //chuỗi html chứa tập hợp các row trong bảng cần build
+        var table_html  = '';
+
+        //biến đếm số row của bảng sản phẩm - phục vụ cho việc in số thứ tự của sản phẩm
+        var count_tr    = 0;
+        //lặp qua mảng productList để tạo các row cho bảng danh sách sản phẩm kiểm kho
+        for (var i in mindowScript.productList) {
+            //tăng biến đếm lên 1
+            count_tr++;
+            //tạo biến temp để gán dữ liệu
+            var productItem = mindowScript.productList[i];
+            //cộng dồn string tr được build từ các thông số của productItem
+            table_html += '<tr id="record_' + productItem.pro_id + '" class="product-normal record-item" data-record_id="' + productItem.pro_id + '" onclick="mindowScript.activeProductImportById(' + productItem.pro_id + ')">' +
+                    '<td class="center" width="40px">' + count_tr + '</td>' +
+                    '<td class="center" width="40px">' + productItem.record_id + '</td>' +
+                    '<td class="center">' + productItem.pro_name + '</td>' +
+                    '<td class="center" width="100px">' + productItem.pro_quantity + '</td>' +
+                    '<td class="center" width="100px">' + '<input data-record_id="' + productItem.pro_id + '" type="text" value="0" class="product_type" id="menu_type_' + productItem.pro_id + '">' + '</td>' +
+                    '</tr>';
+        }
+        //sau khi có table string thì replace html của bảng danh sách sản phẩm
+        mindowScript.listing_import.find('tbody').html(table_html);
+        mindowScript.fixAutoNumeric();
+
+    };
+    // khi đã có product_id trong table-listing đã import thì hiện thị active mà không thêm
+    mindowScript.activeProductImport = function (products) {
+        this.productActive = products.pro_id;
+        this.listing_import.find('.record-item').removeClass('active');
+        this.listing_import.find('#record_' + products.pro_id).addClass('active');
+        $('#product_id').val(products.pro_id);
+    };
+    // nếu có product_id trong productlist thì sẽ hiển thị class active
+    mindowScript.activeProductList = function (pro_id) {
+        this.listing_product.find('.record-item').removeClass('active');
+        this.listing_product.find('#record_' + pro_id).addClass('active');
+    };
+    mindowScript.activeProductImportById = function (pro_id) {
+        if (mindowScript.productIsSet(pro_id)) {
+            var productItem = mindowScript.productList[pro_id];
+            mindowScript.activeProductImport(productItem);
+        }
+    };
+    // thanh cuộn cho bảng table-listing
+    mindowScript.fixScroll = function () {
+        if (this.listing_import.find('.enscroll-track').length < 1) {
+            this.listing_import.find('.table-listing-bound').enscroll({
+                addPaddingToPane: false
+            })
+        }
+    };
+    // khi chọn vào nhân viên sẽ hiện thị ra danh sách nhân viên
+    $('#staff_name').unbind('click').click(function () {
+        var mwindow     = new Mindows();
+        mwindow.width   = 930;
+        mwindow.height  = 450;
+        mwindow.resize  = true;
+        mwindow.iframe(ajax_url.loadModalSelectStaff, 'Danh sách nhân viên');
+    });
+    //hàm đóng cửa sổ mwindow
+    function communicateParentWindow(action, data) {
+        switch (action) {
+            case 'selectStaff':
+                $('#staff_id').val(data.use_id);
+                $('#staff_name').val(data.staff_name);
+                $('.mwindow-close').trigger('click');
+                break;
+            default :
+                break;
+        }
+    }
+
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        sectionContent = mindowScript.listing_product.find('.table-listing-bound');
+        if (sectionContent.find('.enscroll-track').length < 1) {
+            sectionContent.enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane: false
+            });
+        }
+    }
+    $(document).on('submit', '.grid_header >form', function (e) {
+        var form = $(this);
+        $.ajax({
+            type    : 'get',
+            url     : form.attr('action'),
+            data    : form.serialize(),
+            success : function (html) {
+                $('#mindow-listing-product').html(html);
+                fixScrollMenu();
+            }
+        });
+        e.preventDefault();
+    });
+
+    //search menu theo category
+    $(document).on('change', '#pro_cat_id', function () {
+        $(this).closest('form').trigger('submit');
+    });
+
+    // fix kiểu số
+    mindowScript.fixAutoNumeric = function () {
+        $('.product_type').autoNumeric();
+
+    };
+
+    // xử lý dữ liệu để thêm mới
+    mindowScript.addStockTransfer = function () {
+        /* Kiểm tra tính hợp lệ dữ liệu khi gửi đi*/
+        $staff_name = $('#staff_name').val();
+        $from_store = $('#from_store').val();
+        $to_store   = $('#to_store').val();
+
+        if($staff_name == ''){
+            alert('Bạn chưa nhập trên nhân viên');
+            return false
+        }
+        if($from_store == $to_store){
+            alert('Chuyển kho không hợp lệ!');
+            return false;
+        }
+        // Xử lý thông tin để bắn ajax
+        if (confirm('Bạn chắc chắn nhập xong thông tin phiếu kiểm kê này?')) {
+            var staff_id    = $('#staff_id').val();
+            var from_store  = $from_store;
+            var to_store    = $to_store;
+            var note        = $('#note_stock_transfer').val();
+            $.ajax({
+                type: 'post',
+                url: 'ajax.php',
+                data: {
+                    action      : 'stock_transfer',
+                    staff_id    : staff_id,
+                    from_store  : from_store,
+                    to_store    : to_store,
+                    note        : note,
+                    products    : mindowScript.productList
+                },
+                dataType: 'json',
+                success: function (resp) {
+                    loadingProgress('hide');
+                    if (resp.success == 1) {
+                        //thành công - đóng cửa sổ - tải lại khung
+                        alert(resp.msg);
+                        window.parent.communicateParentWindow('closeAddStockTransfer', {});
+
+                    } else {
+                        alert(resp.msg);
+                        return false;
+                    }
+                },
+                beforeSend: function () {
+                    loadingProgress('show');
+                },
+                error: function () {
+                    loadingProgress('hide');
+                }
+            })
+        }
+
+    };
+
+    (function () {
+        if (mindowScript.listing_product.find('.enscroll-trach').length < 1) {
+            mindowScript.listing_product.find('.table-listing-bound').enscroll({
+                addPaddingToPane: false
+            });
+        }
+        //keyup function
+        // khi them có html dom thi phai dung kiểu bên dưới
+        $(document).on('keyup', 'input[data-record_id]', function () {
+            var productActive = mindowScript.productList[mindowScript.productActive];
+            productActive.pro_quantity_transfer = $(this).autoNumeric('get');
+        });
+        // khi lựa chọn onchange kho hàng sẽ cập nhập số lượng tồn kho trong mảng danh sách product kiểm kê
+        $('#from_store').unbind('change').change(function () {
+            var storeid = $(this).val();
+            $.ajax({
+                type    : 'POST',
+                url     : 'ajax.php',
+                data    : {
+                action  : 'selectStore',
+                store_id: storeid
+                },
+                dataType: 'json',
+                success: function (obj) {
+                    loadingProgress('hide');
+                    for (var i in obj) {
+                        //update số lượng sản phẩm vào những sản phẩm có trong danh sách productList
+                        if (mindowScript.productList.hasOwnProperty(i))
+                            mindowScript.productList[i].pro_quantity = obj[i];
+                    }
+                    mindowScript.buildTable();
+                },
+                beforeSend: function () {
+                    loadingProgress('show');
+                },
+                error: function () {
+                    loadingProgress('hide');
+                }
+            });
+        });
+
+    })();
+
+    //chuot phai vao product-import
+    $.contextMenu({
+        selector: '.product-normal',
+        items: {
+            deleted: {
+                name: '<i class="fa fa-trash"></i> Xóa mặt hàng này',
+                callback: function (key, opt) {
+                    //console.log(opt.$trigger);
+                    deleteImportById(opt.$trigger.data('record_id'))
+
+                }
+            }
+        }
+    });
+
+    // xoa danh sach product import
+    function deleteImportById(record_id) {
+        if (record_id && confirm('Bạn xác nhận xóa mặt hàng này?')) {
+            $('#listing-import').find('#record_' + record_id).remove();
+            delete mindowScript.productList[record_id];
+        }
+    }
+
+
+</script>

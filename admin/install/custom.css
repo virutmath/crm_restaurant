@@ -1,0 +1,33 @@
+ul.list_table li {
+    list-style: none;
+    display: block;
+    float: left;
+    width: 31%;
+    padding: 4px 9px;
+}
+ul.list_table label {
+    font-weight: normal !important;
+    font-size: 18px;
+}
+label.check_all{
+    font-size: 20px;
+}
+input.group_table{
+    height: 15px;
+    width: 15px;
+}
+input.check_all{
+    height: 20px;
+    width: 20px;
+}
+button.button_setup{
+    text-align: center;
+}
+ul.agencies_control li{
+    list-style: none;
+    display: block;
+}
+ul.agencies_control label{
+    display: block !important;
+
+}

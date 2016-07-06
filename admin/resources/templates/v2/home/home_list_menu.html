@@ -1,0 +1,36 @@
+<ul class="list-unstyled list-menu">
+    {loop="$list_category_menu"}
+    <li class="list-item item-cat-parent">
+        <label class="item-name" onclick="HomeScript.view.collapse('{$value.cat_id}')">
+            <i class="fa fa-plus-square-o"></i>
+            {$value.cat_name} ({$value.count_menu})
+        </label>
+        <ul class="list-cat-child list-unstyled" data-collapse-id="{$value.cat_id}" style="display: none;">
+            {loop="$value.list_cat_child"}
+            <li class="list-item item-cat-child">
+                <label class="item-name" onclick="HomeScript.view.collapse('{$value.cat_id}')">
+                    <i class="fa fa-caret-right"></i>
+                    {$value.cat_name} ({$value.count_menu})
+                </label>
+                <ul class="list-menu-child list-unstyled" data-collapse-id="{$value.cat_id}"  style="display: none;">
+                    {loop="$value.list_menu_child"}
+                    <li class="list-item item-menu" data-id="{$value.men_id}" data-name="{$value.men_name}">
+                        <label class="item-name" ondblclick="HomeScript.addMenuToDesk({$value.men_id})">
+                            - {$value.men_name}
+                        </label>
+                    </li>
+                    {/loop}
+                </ul>
+            </li>
+            {/loop}
+            {loop="$value.list_menu_child"}
+            <li class="list-item item-menu">
+                <label class="item-name" ondblclick="HomeScript.addMenuToDesk({$value.men_id})">
+                    - {$value.men_name}
+                </label>
+            </li>
+            {/loop}
+        </ul>
+    </li>
+    {/loop}
+</ul>

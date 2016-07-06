@@ -1,0 +1,14 @@
+<script>
+    // nút in trong iframe mwindow
+    $("#print_button").click(function(){
+        $("div.page-wrap").printArea({
+            mode:"iframe"
+        });
+    });
+
+    $('.page-wrap').enscroll({
+        showOnHover: false,
+        minScrollbarLength: 28,
+        addPaddingToPane: false
+    })
+</script>

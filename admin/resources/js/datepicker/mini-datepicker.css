@@ -1,0 +1,71 @@
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
+input[type=number] {
+   -moz-appearance:textfield;
+}
+.noselect {
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+::selection {
+  background: #ffb7b7; /* WebKit/Blink Browsers */
+  color:#333;
+}
+::-moz-selection {
+  background: #ffb7b7; /* Gecko Browsers */
+  color:#333;
+}
+.miniDatePicker_box{
+   border:none;
+   padding:2px;
+   width:25px;
+   background:transparent;
+   color:#fcfcfc;
+   text-shadow: 1px 1px 0px #404040;
+   font-size:14px;
+   text-align: center;
+   width: 17%;
+}
+.miniDatePicker_show_info{
+   display:none;
+   background:#f56363;
+   width: 100%;
+}
+.miniDatePicker_wrap{
+   position:absolute;
+   font-size:14px;
+   width: 148px;
+}
+.miniDatePicker_showdate{
+   width: 100px;
+   height: 24px;
+   text-align: center;
+}
+.miniDatePicker_prev, .miniDatePicker_next{
+   display: inline-block;
+   cursor: pointer;
+   font-size: 18px;
+   line-height: 18px;
+   padding: 0 10px;
+   color: #fcfcfc;
+   width:3%;
+}
+.miniDatePicker_prev{
+   padding-right:15px;
+}
+.miniDatePicker_next{
+   padding-left:15px;
+}
+.miniDatePicker_month, .miniDatePicker_day{
+   border-right:none;
+}
+.miniDatePicker_year{
+   width:36px;
+}

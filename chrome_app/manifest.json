@@ -1,0 +1,26 @@
+{
+  "name": "CRM Restaurant for Chrome ver 1.0",
+  "description": "Phần mềm quản lý nhà hàng phiên bản offline",
+  "version": "1.0",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": {
+    "16": "asserts/calculator-16.png",
+    "128": "asserts/calculator-128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "url_handlers": {
+    "home": {
+      "matches": [
+        "http://localhost:8027/gotoapp"
+      ],
+      "title": "CRM Restaurant Offline"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    {$load_header}
+</head>
+<body>
+<div id="wrapper-full">
+    <div class="col-xs-4">
+        {$left_column}
+    </div>
+    <div class="col-xs-8 pull-left">
+        {$right_column}
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-xs-12 footer-button">
+        {$footer_control}
+    </div>
+    <div id="modal"></div>
+    <div id="overlay"></div>
+    <div id="m-window"></div>
+    <div id="loading">
+        <i class="fa fa-spin fa-cog"></i>
+        <span id="loading-text">Đang tải dữ liệu...</span>
+    </div>
+    <script type="text/javascript">
+        ajax_paging = true;
+    </script>
+    {* Sử dụng jsx nếu đang ở chế độ DEVELOPER *}
+    {if="$tpl_constants['DEVELOPER_ENVIRONMENT']"}
+    <script type="text/jsx" src="js/src/import.js"></script>
+    {else}
+    <script type="text/javascript" src="js/build/import.js"></script>
+    {/if}
+</div>
+</body>
+</html>

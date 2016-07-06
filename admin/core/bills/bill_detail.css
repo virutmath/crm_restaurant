@@ -1,0 +1,38 @@
+.detail_content_righ {width: 35%; height: 100%; float: right;padding-left: 5px; box-sizing: border-box;}
+.title_detail_bill {text-align: center; font-weight: bold; font-size: 13px; text-transform: uppercase; padding:5px 0;}
+.bill-inf {width: 99%; font-size: 12px;}
+.bill-inf td {border-bottom: 1px solid #ddd; padding: 5px 3px;}
+.bill-inf td i {float: right; cursor: pointer; padding:2px; box-sizing: border-box;}
+.bill-inf td i:hover {background: #000; color: #fff;}
+.cn-kh {padding: 10px 5px; margin:10px 0; height:100px; width: 99%; border:1px solid #ddd; border-radius: 5px; box-sizing: border-box; position: relative; z-index: 1;}
+.cn-n-kh {position: absolute; top:-10px; left:2%;  padding: 2px; background: #fff; z-index: 2;}
+.tb-cnkh {width: 100%;font-size: 12px;}
+.tb-cnkh td {padding: 3px 0;}
+.inp-cnkh {width: 80%; padding:2px 3px; border: 1px solid #ddd; outline: none;}
+.cn-gh-ch {border:1px solid #ddd; width: 100%; padding:3px; box-sizing: border-box; font-size: 12px;}
+.print-close {width: 100%;padding: 10px 0;}
+.bill-print {float: left; cursor: pointer; opacity: .4;}
+.bill-close:hover, .bill-print:hover {opacity: 1;}
+.bill-close {float: right; cursor: pointer; opacity: .4;}
+.bill-close i {color:red;}
+.pp-vat {position: absolute; bottom: 0; left: 0; width: 65%; padding:10px; box-sizing: border-box;}
+.vat {width: 45%; float:left;}
+.total-tr {width: 45%; float:right;}
+.border-bot {border: 0 !important;}
+.border-bot b {font-size:18px;color:red;}
+.total-bill-money {padding-top:20px! important;}
+.pp-vat table {font-size:12px;}
+.pp-vat table td{border-bottom: 1px solid #ddd; padding: 3px;}
+.box-content-inf-bill {margin-bottom: 25px;}
+.detail_content_left {width: 65%; float: left; height: 100%;}
+.box-content-inf-bill-left {float: left; width: 55%; border-right:1px solid #ddd;}
+.box-content-inf-bill-left p {margin: 10px 0 0 0;}
+.box-content-inf-bill-right {float: right; width: 45%; padding-left: 10px; padding-top:10px; box-sizing: border-box;}
+.box-content-inf-bill-right p {text-align: center;margin:0;}
+.brand-name {font-weight: bold; margin: 10px 0 0 0 !important;}
+.print-close span {cursor: pointer;}
+.clear {clear: both;}
+.ava-cus {padding: 20px 60px; display: inline-block;border: 1px solid;}
+#content-column {height: 100%;}
+
+

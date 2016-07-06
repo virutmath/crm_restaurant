@@ -1,0 +1,13 @@
+.box_form{
+    width: 90%;
+    margin: 30px auto;
+}
+
+.footer-button {
+    background-color: #f0f0f0;
+    padding: 3px 0;
+    border-top: 1px solid #d0d0d0;
+    position: absolute;
+    bottom:0;
+    margin-top: 2px;
+}

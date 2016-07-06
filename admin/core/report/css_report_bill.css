@@ -1,0 +1,31 @@
+.section-content {box-shadow: none; border:none; border-bottom:1px solid #999;}
+.right-column {padding-right: 0; padding-left:0; border:1px solid #999;}
+.left-column .section-content {border-bottom-width: 2px;}
+.footer-control {text-align: left;}
+.section-title.footer-control {padding-left:10px;}
+.bill-date {width: 100%; height: 25px;}
+.table-find-report td {padding: 5px 0 10px 0;}
+.table-find-report { border-bottom: 1px solid #999;}
+.select-title {margin: 15px 0 3px;}
+.brand-report, .customer-report, .user-report {width: 80%; float: left;}
+.search-report {width: 13%; float: right; display: inline-block; height: 25px; line-height: 25px; text-align: center; color: #fff; background: #BB5E00; cursor: pointer;}
+.clear {clear: both;}
+.export-excel, .filter-data {cursor: pointer; float: left; color: #fff; padding: 7px 10px; box-sizing: border-box; font-size: 14px; background: #00DF38;}
+.export-excel {background: #BB5E00; float: right;}
+.total-cost {text-align: right; font-size: 20px;}
+.form-report {border-bottom: 1px solid #BB5E00;}
+.select-title label {font-weight: normal; padding-left: 2px;}
+.creat-bill {float: left;}
+.pay-bill {float:right;}
+#creat_bill, #pay_bill {width:11px;}
+.total {width: 50%; display: inline-block;}
+.total.price {text-align: right; }
+#chartContainer {height: 200px; width: 100%;position: absolute; bottom: 2px; left: 0;}
+
+
+
+
+
+
+
+

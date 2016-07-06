@@ -1,0 +1,1081 @@
+<script>
+    //phân trang ajax
+    ajax_paging = true;
+    //callback của phân trang
+    paging_callback = 'fixScrollMenu';
+    //các biến cục bộ của module
+    var current_desk;
+    var current_menu;
+    var current_total_money = 0;
+
+    var ajax_url = {
+        loadModalSelectCustomer: '/admin/core/customers/index_modal.php',
+        loadModalSelectStaff: '/admin/core/users/index_modal.php'
+    };
+
+    //chỉnh kích thước khung wrapper
+    var windowHeight = windowHeight || $(window).height();
+    var wrapperHeight = windowHeight;
+    var wrapperContent = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent = $('.section-content');
+    var offsetTopContent = sectionContent.offset().top;
+    sectionContent.height(wrapperHeight - offsetTopContent - 10);
+
+    //chỉnh kích thước khung chi tiết hóa đơn
+    var main_sale = $('#main-sale');
+    main_sale.height(sectionContent.height() - 160);
+    var center_listing = $('#center-listing');
+    //trong center_sale : center_top cao 100px; center_control cao 30px; center_listing padding top 5px
+    center_listing.height(main_sale.height() - 140);
+
+
+    //chỉnh kích thước khung danh sách thực đơn
+    var listing_menu = $('#listing-menu');
+    listing_menu.height(sectionContent.height() - 160);
+    //table bound
+    listing_menu.find('.table-listing-bound').height(listing_menu.height() - 30);
+
+    //chỉnh kích thước khung danh sách bàn ăn
+    var list_desk = $('#list-desk');
+    list_desk.height(sectionContent.height() - 160);
+    //thêm thanh cuộn cho list desk
+    list_desk.find('.list-desk-bound').height(list_desk.height()).enscroll({
+        showOnHover: false,
+        minScrollbarLength: 28,
+        addPaddingToPane: false
+    });
+    //Các khu vực input cần fill và get dữ liệu
+    var start_time_string = $('#start_time_string');
+    var start_time_int = $('#cud_start_time');
+    var desk_note = $('#cud_note');
+    var desk_name = $('#current_desk_name');
+    var desk_id = $('#current_desk_id');
+    var customer_code = $('#sale_customer_code');
+    var staff_code = $('#sale_staff_code');
+    var search_customer = $('#search_customer');
+    var search_staff = $('#search_staff');
+
+
+    //bắt sự kiện tìm kiếm khách hàng và nhân viên
+    search_customer.unbind('click').click(function () {
+//    var modal = new Modal('medium', ajax_url.loadModalSelectCustomer, 'Quản lý thông tin nhân viên');
+//    modal.width = 930;
+//    modal.height = 400;
+//    modal.load();
+        var mindow = new Mindows;
+        mindow.width = 930;
+        mindow.height = 450;
+        mindow.resize = true;
+        mindow.iframe(ajax_url.loadModalSelectCustomer, 'Quản lý thông tin khách hàng');
+    });
+    search_staff.unbind('click').click(function () {
+        var mindow = new Mindows;
+        mindow.width = 930;
+        mindow.height = 450;
+        mindow.resize = true;
+        mindow.iframe(ajax_url.loadModalSelectStaff, 'Quản lý thông tin nhân viên');
+    });
+
+
+    $('.desk-item').unbind('dblclick').dblclick(function () {
+        //Bắt sự kiện click đúp vào 1 bàn trống thì mở bàn
+        var _this = $(this);
+        //xóa bỏ selected ở các bàn khác
+        $('.desk-item').removeClass('selected');
+        _this.addClass('selected');
+        //cập nhật current_desk
+        current_desk = _this;
+        //cập nhật tên bàn
+        desk_name.html(_this.data('name'));
+        //cập nhật ID bàn
+        desk_id.val(_this.data('id'));
+        //Nếu bàn đã mở thì lấy ra thông tin bàn
+        if (_this.hasClass('active')) {
+            getCurrentDeskDetail(_this);
+        } else {
+            //nếu không thì tạo bàn mới
+            _this.addClass('active');
+            openDesk(_this);
+        }
+
+    }).unbind('click').click(function () {
+        //bắt sự kiện click - load detail
+        //nếu bàn đang active thì load detail
+        //nếu không active thì ko load
+        var _this = $(this);
+        if (_this.hasClass('selected')) return false;
+        $('.desk-item').removeClass('selected');
+        _this.addClass('selected');
+        //cập nhật current_desk
+        current_desk = _this;
+        //cập nhật tên bàn
+        desk_name.html(_this.data('name'));
+        desk_id.val(_this.data('id'));
+        if (_this.hasClass('active')) {
+            getCurrentDeskDetail(_this);
+        } else {
+            //nếu bàn không mở thì xóa hết dữ liệu đã được fill trong các ô
+            center_listing.html('');
+            start_time_string.val('');
+            start_time_int.val('');
+            customer_code.val('').attr('disabled', 'disabled');
+            $('#cus_id, #use_id, #cdm_number, #cdm_menu_discount').val('');
+            $('#cdm_number, #cdm_menu_discount').attr('disabled', 'disabled');
+            staff_code.val('').attr('disabled', 'disabled');
+            search_customer.val('').attr('disabled', 'disabled');
+            search_staff.val('').attr('disabled', 'disabled');
+            //reset money
+            resetMoney();
+        }
+    });
+
+    function communicateParentWindow(action, data) {
+        //nếu không có current_desk thì không cho thực hiện
+        if (!current_desk) {
+            return;
+        }
+        updateMoney();
+        closeModal();
+        switch (action) {
+            case 'selectCustomer':
+                $('#sale_customer_code').val(data.customer_code);
+                $('#cus_id').val(data.cus_id);
+                $('#search_customer').val(data.customer_name);
+                $('#cud_customer_discount').val(data.customer_discount);
+                //cập nhật customer
+                $.ajax({
+                    type: 'post',
+                    url: 'ajax.php',
+                    data: {action: 'updateCustomer', desk_id: current_desk.data('id'), cus_id: data.cus_id},
+                    dataType: 'json',
+                    success: function (resp) {
+                        loadingProgress('hide');
+                        if (resp.error) {
+                            alert(resp.error);
+                        }
+                    },
+                    beforeSend: function () {
+                        loadingProgress('show');
+                    }
+                });
+                break;
+            case 'selectStaff':
+                $('#use_id').val(data.use_id);
+                $('#sale_staff_code').val(data.staff_code);
+                $('#search_staff').val(data.staff_name);
+                //cập nhật nhân viên
+                $.ajax({
+                    type: 'post',
+                    url: 'ajax.php',
+                    data: {action: 'updateStaff', desk_id: current_desk.data('id'), staff_id: data.use_id},
+                    dataType: 'json',
+                    success: function (resp) {
+                        loadingProgress('hide');
+                        if (resp.error) {
+                            alert(resp.error);
+                        }
+                    },
+                    beforeSend: function () {
+                        loadingProgress('show');
+                    }
+                });
+                break;
+            case 'closeImportModal' :
+                $('.mwindow-close').trigger('click');
+                $('.desk-item[data-id=' + data.from_desk + ']').removeClass('active');
+                $('.desk-item[data-id=' + data.to_desk + ']').trigger('dblclick');
+                break;
+            case 'splitDesk':
+                //đóng khung mindow
+                $('.mwindow-close').trigger('click');
+                //cập nhật dữ liệu của bàn
+                //với dữ liệu data nhận được ta sẽ thay đổi số lượng thực đơn ở bàn hiện tại
+                //đồng thời thêm active vào bàn mới được tách
+
+                break;
+            default :
+                break;
+        }
+    }
+    // mở mwindow chuyen ban
+    function move_desk() {
+        if (!current_desk) {
+            alert('Phải chọn bàn ăn để chuyển');
+            return false;
+        }
+        var desk_id = current_desk.data('id');
+        var mwindow = new Mindows();
+        mwindow.width = 450;
+        mwindow.height = 250;
+        mwindow.resize = true;
+        mwindow.iframe('move_desk.php', 'Chuyển bàn ăn', {desk_id: desk_id});
+    }
+
+    //ghép bàn ăn
+    $('#join-bill').unbind('click').click(function () {
+        if (!current_desk) {
+            alert('Phải chọn bàn để ghép');
+            return false;
+        }
+        var desk_id = current_desk.data('id');
+        var mwindow = new Mindows();
+        mwindow.width = 450;
+        mwindow.height = 250;
+        mwindow.resize = true;
+        mwindow.iframe('join_desk.php', 'Ghép bàn ăn', {desk_id: desk_id});
+    });
+    //tách hóa đơn
+    $('#spilit-bill').unbind('click').click(function () {
+        if (!current_desk) {
+            alert('Phải chọn bàn để tách hóa đơn');
+            return false;
+        }
+        var desk_id = current_desk.data('id');
+        var mwindow = new Mindows();
+        mwindow.width = 900;
+        mwindow.height = 400;
+        mwindow.resize = true;
+        mwindow.iframe('split_desk.php', 'Tách hóa đơn', {desk_id: desk_id});
+    });
+    //in trước hóa đơn
+    function printBills() {
+        if (current_desk && current_menu) {
+            // lấy id bàn và menu để in hóa đơn
+            var desk_id = current_desk.data('id');
+            var extra_fee = $('#cud_extra_fee').autoNumeric('get');
+            var discount = $('#cud_customer_discount').autoNumeric('get');
+            var vat_value = $('#cud_vat').autoNumeric('get');
+            var customer_cash = $('#cud_customer_cash').autoNumeric('get');
+            //thời gian
+            var time = $('#start_time_string').val();
+            //id va tên khách hàng
+            var customer_id = $('#sale_customer_code').val();
+            var customer_name = $('#search_customer').val();
+            //tên nhân viên
+            var staff_name = $('#search_staff').val();
+            // tổng tiền
+            var total = $('#total-money').val();
+            var mwindow = new Mindows();
+            mwindow.width = 600;
+            mwindow.height = 600;
+            mwindow.resize = true;
+            mwindow.iframe('../printer/index.php', 'In hóa đơn', {
+                action: "PRINT_BEFORE",
+                desk_id: desk_id,
+                discount: discount,
+                extra_fee: extra_fee,
+                vat_value: vat_value,
+                time: time,
+                customer_id: customer_id,
+                customer_name: customer_name,
+                staff_name: staff_name,
+                customer_cash: customer_cash,
+                total: total
+            });
+        } else {
+            alert('Chọn bàn để in');
+        }
+    }
+    //lấy chi tiết bàn
+    function getCurrentDeskDetail(desk_item) {
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {action: 'getCurrentDeskDetail', desk_id: desk_item.data('id')},
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                //list thực đơn của bàn
+                center_listing.html(resp.list_menu);
+                start_time_string.val(resp.start_time_string);
+                start_time_int.val(resp.cud_start_time);
+                customer_code.val(resp.customer_code).removeAttr('disabled');
+                $('#cus_id').val(resp.cud_customer_id).removeAttr('disabled');
+                staff_code.val(resp.staff_code).removeAttr('disabled');
+                $('#use_id').val(resp.cud_staff_id).removeAttr('disabled');
+                search_customer.val(resp.customer_name).removeAttr('disabled');
+                search_staff.val(resp.staff_name).removeAttr('disabled');
+                //active menu đầu tiên
+                var is_active = activeFirstMenu();
+                if (is_active) {
+                    //update money
+                    updateMoney(resp);
+                } else {
+                    //reset money
+                    resetMoney();
+                }
+                //cấp phát lại table scroll
+                fixScrollMenu();
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    }
+    function openDesk(desk_item) {
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {action: 'openDesk', desk_id: desk_item.data('id')},
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+
+                start_time_string.val(resp.start_time_string);
+                start_time_int.val(resp.cud_start_time);
+                //list thực đơn của bàn
+                center_listing.html(resp.list_menu);
+                //active menu đầu tiên
+                activeFirstMenu();
+
+                customer_code.val(resp.cud_customer_id).removeAttr('disabled');
+                staff_code.val(resp.cud_staff_id).removeAttr('disabled');
+                search_customer.val(resp.customer_name).removeAttr('disabled');
+                search_staff.val(resp.staff_name).removeAttr('disabled');
+
+                //cấp phát lại table scroll
+                fixScrollMenu();
+                calculateMoney();
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    }
+
+    function addMenuToDesk(menu_id) {
+        //Thêm menu vào bàn đang có
+        if (!current_desk) {
+            alert('Không thể thêm thực đơn! Chọn một bàn bắt đầu để thêm');
+            return false;
+        }
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            dataType: 'json',
+            data: {action: 'addMenuToDesk', menu_id: menu_id, desk_id: desk_id.val()},
+            success: function (resp) {
+                loadingProgress('hide');
+                //list thực đơn của bàn
+                center_listing.html(resp.list_menu);
+                //set menu hiện tại
+                current_menu = center_listing.find('#record_' + menu_id);
+                //trigger luôn vào menu này
+                current_menu.trigger('click');
+                //cập nhật các input money ở footer
+                updateMoney(resp);
+
+                //cấp phát lại table scroll
+                fixScrollMenu();
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    }
+
+    //Hàm active row khi load danh sách menu của bàn
+    function activeFirstMenu() {
+        current_menu = center_listing.find('.record-item').eq(0);
+        if (current_menu.length) {
+            current_menu.trigger('click');
+            return true;
+        } else {
+            return false;
+        }
+    }
+    //Hàm chuyển tiền hiển thị thành số
+    function convertMoneyString(money_string) {
+        if (typeof money_string == 'string')
+            return parseInt(money_string.replace(',', ''));
+        else
+            return money_string;
+    }
+    //Hàm cập nhật tiền
+    function updateMoney(data) {
+        if (current_menu.length) {
+            $('#cdm_number').removeAttr('disabled').autoNumeric('set', current_menu.data('cdm_number'));
+            $('#cdm_menu_discount').removeAttr('disabled').autoNumeric('set', current_menu.data('cdm_menu_discount'));
+            //Cập nhật lựa chọn giá bán
+            $('.men_price_span').removeClass('active');
+            //cập nhật giá của từng loại giá bán
+            $('#men_price').html(current_menu.data('men_price'));
+            $('#men_price1').html(current_menu.data('men_price1'));
+            $('#men_price2').html(current_menu.data('men_price2'));
+            $('#' + current_menu.data('cdm_price_type')).addClass('active');
+
+            //cập nhật tên thực đơn
+            $('#men_name').html(current_menu.data('men_name'));
+            $('#men_image').attr('src', current_menu.data('men_image'));
+        }
+
+        //nếu có data thì mới cập nhật phụ phí và các thứ
+        if (typeof data == 'object' && !$.isEmptyObject(data)) {
+            //console.log(data);
+            //cập nhật phụ phí
+            $('#cud_extra_fee').removeAttr('disabled').autoNumeric('set', data.cud_extra_fee);
+            //cập nhật VAT
+            $('#cud_vat').removeAttr('disabled').autoNumeric('set', data.cud_vat);
+            //cập nhật giảm giá
+            $('#cud_customer_discount').removeAttr('disabled').autoNumeric('set', data.cud_customer_discount);
+            //cập nhật tiền khách đưa
+            $('#cud_customer_cash').removeAttr('disabled').autoNumeric();
+        }
+        //tính các mục phụ phí, vat, tổng tiền và tiền cần thanh toán
+        calculateMoney();
+    }
+    //reset money
+    function resetMoney() {
+        $('#cdm_number').autoNumeric('set', 0).attr('disabled', 'disabled');
+        $('#cdm_menu_discount').autoNumeric('set', 0).attr('disabled', 'disabled');
+        //Cập nhật lựa chọn giá bán
+        $('.men_price_span').removeClass('active').html(0);
+
+        //cập nhật tên thực đơn
+        $('#men_name').html('');
+        $('#men_image').attr('src', '');
+        //cập nhật phụ phí
+        $('#cud_extra_fee').attr('disabled', 'disabled').autoNumeric('set', 0);
+        //cập nhật VAT
+        $('#cud_vat').attr('disabled', 'disabled').autoNumeric('set', 0);
+        //cập nhật giảm giá
+        $('#cud_customer_discount').attr('disabled', 'disabled').autoNumeric('set', 0);
+        //cập nhật tiền khách đưa
+        $('#cud_customer_cash').attr('disabled', 'disabled').autoNumeric('set', 0);
+        $('#customer_cash_text').html(0);
+        //reset tổng tiền
+        $('#total-money').html(0);
+        $('#final-money').html('0 VNĐ');
+        current_total_money = 0;
+    }
+
+    function calculateMoney() {
+        var total = 0;
+        $('#center-listing tr td:nth-child(7)').each(function (index, val) {
+            var item = $(this).text();
+            item = item.replace(',', '');
+            total += parseInt(item);
+            return total;
+        });
+        var sum = 0;
+        var extra_value = $('#cud_extra_fee').autoNumeric('get');
+        var discount_value = $('#cud_customer_discount').autoNumeric('get');
+        var vat_value = $('#cud_vat').autoNumeric('get');
+        var customer_cash = $('#cud_customer_cash').autoNumeric('get');
+        var vat_value_per = vat_value / 100;
+        var extra_text = total * extra_value / 100;
+        var discount_text = total * discount_value / 100;
+
+
+        sum = (total - (total * discount_value / 100) + (total * extra_value / 100)) * (1 + vat_value_per);
+        current_total_money = sum;
+        var vat_text = sum * vat_value / 100;
+        var cus_cash_text = customer_cash - sum;
+        $('#total-money').text(number_format(total));
+        $('#final-money').text(number_format(sum));
+        $('#extra_fee_text').text(number_format(extra_text));
+        $('#discount-text').text(number_format(discount_text));
+        $('#vat-ext').text(number_format(vat_text));
+        $('#customer_cash_text').text(number_format(cus_cash_text));
+
+    }
+    //cập nhật lại tiền khi thay đổi phụ phí, giảm giá, thuế VAT, tiền khách đưa
+    $('#cud_extra_fee, #cud_customer_discount, #cud_vat, #cud_customer_cash').unbind('change').change(function () {
+        calculateMoney();
+    });
+    //cập nhật lại giảm giá thực đơn khi thay đổi
+    $('#cdm_menu_discount').unbind('change').change(function () {
+        //nếu không có menu được chọn thì return
+        if (!current_menu) {
+            return false;
+        }
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {
+                action: 'updateMenuDiscount',
+                desk_id: current_desk.data('id'),
+                menu_id: current_menu.data('record_id'),
+                discount: $(this).autoNumeric('get')
+            },
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                if (resp.error) {
+                    alert(resp.error);
+                    return false;
+                } else {
+                    //chỉnh lại thông số của thực đơn
+                    calculateMenuMoney();
+                    //cap nhật tiền
+                    calculateMoney();
+                }
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    });
+    //cập nhật lại số lượng thực đơn khi thay đổi
+    $('#cdm_number').unbind('change').change(function () {
+        //nếu không có menu được chọn thì return
+        if (!current_menu) {
+            return false;
+        }
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {
+                action: 'updateMenuNumber',
+                desk_id: current_desk.data('id'),
+                menu_id: current_menu.data('record_id'),
+                number: $(this).autoNumeric('get')
+            },
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                if (resp.error) {
+                    alert(resp.error);
+                    return false;
+                } else {
+                    //chỉnh lại thông số của thực đơn
+                    calculateMenuMoney();
+                    //cap nhật tiền
+                    calculateMoney();
+                }
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    });
+
+    //Hàm select thực đơn trong danh sách thực đơn của bàn
+    function selectMenuInDesk(menu_id) {
+        //active row
+        current_menu = center_listing.find('#record_' + menu_id);
+        center_listing.find('.record-item').removeClass('active');
+        current_menu.addClass('active');
+        var data = {};
+        updateMoney(data);
+        //console.log(current_menu);
+    }
+    //search menu theo name
+    $(document).on('submit', '.grid_header >form', function (e) {
+        var form = $(this);
+        $.ajax({
+            type: 'get',
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (html) {
+                $('#listing-menu').html(html);
+                fixScrollMenu();
+            }
+        });
+        e.preventDefault();
+    });
+    //search menu theo category
+    $(document).on('change', '#men_cat_id', function () {
+        $(this).closest('form').trigger('submit');
+    });
+
+    //Chọn giá bán
+    $('.men_price_span').unbind('click').click(function () {
+        if (!current_desk || !current_menu) {
+            return false;
+        }
+        var _this = $(this);
+        if (_this.hasClass('active')) {
+            return false;
+        }
+        $('.men_price_span').removeClass('active');
+        _this.addClass('active');
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {
+                action: 'selectPriceType',
+                desk_id: current_desk.data('id'),
+                menu_id: current_menu.data('record_id'),
+                price_type: _this.attr('id')
+            },
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                //chỉnh thông số của thực đơn
+                var cdm_price = resp.cdm_price;
+                var price_type = resp.price_type;
+                current_menu.data({
+                    cdm_price: cdm_price,
+                    cdm_price_type: price_type
+                });
+                //cập nhật đơn giá vào trong listing
+                current_menu.find('td').eq(4).html(cdm_price);
+                calculateMenuMoney();
+                //tính lại tổng tiền toàn bộ
+                calculateMoney();
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    });
+
+    //table scroll
+    $('.table-listing-bound').enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane: false
+    });
+    $('.scrollable-area').enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane: false
+    })
+
+    //hàm cập nhật tổng tiền của 1 thực đơn dựa vào số lượng và giảm giá trên thực đơn hiện tại
+    function calculateMenuMoney() {
+        if (!current_menu) {
+            return false;
+        }
+        //lấy dữ liệu từ ô số lượng và giảm giá, thay đổi giá trị trong bảng thực đơn cho phù hợp sau đó tính ra tổng tiền
+        //lưu ý số lượng của thực đơn để dạng integer thay vì float như số lượng của sản phẩm trong thực đơn
+        var sl = Math.abs(parseInt($('#cdm_number').autoNumeric('get')));
+        var price = Math.abs(parseInt(convertMoneyString(current_menu.data('cdm_price'))));
+        //Tỉ lệ giảm giá tính theo %
+        var discount = Math.abs(parseFloat($('#cdm_menu_discount').autoNumeric('get')) / 100);
+        //Tổng tiền của thực đơn này
+        var sum = sl * price * (1 - discount);
+        //cập nhật vào bảng listing
+        current_menu.data('cdm_number', sl);
+        current_menu.data('cdm_menu_discount', discount * 100);
+        current_menu.find('td').eq(3).html(sl);
+        current_menu.find('td').eq(5).html(number_format(discount * 100, 2));
+        current_menu.find('td').eq(6).html(number_format(sum));
+    }
+
+    //customize giá
+    function customizePrice() {
+        var desk_id = current_desk.data('id');
+        var menu_id = current_menu.data('record_id');
+        var price = $('#customize_price').autoNumeric('get');
+        ActiveMindow.close();
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {action: 'customizePrice', desk_id: desk_id, menu_id: menu_id, price: price},
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                if (resp.error) {
+                    alert(resp.error);
+                } else {
+                    //chỉnh thông số của thực đơn
+                    current_menu.data({
+                        cdm_price: number_format(price)
+                    });
+                    calculateMenuMoney();
+                }
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    }
+    //fix tất cả table listing
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        if (center_listing.find('.enscroll-track').length < 1) {
+            center_listing.find('.table-listing-bound').height(center_listing.height() - 5).enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane: false
+            });
+        }
+        if (listing_menu.find('.enscroll-track').length < 1) {
+            listing_menu.find('.table-listing-bound').height(listing_menu.height() - 30).enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane: false
+            });
+        }
+    }
+    //thay đổi giá bán
+    function exchangeCustomizePrice() {
+        var desk_id = current_desk.data('id');
+        var menu_id = current_menu.data('record_id');
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: {action: 'loadFormCustomizePrice', desk_id: desk_id, menu_id: menu_id},
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                if (resp.error) {
+                    alert(resp.error);
+                } else {
+                    var mindow = new Mindows;
+                    mindow.width = 350;
+                    mindow.height = 250;
+                    mindow.openStatic(resp.html);
+                }
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            }
+        })
+    }
+
+    //định dạng số cho các input
+    $('#cdm_number, #cud_customer_cash').autoNumeric({
+        mDec: 0,
+        lZero: 'deny'
+    });
+    $('#cdm_menu_discount, #cud_extra_fee, #cud_customer_discount, #cud_vat').autoNumeric({
+        mDec: 2,
+        vMax: 100
+    });
+    //cài đặt chuyển đổi từ tiền dạng số sang dạng %
+    function settingMenuDiscount() {
+        var result_money = 0;
+        var result_percent = 0;
+        //nếu current_menu không tồn tại thì return luôn
+        if (!current_menu) {
+            return false;
+        }
+        var mindow = new Mindows();
+        mindow.width = 450;
+        mindow.height = 250;
+        mindow.resize = true;
+        var content = $('#convertPercentTemplate').html();
+        mindow.openStatic(content, function () {
+            var sl = current_menu.data('cdm_number');
+            var dg = convertMoneyString(current_menu.data('cdm_price'));
+            var total_money = number_format(sl * dg);
+            mindow.container.find('#total_money').val(total_money);
+            callbackConvertPercent(mindow);
+            //bắt sự kiện click đồng ý chuyển đổi
+            mindow.container.find('#acceptConvert').unbind('click').click(function () {
+                result_percent = $('#convert_result').val();
+                result_money = $('#total_money').autoNumeric('get') - $('#convert_money').autoNumeric('get');
+                //cập nhật vào current_menu
+                $('#cdm_menu_discount').autoNumeric('set', result_percent).trigger('change');
+                current_menu.find('td').eq(5).html(number_format(result_percent, 2));
+                current_menu.find('td').eq(6).html(number_format(result_money));
+                //cập nhật lại tiền
+                calculateMoney();
+                //đóng mindow
+                mindow.close();
+            })
+        });
+    }
+
+    //callback function của khung convert percent
+    function callbackConvertPercent(mindow) {
+        //cấp phát numeric
+        mindow.container.find('#total_money').autoNumeric({
+            lZero: 'deny',
+            mDec: 0
+        });
+
+        mindow.container.find('#convert_money').autoNumeric({
+            lZero: 'deny',
+            mDec: 0,
+            vMin: 0,
+            vMax: mindow.container.find('#total_money').autoNumeric('get')
+        });
+
+        //bắt sự kiện keypress vào convert_money
+        $('#convert_money').keyup(function () {
+            var money = $(this).autoNumeric('get');
+            var total = $('#total_money').autoNumeric('get');
+            $('#convert_result').val(money / total * 100);
+        });
+
+        mindow.container.find('#cancelConvert').unbind('click').click(function () {
+            mindow.close();
+        })
+    }
+
+    //thanh toán hóa đơn
+    function billSubmit() {
+        //kiểm tra bàn có được mở không
+        if (!current_desk) {
+            return false;
+        }
+        //kiểm tra xem bàn đã gọi món chưa
+        if (center_listing.find('.menu-desk-menu').length < 1) {
+            alert('Không thể thanh toán hóa đơn trống!');
+            return false;
+        }
+        //kiểm tra xem có ghi nợ không?
+        if ($('#is-debit').is(':checked')) {
+            //show form ghi nợ
+            //kiểm tra xem đã chọn khách hàng để ghi nợ chưa
+            if ($('#cus_id').val() == 0) {
+                $('#search_customer').trigger('click');
+                return false;
+            }
+            var mindow = new Mindows();
+            mindow.width = 400;
+            mindow.height = 230;
+            mindow.resize = true;
+            mindow.open('debit.php', {total: current_total_money});
+            return false;
+        }
+        if (confirm('Bạn chắc chắn muốn thanh toán hóa đơn này? Lưu ý: sau khi thanh toán bạn sẽ không thể chỉnh sửa được hóa đơn.')) {
+            //submit
+            realSubmit();
+        }
+
+    }
+
+    function realSubmit(debit, date) {
+        var data_request = {action: 'billSubmit', desk_id: current_desk.data('id')};
+        if (debit && date) {
+            data_request.debit = debit;
+            data_request.date = date;
+        }
+        $.ajax({
+            type: 'post',
+            url: 'ajax.php',
+            data: data_request,
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                //nếu có lỗi thì hiển thị thông báo lỗi
+                if (resp.error) {
+                    alert(resp.error);
+                    return false;
+                }
+                if (resp.success == 1) {
+                    //xóa bàn
+                    current_desk.removeClass('active');
+                    current_menu = '';
+                    center_listing.html('');
+                    start_time_string.val('');
+                    start_time_int.val('');
+                    customer_code.val('').attr('disabled', 'disabled');
+                    $('#cus_id, #use_id, #cdm_number, #cdm_menu_discount').val('');
+                    $('#cdm_number, #cdm_menu_discount').attr('disabled', 'disabled');
+                    staff_code.val('').attr('disabled', 'disabled');
+                    search_customer.val('').attr('disabled', 'disabled');
+                    search_staff.val('').attr('disabled', 'disabled');
+                    resetMoney();
+                    if ('Thanh toán hóa đơn thành công! Bạn có muốn in hóa đơn?') {
+
+                    }
+                    ;
+                }
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            },
+            error: function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+    $('#print-order').unbind('click').click(function () {
+        if (current_desk && current_menu) {
+            $('#center-listing').find('.table-listing-bound').printArea()
+        }
+
+    });
+
+    //context menu
+    $.contextMenu({
+        selector: '.menu-desk-menu',
+        items: {
+            price: {
+                name: '<i class="fa fa-exchange"></i> Thay đổi giá bán',
+                callback: function (key, opt) {
+                    selectMenuInDesk(opt.$trigger.data('record_id'));
+                    exchangeCustomizePrice();
+                }
+            },
+            print: {
+                name: '<i class="fa fa-print"></i> In chế biến',
+                callback: function (key, opt) {
+
+                }
+            },
+            trash: {
+                name: '<i class="fa fa-trash"></i> Xóa thực đơn này',
+                callback: function (key, opt) {
+
+                }
+            },
+            sep1: '<hr>',
+            discount: {
+                name: '<i class="fa fa-cog"></i> Giảm giá mặt hàng theo tiền',
+                callback: function (key, opt) {
+
+                }
+            }
+        }
+    });
+
+
+    //context menu
+    $.contextMenu({
+        selector: '.desk-item',
+        items: {
+            active: {
+                name: '<i class="fa fa-play"></i> Sử dụng',
+                callback: function (key, opt) {
+                    //Bắt sự kiện click đúp vào 1 bàn trống thì mở bàn
+                    var _this = $(this);
+                    //xóa bỏ selected ở các bàn khác
+                    $('.desk-item').removeClass('selected');
+                    _this.addClass('selected');
+                    //cập nhật current_desk
+                    current_desk = _this;
+                    //cập nhật tên bàn
+                    desk_name.html(_this.data('name'));
+                    //cập nhật ID bàn
+                    desk_id.val(_this.data('id'));
+                    //Nếu bàn đã mở thì lấy ra thông tin bàn
+                    if (_this.hasClass('active')) {
+                        getCurrentDeskDetail(_this);
+                    } else {
+                        //nếu không thì tạo bàn mới
+                        _this.addClass('active');
+                        openDesk(_this);
+                    }
+                }
+            },
+            payment: {
+                name: '<i class="fa fa-check"></i> Thanh toán hóa đơn',
+                callback: function (key, opt) {
+                    billSubmit();
+                }
+            },
+            cancel: {
+                name: '<i class="fa fa-times"></i> Hủy hóa đơn',
+                callback: function (key, opt) {
+                    var desk_id = opt.$trigger.data('id');
+                    if (confirm('Bạn muốn hủy bàn này')) {
+                        center_listing.html('');
+                        start_time_string.val('');
+                        start_time_int.val('');
+                        customer_code.val('').attr('disabled', 'disabled');
+                        $('#cus_id, #use_id, #cdm_number, #cdm_menu_discount').val('');
+                        $('#cdm_number, #cdm_menu_discount').attr('disabled', 'disabled');
+                        staff_code.val('').attr('disabled', 'disabled');
+                        search_customer.val('').attr('disabled', 'disabled');
+                        search_staff.val('').attr('disabled', 'disabled');
+                        //reset money
+                        resetMoney();
+                        var _this = $(this);
+                        //xóa bỏ selected ở các bàn khác
+                        $('.desk-item').removeClass('selected');
+                        _this.removeClass('selected');
+                        //nếu không thì tạo bàn mới
+                        _this.removeClass('active');
+                        current_desk = _this;
+                        current_desk = null;
+                        $.ajax({
+                            type: 'post',
+                            url: 'ajax.php',
+                            data: {action: 'deleteDesk', desk_id: desk_id},
+                            dataType: 'json',
+                            success: function () {
+
+                            }
+                        })
+                    }
+
+
+                }
+            },
+            print: {
+                name: '<i class="fa fa-print"></i> In trước hóa đơn',
+                callback: function (key, opt) {
+
+                }
+            },
+            printmenu: {
+                name: '<i class="fa fa-print"></i> In chế biến',
+                callback: function (key, opt) {
+
+                }
+            },
+            fowardesk: {
+                name: '<i class="fa fa-exchange"></i> Chuyển bàn',
+                callback: function (key, opt) {
+
+                }
+            },
+            spunoff: {
+                name: '<i class="fa fa-files-o"></i> Tách hóa đơn',
+                callback: function (key, opt) {
+
+                }
+            },
+            join: {
+                name: '<i class="fa fa-file-text"></i> Ghép hóa đơn',
+                callback: function (key, opt) {
+
+                }
+            },
+            listdesk: {
+                name: '<i class="fa fa-list"></i> Quản lý danh sách bàn ăn',
+                callback: function (key, opt) {
+
+                }
+            },
+            refresh: {
+                name: '<i class="fa fa-refresh"></i> Tải lại danh sách bàn ăn',
+                callback: function (key, opt) {
+
+                }
+            }
+
+
+        }
+    });
+
+    $.contextMenu({
+        selector: '.menu-trash',
+        items: {
+            add: {
+                name: '<i class="fa fa-file-o"></i> Thêm mới',
+                disabled: true,
+                className: 'not-selectable'
+            },
+            edit: {
+                name: '<i class="fa fa-edit"></i> Thay đổi thông tin',
+                disabled: true,
+                className: 'not-selectable'
+            },
+            trash: {
+                name: '<i class="fa fa-trash"></i> Xóa',
+                disabled: true,
+                className: 'not-selectable'
+            },
+            sep1: '<hr>',
+            refresh: {
+                name: '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback: function (key, opt) {
+                    btn_refresh.unbind('click').trigger('click');
+                }
+            },
+            recycle: {
+                name: '<i class="fa fa-recycle"></i> Khôi phục',
+                callback: function (key, opt) {
+                    recycleRow(opt.$trigger.data('record_id'))
+                }
+            },
+            delete: {
+                name: '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback: function (key, opt) {
+
+                }
+            }
+        }
+    });
+
+</script>

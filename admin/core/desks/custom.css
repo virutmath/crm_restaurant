@@ -1,0 +1,29 @@
+.desk-item {
+    background-image: url('../../resources/img/food-trays.png');
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 50%;
+    padding-top: 40px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 11px;
+    transition: background 400ms;
+}
+.desk-item:hover,.desk-item.active {
+    background-image: url("../../resources/img/food-trays-active.png");
+    cursor : pointer;
+}
+.section-name {
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    font-size: 11px;
+    padding-left: 5px;
+}
+#modal{
+    width: 450px;
+    height: 270px;
+}
+#agency_list, #sec_service_desk {
+    width : 220px;
+}

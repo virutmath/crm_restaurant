@@ -1,0 +1,91 @@
+.page-wrap{
+    width: 98%;
+    margin: 0 auto;
+    height: 560px !important;
+}
+.header{
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.logo{
+    float: left;
+    display: block;
+    width: 25%;
+    text-align: center;
+    margin: 10px auto;
+}
+.info-top{
+    float: right;
+    width: 75%;
+    text-align: center;
+}
+.info-top h2{
+    text-transform: uppercase;
+}
+.info-top p{
+    font-size: 11px;
+}
+.content h2{
+    text-align: center;
+    text-transform: uppercase;
+}
+.table-info{
+    width: 100%;
+    margin: 0 auto;
+}
+.table-listmenu{
+    width: 100%;
+    margin: 0 auto;
+}
+.title-print{
+    font-size: 14px !important;
+    text-transform: uppercase;
+    padding: 5px 0 0 0;
+    font-weight: bold;
+}
+.btn_print{
+    position: fixed;
+    margin-top: 20px;
+    top:30px;
+    right: 10px;
+}
+@media print {
+    .btn_print {
+        display: none;
+    }
+    .table-info{
+        font-size: 9px !important;
+        padding: 2px 0;
+    }
+    .title-print{
+        font-size: 9px !important;
+    }
+    .info-top>span{
+        font-size: 9px !important;
+    }
+    .table-bordered>thead>tr>th,
+    .table-bordered>tbody>tr>th,
+    .table-bordered>tfoot>tr>th,
+    .table-bordered>thead>tr>td,
+    .table-bordered>tbody>tr>td,
+    .table-bordered>tfoot>tr>td
+    {
+        margin: 0 !important;
+        font-size: 9px !important;
+        padding: 3px !important;
+    }
+    .footer-text{
+        font-size: 11px;
+    }
+}
+@media print and (max-width : 300px) {
+    .page-wrap{
+        font-size: 10px !important;
+    }
+
+}
+.vertical-handle{
+    right: -11px !important;
+}

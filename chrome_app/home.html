@@ -1,0 +1,121 @@
+<div ng-controller="HomeController as home" layout="row" layout-wrap>
+    <md-content class="md-padding left-column" flex="25">
+        <div id="listing-menu">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên thực đơn</th>
+                    <th>ĐVT</th>
+                    <th>Giá</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="menu in home.list_menu">
+                    <td class="text-center">{{menu.stt}}</td>
+                    <td class="text-left">{{menu.men_name}}</td>
+                    <td class="text-center">{{menu.men_unit}}</td>
+                    <td class="text-right">{{menu.men_price}}</td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <md-content id="restaurant-info">
+            <h3 class="row text-center text-uppercase md-headline">Thông tin nhà hàng</h3>
+            <div class="row">
+                <span class="row-title pull-left">Tên:</span>
+
+                <div class="row-content">{{home.config.common.con_restaurant_name}}</div>
+            </div>
+            <div class="row">
+                <span class="row-title pull-left">Địa chỉ:</span>
+
+                <div class="row-content">{{home.config.common.con_restaurant_address}}</div>
+            </div>
+            <div class="row">
+                <span class="row-title pull-left">ĐT:</span>
+
+                <div class="row-content">{{home.config.common.con_restaurant_phone}}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 text-center info-promo">
+                    <i class="fa fa-bullhorn"></i>
+                    Không có khuyến mại
+                </div>
+            </div>
+        </md-content>
+    </md-content>
+    <md-content class="md-padding padding-no-left right-column" flex="75">
+        <div layout="row" layout-wrapp>
+            <div id="center-sale">
+                <div layout="row" layout-wrapp>
+                    <div flex="40">
+                        <h4 class="md-headline color-success text-uppercase text-center">Hóa đơn bán hàng</h4>
+                    </div>
+                    <div flex>
+                        <h4 class="md-headline color-warning text-uppercase text-center">Chưa chọn bàn</h4>
+                    </div>
+                </div>
+                <div layout="row" layout-wrapp id="center-top-sale">
+                    <div flex="40">
+                        <div layout="row">
+                            <label>Giờ vào</label>
+                            <input flex ng-model="home.current_desk.cud_start_time" id="cud_start_time" disabled/>
+                        </div>
+                        <div layout="row">
+                            <label>Ghi chú</label>
+                            <input flex ng-model="home.current_desk.cud_note" id="cud_note">
+                        </div>
+                    </div>
+                    <div flex="10"></div>
+                    <div flex="50">
+                        <div layout="row">
+                            <label>Khách hàng</label>
+                            <input ng-model="home.current_desk.cud_customer_name" id="cud_customer_name" disabled/>
+                            <input flex disabled/>
+                        </div>
+                        <div layout="row">
+                            <label>Nhân viên</label>
+                            <input ng-model="home.current_desk.cud_staff_name" id="cud_staff_name" disabled>
+                            <input flex disabled/>
+                        </div>
+                    </div>
+                </div>
+                <div layout="row" layout-wrapp id="center-listing">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên thực đơn</th>
+                            <th>ĐVT</th>
+                            <th>SL</th>
+                            <th>Đơn giá</th>
+                            <th>Giảm</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div flex id="list-desk">
+                <div class="list-desk-bound">
+                    <fieldset ng-repeat="section in home.list_desk">
+                        <legend>{{section.sec_name}}({{section.count}})</legend>
+                        <div class="section-list-desk">
+                            <div class="desk-item {{desk.active ? 'active' : ''}}" ng-repeat="desk in section.list_desk" data-id="{{desk.des_id}}" data-name="{{desk.full_name}}"
+                                 ng-click="home.selectDesk(desk.des_id)">
+                                <span class="desk-name">{{desk.des_name}}</span>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                </div>
+            </div>
+        </div>
+
+    </md-content>
+</div>

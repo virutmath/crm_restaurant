@@ -1,0 +1,316 @@
+<script>
+    //chỉnh kích thước khung wrapper ngay khi load js
+    var windowHeight        = windowHeight || $(window).height();
+    var wrapperHeight       = windowHeight;
+    var wrapperContent      = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    // left column
+    var left_column         = $('.left-column');
+    left_column.height(wrapperHeight);
+    var sectionContent_id   = $('#section_content');
+    var offsetTopContent    = sectionContent_id.offset().top;
+    var content             = wrapperHeight - offsetTopContent;
+    var left_column_top = $('.left-column-top');
+    left_column_top.height(wrapperHeight / 2);
+    var left_column_bottom = $('.left-column-bottom');
+    left_column_bottom.height(wrapperHeight / 2);
+    var sectionContent_class = $('.section-content');
+    //var column_top          = $('.left-column-top');
+    sectionContent_class.height(content / 2 - 60);
+    var table_scoll = $('.table-listing-bound');
+    var sec_parent_height = table_scoll.parents('.section-content').height();
+    table_scoll.height(sec_parent_height);
+    // scroll table
+    //table scroll
+    table_scoll.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    var ajax_url = {
+        add_left : 'loadFormAddCategory',
+        edit_left :'loadFormEditCategory',
+        trash_left : 'deleteCategory',
+        add_right : 'loadFormAddRecord',
+        edit_right : 'loadFormEditRecord',
+        trash_right : 'deleteRecord',
+        recoveryRow : 'recoveryRecord',
+        terminalDelete : 'terminalDeleteRecord',
+        listRecord : 'listRecord'
+    }
+    var btn_refresh = $('.modal-control .control-btn-refresh');
+    var btn_liability_left = $('.left-column .payments_liability');
+    var btn_liability_right = $('.right-column .payments_liability');
+    var bill_detail_left = $('.left-column .bill_detail');
+    var bill_detail_right = $('.right-column .bill_detail');
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+///*search phieu theo name so phieu
+// phieu thu cua khach hang
+    $(document).on('submit', '.bottom_conten_left_column .grid_header >form', function (e) {
+        var form = $(this);
+        var parrent_bottom = $('.bottom_conten_left_column');
+        var cus_name = $('#table-listing-left .record-item.active').data('cus_name');
+        $.ajax({
+            type: 'get',
+            url: form.attr('action'),
+            data: form.serialize() + '&cus_name='+cus_name,
+            success: function (html) {
+                parrent_bottom.html(html);
+                var sec_parent_height   = parrent_bottom.parents('.section-content').height();
+                var table_scoll         = parrent_bottom.find('.table-listing-bound');
+                table_scoll.height(sec_parent_height);
+                table_scoll.enscroll({
+                    showOnHover: true,
+                    minScrollbarLength: 28,
+                    addPaddingToPane : false
+                });
+            }
+        });
+        e.preventDefault();
+    });
+// phieu chi cua cua hang
+    $(document).on('submit', '.bottom_conten_right_column .grid_header >form', function (e) {
+        var form = $(this);
+        var parrent_bottom = $('.bottom_conten_right_column');
+        var sup_name = $('#table-listing-right .record-item.active').data('sup_name');
+        $.ajax({
+            type: 'get',
+            url: form.attr('action'),
+            data: form.serialize() + '&sup_name='+sup_name,
+            success: function (html) {
+                parrent_bottom.html(html);
+                var sec_parent_height   = parrent_bottom.parents('.section-content').height();
+                var table_scoll         = parrent_bottom.find('.table-listing-bound');
+                table_scoll.height(sec_parent_height);
+                table_scoll.enscroll({
+                    showOnHover: true,
+                    minScrollbarLength: 28,
+                    addPaddingToPane : false
+                });
+            }
+        });
+        e.preventDefault();
+    });
+//*/
+///* chi tiết phiếu thanh toán
+// công nợ bán
+    function detail_financies(fin_id){
+        var item = $('.section-content-bottom').find('#record_'+fin_id);
+        $('.section-content-bottom').find('tr').removeClass('active');
+        item.addClass('active');
+        var mindow = new Mindows();
+        mindow.width = 500;
+        mindow.height = 330;
+        mindow.iframe('detai_financies_success.php?id='+fin_id,'<b>Chi tiết thanh toán công nợ</b>');
+    }
+//*/
+///* lọc số công nợ đã thanh toán 
+    var parent_left     = $('.left-column');
+    var parent_right    = $('.right-column');
+    var form_control_left    = $('.left-column .form-control');
+    var form_control_right    = $('.right-column .form-control');
+// công nợ bán
+    form_control_left.change(function(){
+        if(parent_left.find('#table-listing-left .record-item').hasClass('active')){
+            var table   = $('.bottom_conten_left_column');
+            var position = 'left';
+            var record_id = parent_left.find('.record-item.active').data('record_id');
+            var limit = $(this).val();
+            $.ajax({
+                url: 'index.php',
+                type : 'post',
+                data:{
+                    record_id : record_id,
+                    position : position,
+                    limit : limit
+                },
+                dataType : 'html',
+                success : function(resp){
+                    table.html(resp);
+                    table.find('.table-listing-bound').height(sec_parent_height);
+                }
+            });
+        }else{
+            return false;
+        }
+    });
+// công nợ nhập
+    form_control_right.change(function(){
+        if(parent_right.find('#table-listing-right .record-item').hasClass('active')){
+            var table   = $('.bottom_conten_right_column');
+            var position = 'right';
+            var record_id = parent_right.find('.record-item.active').data('record_id');
+            var limit = $(this).val();
+            $.ajax({
+                url: 'index.php',
+                type : 'post',
+                data:{
+                    record_id : record_id,
+                    position : position,
+                    limit : limit
+                },
+                dataType : 'html',
+                success : function(resp){
+                    table.html(resp);
+                    table.find('.table-listing-bound').height(sec_parent_height);
+                }
+            });
+        }else{
+            return false;
+        }
+    });
+//*/
+// thanh toán công nợ khách hàng
+    btn_liability_left.click(function(){
+       if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var parent = $(this).parents(parent_left);
+        var record_id = parent.find('.record-item.active').data('record_id');
+        var mindow = new Mindows();
+        mindow.width = 500;
+        mindow.height = 330;
+        mindow.resize = true;
+        mindow.iframe('pay_debit.php?id='+record_id+'&type=customer','<b>Thanh toán công nợ</b>');
+    });
+// thanh toán công nợ nhà cung cấp
+    btn_liability_right.click(function(){
+       if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var parent = $(this).parents(parent_right);
+        var record_id = parent.find('.record-item.active').data('record_id');
+        var mindow = new Mindows();
+        mindow.width = 500;
+        mindow.height = 330;
+        mindow.resize = true;
+        mindow.iframe('pay_debit.php?id='+record_id+'&type=supplier','<b>Thanh toán công nợ</b>');
+    });
+// double click
+    function show_detail(position){
+        if(position == 'left'){
+            bill_detail_left.trigger('click');
+        }
+        if(position == 'right'){
+            bill_detail_right.trigger('click');
+        }
+    }
+// xem chi tiết công nợ khách hàng
+    bill_detail_left.click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var parent = $(this).parents(parent_left);
+        var record_id = parent.find('.record-item.active').data('record_id');
+        var mindow = new Mindows();
+        mindow.width = 600;
+        mindow.height = 400;
+        mindow.resize = true;
+        mindow.iframe('detail.php?id='+record_id+'&type=customer','<b>Chi tiết công nợ khách hàng</b>');
+    });
+// xem chi tiết công nợ nhà cung cấp    
+    bill_detail_right.click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var parent = $(this).parents(parent_right);
+        var record_id = parent.find('.record-item.active').data('record_id');
+        var mindow = new Mindows();
+        mindow.width = 600;
+        mindow.height = 400;
+        mindow.resize = true;
+        mindow.iframe('detail.php?id='+record_id+'&type=supplier','<b>Chi tiết công nợ nhà cung cấp</b>');
+    });
+    function deactivate_control(type){
+        if(type == 'left'){
+            btn_liability_left.addClass('deactivate');
+            bill_detail_left.addClass('deactivate');
+        }else{
+            btn_liability_right.addClass('deactivate');
+            bill_detail_right.addClass('deactivate');
+        }
+    }
+    function active_control(type){
+        if(type == 'left'){
+            btn_liability_left.removeClass('deactivate');
+            bill_detail_left.removeClass('deactivate');
+        }else{
+            btn_liability_right.removeClass('deactivate');
+            bill_detail_right.removeClass('deactivate');
+        }
+    }
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+    $('.list-vertical-crm').find('li').unbind('click').click(function() {
+        if ($(this).find('.cat_name').hasClass('active')) {
+            return false;
+        }
+        var cat_id = $(this).data('cat');
+        $('label.cat_name').removeClass('active');
+        $(this).find('.cat_name').addClass('active');
+        if($(this).hasClass('list-vertical-item')){
+            active_control('left')
+        }else{
+            deactivate_control('left');
+        }
+        //load danh sách bên right column
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {action : ajax_url.listRecord, cat_id : cat_id},
+            success : function (html) {
+                right_column_wrapper.html(html);
+                //deactivate các phím sửa xóa bên phải
+                deactivate_control('right');
+            }
+        })
+    });
+// hàm đóng iframe chi tiết công nợ của khách hàng và nhà cung cấp
+    function communicateParentWindow(action){
+        switch (action){
+            case 'close_detail' : 
+                $('.mwindow-close').trigger('click');
+            break;
+            case 'save_pay_debit' : 
+                $('.mwindow-close').trigger('click');
+                window.location.reload();
+            break;
+        }
+    }
+//function
+    function active_record(record_id,position){
+        var parrent         = $('#table-listing-'+position);
+        var parrent_bottom  = $('.bottom_conten_'+position+'_column');
+        var record_item     = parrent.find('#record_'+record_id);
+        var record_id       = record_item.data('record_id');
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        parrent.find('tr').removeClass('active');
+        record_item.addClass('active');
+        //active các nút sửa xóa
+        active_control(position);
+        $.ajax({
+            type: 'post',
+            url: 'index.php',
+            dataType : 'html',
+            data:{
+                record_id : record_id,
+                position : position
+            },
+            success : function (html) {
+                parrent_bottom.html(html);
+                var sec_parent_height   = parrent_bottom.parents('.section-content').height();
+                var table_scoll         = parrent_bottom.find('.table-listing-bound');
+                table_scoll.height(sec_parent_height);
+                table_scoll.enscroll({
+                    showOnHover: true,
+                    minScrollbarLength: 28,
+                    addPaddingToPane : false
+                });
+            }
+        })
+    }
+</script>

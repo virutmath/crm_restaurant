@@ -1,0 +1,66 @@
+<script>
+    $(document).ready(function () {
+        $('.content:not(:first)').hide();
+        $('.tabs-setup li ').click(function () {
+            $('.tabs-setup li ').removeClass('active');
+            $(this).addClass('active');
+            $('.content').hide();
+            var activeTab = $(this).attr('id-tab');
+            //active Tab  = hotel // activeTav =  destinaltion
+            $(activeTab).fadeIn();
+            return false;
+        });
+    })
+
+    function config_submit() {
+        $.ajax({
+            type: 'post',
+            url: 'index.php',
+            data: {
+                action: 'setup',
+                res_name: $('#res_name').val(),
+                res_address: $('#res_address').val(),
+                res_phone: $('#res_phone').val(),
+                con_restaurant_image: $('#con_restaurant_image').val(),
+                con_default_svdesk: $('#store_place').find(":selected").val(),
+                con_default_store: $('#store_list').find(":selected").val()
+            },
+            dataType: 'json',
+            success: function (resp) {
+                loadingProgress('hide');
+                if (resp.success == 1) {
+                    alert(resp.msg);
+                    window.parent.communicateParentWindow('closeSetting',{});
+                } else {
+                    alert(resp.error);
+                    return false;
+                }
+            },
+            beforeSend: function () {
+                loadingProgress('show');
+            },
+            error: function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+    function communicateParentWindow($action, $data) {
+        switch ($action) {
+            case 'closeImportModal' :
+                $('.mwindow-close').trigger('click');
+                break;
+        }
+    }
+    var ajax_url = {
+        loadModalSelectMenu: '/admin/core/settings/index_modal.php'
+    };
+
+
+    function listmenu_default(){
+        var newwindow;
+        newwindow = window.open(ajax_url.loadModalSelectMenu,'Thực đơn mặc định khi bắt đầu','height=400,width=600,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,status=yes');
+        if (window.focus) {newwindow.focus()}
+
+    }
+    // khi click vao canh bao he thong se enable input liabilities
+    </script>

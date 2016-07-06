@@ -1,0 +1,365 @@
+<script>
+    var ajax_url = {
+        remove_menus : 'removeMenus'
+    };
+    var mindowScript = {
+        listing_import: $('#listing-import'),
+        listing_menu: $('#mindow-listing-menu'),
+        footer_control: $('.footer-control')
+
+    };
+
+    mindowScript.menuItem = function () {
+        this.men_id = 0;
+        this.men_name = '';
+        this.men_value = 0;
+        this.men_type = 0;
+
+    };
+    mindowScript.menusList = {};
+    mindowScript.menusActive = 0;
+
+    mindowScript.initMenuList = function (menulist) {
+        mindowScript.menusList = menulist;
+    };
+
+    mindowScript.menuIsSet = function (men_id) {
+        return this.menusList.hasOwnProperty(men_id);
+    };
+
+    mindowScript.addMenus = function (men_id) {
+        //kiểm tra trong mảng menusList đã có menu này chưa
+        if (this.menuIsSet(men_id)) {
+            //active menus nay
+            this.activeMenuImportById(men_id);
+
+            return true;
+        }
+        var menuItem = new mindowScript.menuItem();
+        menuItem.men_id = men_id;
+        var record_data = this.listing_menu.find('#record_' + men_id);
+        menuItem.men_name = record_data.data('men_name');
+
+        this.menusList[men_id] = menuItem;
+        var count_tr = this.listing_import.find('tbody').find('tr').length;
+        count_tr++;
+        var tr_string = '<tr id="record_' + menuItem.men_id + '" class="menu-normal record-item" data-record_id="'+menuItem.men_id+'" onclick="mindowScript.activeMenuImportById(' + menuItem.men_id + ')">' +
+                '<td class="center" width="40px">' + count_tr + '</td>' +
+                '<td class="center">' + menuItem.men_name + ' <input type="hidden" disabled id="menu_id"></td>' +
+                '<td class="center" width="100px">' + '<input type="text" class="menu_value" value="0" data-record_id="' + menuItem.men_id + '" id="menu_value_' + menuItem.men_id + '" class="form-control" >' + '</td>' +
+                '<td class="center" width="100px">' + '<input type="checkbox" class="menu_type" name="menu_type" data-men_type="' + menuItem.men_id + '" id="menu_type_' + menuItem.men_id + '">' + '</td>' +
+                '</tr>';
+        mindowScript.listing_import.find('table').append(tr_string);
+        mindowScript.activeMenuImport(menuItem);
+        mindowScript.fixScroll();
+        mindowScript.fixAutoNumeric();
+    };
+    // khi đã có menu_id trong table-listing đã import thì hiện thị active mà không thêm
+    mindowScript.activeMenuImport = function (menus) {
+        this.menusActive = menus.men_id;
+        this.listing_import.find('.record-item').removeClass('active');
+        this.listing_import.find('#record_' + menus.men_id).addClass('active');
+        $('#menu_id').val(menus.men_id);
+    };
+    // nếu có menu_id trong menulist thì sẽ hiển thị class active
+    mindowScript.activemenusList = function (men_id) {
+        this.listing_menu.find('.record-item').removeClass('active');
+        this.listing_menu.find('#record_' + men_id).addClass('active');
+    };
+    mindowScript.activeMenuImportById = function (men_id) {
+        if (mindowScript.menuIsSet(men_id)) {
+            var menuItem = mindowScript.menusList[men_id];
+            mindowScript.activeMenuImport(menuItem);
+        }
+    };
+    // thanh cuộn cho bảng table-listing
+    mindowScript.fixScroll = function () {
+        if (this.listing_import.find('.enscroll-track').length < 1) {
+            this.listing_import.find('.table-listing-bound').enscroll({
+                addPaddingToPane: false
+            })
+        }
+    };
+    // fix kiểu số
+    mindowScript.fixAutoNumeric = function () {
+        $('.menu_value').autoNumeric();
+
+    };
+    // kho load trang edit thì fix kiểu số
+    $('.menu_value').autoNumeric();
+    // xử lý dữ liệu để thêm mới
+    mindowScript.addPromotions = function () {
+        $promo_name = $('#promo_name').val();
+        if($promo_name == ''){
+            alert('Tên chiến dịch không được trống');
+            return false;
+        }
+        $promo_agencies = $('#bio_agencies_id').val();
+        $start_date = $('#promo_start_date').val();
+        $time_start_h = $('#promo_start_time_h').val();
+        $time_start_i = $('#promo_start_time_i').val();
+        $end_date = $('#promo_end_date').val();
+        $time_end_h = $('#promo_end_time_h').val();
+        $time_end_i = $('#promo_end_time_i').val();
+        //điều kiện giảm giá theo tổng giá trị đơn hàng
+        $promo_condition = $('#promo_condition').autoNumeric('get');
+        $promo_note = $('#promo_note').val();
+        // gia tri giảm giá
+        $promo_value = $('#promo_value').autoNumeric('get');
+        // kieu giam gia theo tien
+        $promo_type = $('#promo_type').val();
+        if (confirm('Bạn chắc chắn nhập xong thông tin cho chiến dịch này?')) {
+            var promo_name = $promo_name;
+            var promo_agencies = $promo_agencies;
+            var start_date = $start_date;
+            var time_start_h = $time_start_h;
+            var time_start_i = $time_start_i;
+            var end_date = $end_date;
+            var time_end_h = $time_end_h;
+            var time_end_i = $time_end_i;
+            //điều kiện giảm giá theo tổng giá trị đơn hàng
+            var promo_condition = $promo_condition;
+            var promo_note = $promo_note;
+            // gia tri giảm giá
+            var promo_value = $promo_value;
+            // kieu giam gia theo tien
+            var promo_type = $promo_type;
+
+            $.ajax({
+                type: 'post',
+                url: 'ajax.php',
+                data: {
+                    action: 'AddRecord',
+                    name: promo_name,
+                    agencies: promo_agencies,
+                    start_date: start_date,
+                    time_start_h: time_start_h,
+                    time_start_i: time_start_i,
+                    end_date: end_date,
+                    time_end_h: time_end_h,
+                    time_end_i: time_end_i,
+                    note: promo_note,
+                    condition: promo_condition,
+                    promo_value: promo_value,
+                    promo_type: promo_type,
+                    menus: mindowScript.menusList
+                },
+                dataType: 'json',
+                success: function (resp) {
+                    loadingProgress('hide');
+                    if (resp.success == 1) {
+                        //thành công - đóng cửa sổ - tải lại khung
+                        alert(resp.msg);
+                        window.parent.communicateParentWindow('closeImportModal',{});
+                        btn_refresh.trigger('click');
+                    } else {
+                        alert(resp.msg);
+                        return false;
+                    }
+                },
+                beforeSend: function () {
+                    loadingProgress('show');
+                },
+                error: function () {
+                    loadingProgress('hide');
+                }
+            })
+        }
+
+    };
+    // xử lý dữ liệu update
+    mindowScript.editPromotions = function () {
+        $promo_id = $('#promo_id').val();
+        $promo_name = $('#promo_name').val();
+        if($promo_name == ''){
+            alert('Tên chiến dịch không được trống');
+            return false;
+        }
+        $promo_agencies = $('#bio_agencies_id').val();
+        $start_date = $('#promo_start_date').val();
+        $time_start_h = $('#promo_start_time_h').val();
+        $time_start_i = $('#promo_start_time_i').val();
+        $end_date = $('#promo_end_date').val();
+        $time_end_h = $('#promo_end_time_h').val();
+        $time_end_i = $('#promo_end_time_i').val();
+        //điều kiện giảm giá theo tổng giá trị đơn hàng
+        $promo_condition = $('#promo_condition').autoNumeric('get');
+        $promo_note = $('#promo_note').val();
+        // gia tri giảm giá
+        $promo_value = $('#promo_value').autoNumeric('get');
+        // kieu giam gia theo tien
+        $promo_type = $('#promo_type').val();
+        if (confirm('Bạn chắc chắn nhập xong thông tin cho chiến dịch này?')) {
+            var promo_id = $promo_id;
+            var promo_name = $promo_name;
+            var promo_agencies = $promo_agencies;
+            var start_date = $start_date;
+            var time_start_h = $time_start_h;
+            var time_start_i = $time_start_i;
+            var end_date = $end_date;
+            var time_end_h = $time_end_h;
+            var time_end_i = $time_end_i;
+            //điều kiện giảm giá theo tổng giá trị đơn hàng
+            var promo_condition = $promo_condition;
+            var promo_note = $promo_note;
+            // gia tri giảm giá
+            var promo_value = $promo_value;
+            // kieu giam gia theo tien
+            var promo_type = $promo_type;
+
+            $.ajax({
+                type: 'post',
+                url: 'ajax.php',
+                data: {
+                    action: 'EditRecord',
+                    // id của chien dich
+                    id : promo_id,
+                    name: promo_name,
+                    agencies: promo_agencies,
+                    start_date: start_date,
+                    time_start_h: time_start_h,
+                    time_start_i: time_start_i,
+                    end_date: end_date,
+                    time_end_h: time_end_h,
+                    time_end_i: time_end_i,
+                    note: promo_note,
+                    condition: promo_condition,
+                    promo_value: promo_value,
+                    promo_type: promo_type,
+                    menus: mindowScript.menusList
+                },
+                dataType: 'json',
+                success: function (resp) {
+                    loadingProgress('hide');
+                    if (resp.success == 1) {
+                        //thành công - đóng cửa sổ - tải lại khung
+                        alert(resp.msg);
+                        window.parent.communicateParentWindow('closeImportModal',{});
+                        btn_refresh.trigger('click');
+
+                    } else {
+                        alert(resp.msg);
+                        return false;
+                    }
+                },
+                beforeSend: function () {
+                    loadingProgress('show');
+                },
+                error: function () {
+                    loadingProgress('hide');
+                }
+            })
+        }
+
+    };
+
+    // bang import
+    sectionImport = mindowScript.listing_import.find('.table-listing-bound');
+    sectionImport.enscroll({
+       showOnHover:false,
+        minScrollbarLength:28,
+        addPaddingToPane:false
+    });
+
+    //fix tất cả table listing
+    sectionContent = mindowScript.listing_menu.find('.table-listing-bound');
+    sectionContent.enscroll({
+        showOnHover: false,
+        minScrollbarLength: 28,
+        addPaddingToPane: false
+    });
+    // cấp phát lại scroll table
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        sectionContent = mindowScript.listing_menu.find('.table-listing-bound');
+        if(sectionContent.find('.enscroll-track').length < 1){
+            sectionContent.enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+    }
+    // sử dụng search ajax không load trang bảng left
+    $(document).on('submit', '.grid_header >form', function (e) {
+        var form = $(this);
+        $.ajax({
+            type: 'get',
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (html) {
+                $('#mindow-listing-menu').html(html);
+                fixScrollMenu();
+            }
+        });
+        e.preventDefault();
+    });
+    //search menu theo category
+    $(document).on('change', '#men_cat_id', function () {
+        $(this).closest('form').trigger('submit');
+    });
+
+    (function () {
+        sectionContent = mindowScript.listing_menu.find('.table-listing-bound');
+        if (sectionContent.find('.enscroll-trach').length < 1) {
+            sectionContent.find('.table-listing-bound').enscroll({
+                addPaddingToPane: false
+            });
+        }
+        //keyup function
+        // khi them có html dom thi phai dung kiểu bên dưới
+        $(document).on('keyup', 'input[data-record_id]', function () {
+            var menusActive = mindowScript.menusList[mindowScript.menusActive];
+            menusActive.men_value = $(this).autoNumeric('get');
+        });
+        //click function
+        $(document).on('click', 'input[data-men_type]', function () {
+            var menusActive = mindowScript.menusList[mindowScript.menusActive];
+            if ($(this).is(':checked')) {
+                menusActive.men_type = 1;
+            } else {
+                menusActive.men_type = 0;
+            }
+
+        });
+    })();
+
+    // fix autoNumeric các trường số
+    $('#promo_condition').autoNumeric();
+    $('#promo_value').autoNumeric();
+
+    //chuot phai vao menu-import
+    $.contextMenu({
+        selector : '.menu-normal',
+        items : {
+            deleted :{
+                name : '<i class="fa fa-trash"></i> Xóa mặt hàng này',
+                callback : function(key, opt){
+                    //console.log(opt.$trigger);
+                    deleteImportById(opt.$trigger.data('record_id'))
+
+                }
+            }
+        }
+    });
+    // xoa danh sach menu import
+    function deleteImportById(record_id){
+        if(record_id && confirm('Bạn xác nhận xóa thực đơn này ra khỏi chiến dịch?')){
+            $('#listing-import').find('#record_'+record_id).remove();
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.remove_menus,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('left');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+</script>

@@ -1,0 +1,328 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin : 0;
+    background: #fff;
+    font-family: Arial, Helvetica, Sans-serif;
+    font-size: 12px;
+}
+#main-content {
+    width : 100%;
+}
+#AppOffline {
+    color: #fff;
+    height: 28px;
+    display: none;
+    float: right;
+    line-height: 28px;
+    font-weight: normal;
+    text-decoration: none;
+}
+#overlay {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.3);
+}
+#modal {
+    display: none;
+    position: absolute;
+    z-index: 11;
+    top : 40%;
+    left : 50%;
+    width : 930px;
+    height: 400px;
+    margin-left: -450px;
+    margin-top: -200px;
+}
+div#navigator-online {
+    display: none;
+    position: fixed;
+    text-align: center;
+    background: #fff;
+    width: 600px;
+    height: 300px;
+    top: 50%;
+    z-index: 12;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -300px;
+    box-shadow: 0 0 10px #777;
+    border: 1px solid #777;
+    border-radius: 5px;
+    padding: 10px;
+}
+#navigator-online .navigator-header h1{
+    margin-top: 50px;
+    font-size: 32px;
+}
+#navigator-online .navigator-control {
+    margin-top: 50px;
+}
+#navigator-online button {
+    padding: 5px 8px;
+    width: 205px;
+    background: #fff;
+    font-size: 14px;
+    border-radius: 4px;
+    border : 1px solid #999;
+    line-height: 30px;
+    outline: none;
+    cursor: pointer;
+}
+#navigator-online button a {
+    text-decoration: none;
+    color : #fff;
+}
+#navigator-online button:active {
+    box-shadow: inset 2px 2px 3px #cccccc;
+}
+#navigator-online button:hover {
+    background: #f0f0f0;
+}
+#navigator-online button.gotoapp {
+    background: #005fb3;
+    color : #fff;
+}
+#navigator-online button.gotoapp:hover {
+    background: #0055a8;
+}
+#navigator-online button.gotoapp:active {
+    box-shadow: inset 2px 2px 3px #003e7c;
+}
+
+.modal-close {
+    cursor: pointer;
+}
+.modal-wrapper {
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #aaa;
+    box-shadow: 0 0 10px #aaa;
+    padding : 10px;
+}
+.modal-wrapper .modal-header {
+    width: 100%;
+    height: 18px;
+    border-bottom: 1px solid #ccc;
+}
+.modal-wrapper .modal-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: -4px;
+    width: 100%;
+    text-align: center;
+}
+.modal-header .modal-close {
+    position: absolute;
+    top: 3px;
+    font-size: 20px;
+    font-weight: bold;
+    right: 10px;
+    color: #999;
+    cursor: pointer;
+}
+.modal-header .modal-close:hover {
+    color : #333;
+}
+.modal-body > iframe {
+    width: 100%;
+    height: 330px;
+}
+.modal-footer {
+    width: 100%;
+    line-height: 34px;
+}
+.modal-footer .module-name {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+    width : 30%;
+}
+.modal-footer .module-rightname {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+#menu {
+    width: 100%;
+    float: left;
+    border-bottom: 4px solid #C75050;
+    background: #f0f0f0;
+    padding-top: 5px;
+    padding-bottom: 4px;
+}
+#menu > ul{
+    margin : 0;
+    padding-left: 32px;
+    list-style: none;
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+#menu > ul > li {
+    margin : 0;
+    float: left;
+    white-space: nowrap;
+}
+#menu > ul > li.menu-function {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    height: 27px;
+    line-height: 27px;
+    padding: 0 10px;
+    border-right: 1px solid #e6e6e6;
+}
+#menu > ul > li.menu-function.active,#menu > ul > li.menu-function:hover{
+    background: #e5e5e5;
+}
+#menu > ul >li.menu-function .list-function-menu {
+    display: none;
+    transition: all 500ms;
+}
+#menu > ul >li.menu-function.active .list-function-menu{
+    display: block;
+}
+.list-function-menu-user .list-function-menu{
+    display: none;
+    left: auto !important;
+    right: 0;
+    border-left: 1px solid #ccc;
+}
+.list-function-menu-user .list-function-menu a{
+    padding: 0 15px;
+}
+.list-function-menu-user.active .list-function-menu{
+    display: block;
+}
+#menu > ul > li > a {
+    line-height: 18px;
+    padding: 6px 20px;
+    text-decoration: none;
+    color : #777;
+}
+#menu > ul > li > a:hover {
+    color : #C75050;
+}
+#menu > ul.ul-right > li > a {
+    padding : 0;
+}
+
+#menu .ul-right {
+    float:right;
+    padding:0 15px;
+}
+
+#menu .ul-right:hover {
+    color : #C75050;
+    cursor: pointer;
+}
+
+#menu > ul > li > a.active {
+    background: #C75050;
+    color: #fff;
+    border-top: 2px solid #C75050;
+}
+.list-function-menu {
+    left: 0;
+    top: 30px;
+    font-size: 12px;
+    line-height: 18px;
+    background: #fff;
+    padding: 1px;
+    border-right: 1px solid #ccc;
+    border-bottom: 4px solid #c75050;
+}
+.list-function-menu a {
+    text-decoration: none;
+    color : #333333;
+    display: block;
+}
+.list-function-menu .fa {
+    float: left;
+    line-height: 20px;
+}
+
+.list-function-menu .function-item {
+    padding: 2px 10px 2px 5px;
+    border: 1px solid transparent;
+}
+.list-function-menu .function-item:hover {
+    background: #f0f0f0;
+    border: 1px solid #aaa;
+}
+.list-function-menu .function-name {
+    display: block;
+    margin-left: 25px;
+    line-height: 20px;
+    font-weight: normal;
+    font-family: "Segoe UI";
+}
+.list-function-menu .function-name .fa-caret-right {
+    float: right;
+    margin-right: -5px;
+}
+.list-function-menu .function-item .function-multi {
+    position: relative;
+}
+.list-function-menu .function-item .function-list-child {
+    position: absolute;
+    top: -3px;
+    right: -238px;
+    z-index: 100;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-bottom: 3px solid #c75050;
+    margin: 0;
+    padding: 1px;
+    display: none;
+    list-style: none;
+    width: 226px;
+}
+.function-item:hover .function-list-child {
+    display: block;
+}
+.function-list-child li {
+    padding : 2px 10px;
+    border: 1px solid transparent;
+}
+.function-list-child li:hover {
+    background: #f0f0f0;
+    border: 1px solid #aaa;
+}
+#menu .user-name {
+    text-transform: none;
+    color : #005fb3;
+    font-weight: normal;
+}
+
+#footer {
+    height: 28px;
+    position: fixed;
+    bottom: 0;
+    line-height: 28px;
+    font-size: 14px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    background: #0066b3;
+    border-top: 1px solid #00345C;
+    box-shadow: inset 1px 0 5px #00345C;
+    width: 100%;
+    color: #fff;
+}
+@media only screen and (max-width: 1024px) {
+    #menu > ul > li > a {
+        padding: 6px 12px;
+    }
+}

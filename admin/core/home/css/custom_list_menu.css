@@ -1,0 +1,30 @@
+.list-menu {
+    padding : 5px;
+    font-size: 14px;
+}
+.list-item{
+    line-height: 24px;
+}
+.list-item label {
+    width : 100%;
+    padding : 2px 5px;
+    border: 1px solid transparent;
+}
+.item-name .fa.fa-caret-right {
+    margin-left: 2px;
+    margin-right: 1px;
+}
+.list-item label:hover {
+    background: #eaeaea;
+    border-color: #e0e0e0;
+}
+.item-cat-child > label {
+    color : #777;
+}
+.list-item.item-cat-child, .list-item.item-menu {
+    margin-left: 10px;
+}
+
+.item-menu > label {
+    font-weight: normal;
+}

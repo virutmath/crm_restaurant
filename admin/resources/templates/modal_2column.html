@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    {$load_header}
+</head>
+<body>
+<div id="wrapper">
+    {$error_msg}
+    <div class="left-column fl rlt">
+        {$left_control}
+        <div class="column-content">
+            {$left_column}
+        </div>
+    </div>
+    <div class="right-column fl">
+        {$right_control}
+        <div class="column-wrapper modal-column">
+            {$right_column}
+        </div>
+    </div>
+    {$custom_script}
+    <div id="modal"></div>
+    <div id="overlay"></div>
+    <div id="m-window"></div>
+    <div id="loading">
+        <i class="fa fa-spin fa-cog"></i>
+        <span id="loading-text">Đang tải dữ liệu...</span>
+    </div>
+</div>
+</body>
+</html>

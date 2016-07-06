@@ -1,0 +1,696 @@
+@import url(custom_media.css);
+/* thêm kích thước 1.5 3.5 cho bootstrap */
+.context-menu-list {
+    width: 200px;
+}
+.context-menu-list .context-menu-item {
+    padding-left: 20px;
+}
+.content-mini-window {
+    *padding : 20px 10px;
+}
+.form-customize-price {
+    padding : 30px 20px;
+}
+.form-customize-price label {
+    display: block;
+    font-size: 18px;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+.form-customize-price input[type="text"] {
+    padding : 5px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 18px;
+}
+.form-customize-price .input-group-addon {
+    font-size: 18px;
+}
+.form-customize-price button {
+    margin-left: 40%;
+    margin-top: 20px;
+    padding: 5px 13px;
+}
+.col-xs-1-5 {
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+    position: relative;
+    min-height: 1px;
+    width: 12.5%;
+}
+.table-listing {
+    margin-bottom : 0;
+}
+.col-xs-7-5 {
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+    position: relative;
+    min-height: 1px;
+    width: 62.5%;
+}
+html {
+    min-height: 500px;
+}
+input {
+    padding : 5px;
+}
+input:focus {
+    border-color: #24BDE2 !important;
+}
+.color-24BDE2 {
+    color : #24BDE2;
+}
+.color-E21600{
+    color : #E21600;
+}
+.left-column {
+    width : 280px;
+}
+
+.section-content .grid_header {
+    position: static;
+    top: 0;
+    left: 0;
+    margin: 1px 0 4px;
+}
+.grid_header input[type="submit"] {
+    display: none;
+}
+.grid_header #men_cat_id {
+    width : 144px;
+}
+#restaurant-info {
+    border-top: 1px solid #ccc;
+    box-shadow: -1px -1px 7px #ccc;
+    padding : 10px 5px;
+    background: #efefef;
+}
+#restaurant-info .info-label {
+    color : #333;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+#restaurant-info .row {
+    line-height: 24px;
+    margin-bottom: 5px;
+}
+#restaurant-info .row-title {
+    font-weight: bold;
+    width : 60px;
+}
+#restaurant-info .row-content {
+    color: #333;
+    margin-left: 60px;
+    text-shadow: 2px 2px 4px #fff;
+}
+#restaurant-info .info-promo {
+    font-size: 14px;
+    border-top: 1px solid #ccc;
+    line-height: 32px;
+    background: #f0f0f0;
+    box-shadow: inset 0px 0px 50px #fff;
+    cursor: default;
+}
+.right-column {
+    width : auto;
+    float: none;
+    margin-left: 280px;
+}
+#main-sale {
+    border-bottom: 1px solid #ccc;
+}
+#center-sale {
+    width : 652px;
+    padding-bottom: 5px;
+    border-right: 1px solid #ccc;
+}
+
+#center-top-sale {
+    height: 100px;
+    border-bottom: 1px solid #ccc;
+}
+#center-top-sale label {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    line-height: 30px;
+}
+#center-top-sale .row {
+    margin-bottom: 5px;
+}
+#center-top-sale .row-title {
+    line-height: 24px;
+}
+#center-top-sale input {
+    border : 1px solid #ccc;
+    line-height: 24px;
+    height: 24px;
+}
+
+#sale_customer_code, #sale_staff_code {
+    width : 90px;
+    text-align: right;
+}
+#search_customer, #search_staff {
+    width : 140px;
+}
+#search_staff + span, #search_customer + span {
+    height: 24px;
+    display: inline-block;
+    line-height: 24px;
+    padding: 0 8px;
+    background: #e5e5e5;
+    box-shadow: inset 0 0 1px #aaa;
+}
+
+
+#center-listing .table {
+    margin-bottom: 5px;
+    margin-top: 4px;
+}
+
+#center-control table {
+    width: 100%;
+}
+#center-control td {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+#center-control td:first-child {
+    padding-left: 0;
+}
+#center-control td:last-child {
+    padding-right: 0;
+}
+#center-control .btn {
+    border-radius: 0;
+    width: 100%;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 24px;
+}
+#center-control #print-order {
+    background: #24bde2;
+}
+#center-control #preview-bill {
+    background: #01a70b;
+}
+#center-control #move-desk {
+    background: #f77347;
+}
+#center-control #join-bill {
+    background: #24bde2;
+}
+#center-control #split-bill {
+    background: #01a70b;
+}
+
+#sale-control {
+    height: 160px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    min-width: 900px;
+    padding: 0 5px;
+}
+#sale-price {
+    padding-top : 5px;
+    min-width: 220px;
+}
+#sale-price .row {
+    margin-bottom: 11px;
+}
+#sale-price .row-title {
+    line-height: 24px;
+    width: 60px;
+}
+#sale-price .row-title-short {
+    width: auto;
+}
+#sale-price input {
+    border : 1px solid #ccc;
+    line-height: 24px;
+    height: 24px;
+    text-align: right;
+}
+.men_price_bound {
+    margin-left: 60px;
+    margin-right: 10px;
+}
+.men_price_span {
+    color: #999;
+    text-align: right;
+    margin: 0 20px 0 5px;
+    line-height: 24px;
+    font-size: 18px;
+    width: 100%;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 0 3px #ccc;
+    background: #f0f0f0;
+    padding-right: 5px;
+}
+.men_price_span.active, .men_price_span:hover {
+    color: #333;
+    background: #fff;
+    box-shadow: 1px 1px 5px #ccc;
+    cursor: pointer;
+}
+#cdm_number {
+    width: 60px;
+    margin: 0 20px 0 5px;
+}
+.cdm_discount_bound {
+    margin-left: 180px;
+    padding-right: 5px;
+}
+#setting-menu-discount {
+    line-height: 24px;
+    height: 24px;
+    min-width: 22px;
+    text-align: center;
+    cursor: pointer;
+    background: #e5e5e5;
+    box-shadow: inset 0 0 1px #aaa;
+}
+#info-bill {
+    border-right: 1px solid #ccc;
+    height: 160px;
+    padding: 5px;
+    text-align: center;
+}
+#men_image {
+    max-width: 100%;
+    max-height: 130px;
+}
+#men_name {
+    line-height: 24px;
+    font-size: 12px;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#men_name:first-letter {
+    text-transform: uppercase;
+}
+#info-money {
+    padding: 5px 3px 5px 10px;
+    display: table;
+}
+
+#info-money .info-money-extra {
+    display: table-cell;
+    vertical-align: top;
+    padding-right: 6px;
+}
+#info-money .row {
+    margin-bottom: 5px;
+    margin-left: 0;
+    margin-right: 0;
+}
+#info-money .row-title {
+    width : 60px;
+    line-height: 24px;
+}
+#info-money .info-money-percent {
+    width: 60px;
+    line-height: 24px;
+    height: 24px;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    text-align: right;
+}
+
+#info-money .info-money-bound {
+    margin-left: 125px;
+    display: table;
+}
+#info-money .info-money-text {
+    text-align: right;
+    width: 100%;
+    display: table-cell;
+    padding-right: 5px;
+    border: 1px solid #ccc;
+    height: 24px;
+    line-height: 18px;
+    font-size: 18px;
+    color: #999;
+    vertical-align: middle;
+}
+#setting-extra-fee, #setting-customer-discount {
+    display: table-cell;
+    cursor: pointer;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 8px;
+    background: #e5e5e5;
+    box-shadow: inset 0 0 1px #aaa;
+}
+
+.info-money-space {
+    display: table-cell;
+    background: #fff;
+}
+.total-sum-money {
+    display: table-cell;
+    width: 320px;
+    height: 148px;
+    padding: 5px;
+    background: #f0f0f0;
+    box-shadow: inset 0 0 3px #ccc;
+    position: relative;
+}
+.total-sum-money label {
+    font-size: 16px;
+    line-height: 30px;
+    font-weight: normal;
+    float: left;
+}
+#total-money {
+    float : right;
+    font-size: 24px;
+    line-height: 36px;
+    color : #24BDE2;
+    font-weight: bold;
+}
+#final-money {
+    float: right;
+    font-size: 28px;
+    line-height: 40px;
+    color: #c9302c;
+    font-weight: bold;
+}
+#bill-finish {
+    background: #f77347;
+    cursor: pointer;
+    color : #fff;
+    margin-left: -5px;
+    margin-right: -5px;
+    position: absolute;
+    bottom: 0;
+    height: 36px;
+    line-height: 36px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 5px #ccc;
+}
+#listing-menu, #center-listing {
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+    cursor : default;
+}
+#list-desk {
+    margin-left: 652px;
+    width : auto;
+    padding: 0 5px;
+    position: relative;
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+}
+#list-desk fieldset {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#list-desk .section-name {
+    font-size: 14px;
+    color: #24BDE2;
+    border: 0;
+    margin-bottom: 0px;
+    width: auto;
+    padding: 5px;
+}
+#list-desk .desk-item {
+    float : left;
+    background-image: url('../../../resources/img/food-trays.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: 0 15px;
+    width : 64px;
+    height: 87px;
+    margin-left: 5px;
+    margin-right: 30px;
+    padding: 5px 0;
+    cursor: default;
+}
+#list-desk .desk-item:hover {
+    background-image: url("../../../resources/img/food-trays-active.png");
+}
+#list-desk .desk-item.active {
+    background-image: url('../../../resources/img/food-open.png');
+    background-position: 0 0;
+    color : #c9302c;
+    font-weight: bold;
+}
+#list-desk .desk-item.selected {
+    background-color: #afd269;
+}
+#list-desk .desk-name {
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+    margin-top: 65px;
+}
+.content-mini-window.convert-percent {
+    padding : 20px;
+}
+.content-mini-window.convert-percent .row{
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 10px;
+}
+.content-mini-window.convert-percent input {
+    border: 1px solid #ccc;
+    line-height: 24px;
+    height: 24px;
+    text-align: right;
+}
+.convert-percent button {
+    padding : 5px 18px;
+    margin-top: 20px;
+}
+#search-menu {
+    padding : 2px;
+}
+#search-menu-text {
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    line-height: 30px;
+    height: 30px;
+    width: 100%;
+    padding: 5px;
+}
+@media only screen and (max-width: 1024px) {
+    .left-column{
+        width: 230px;
+    }
+    .right-column {
+        margin-left: 230px;
+        padding-left: 3px;
+    }
+    #center-sale {
+        width: 570px;
+    }
+    #start_time_string, #cud_note, #search_customer, #search_staff{
+        width: 120px;
+    }
+    #sale_customer_code, #sale_staff_code {
+        width: 80px;
+    }
+    #list-desk {
+        margin-left:568px;
+    }
+    .btn {
+        padding: 1px 4px;
+    }
+    #list-desk .desk-item {
+        margin-right: 22px;
+    }
+    #cdm_number {
+        width: 35%;
+        margin: 0;
+        float: left;
+        text-align: right;
+    }
+    .men_price_span{
+        width: 93%;
+        margin: 10px 0 0;
+    }
+    #sale-price {
+        display: none;
+    }
+    #sale-price-1024{
+        display: block !important;
+    }
+    .cdm_discount_bound {
+        margin: 0;
+        float: right;
+        width: 65%;
+        padding-left: 7px;
+        box-sizing:border-box;
+    }
+    .cdm_menu_discount {
+        width: 65%;
+        float: left;
+        position: relative;
+    }
+    .sale-pt {
+        position: absolute;
+        right: 5px;
+        top: 7px;
+        color: #aaa;
+    }
+    #cdm_menu_discount {
+        text-align: right;
+        padding-right: 20px;
+        box-sizing:border-box; 
+    }
+    #setting-menu-discount {
+        display: block;
+        line-height: 30px;
+        height: 31px;
+        border: 1px solid #aaa;
+        float: right;
+    }
+    .men_price_bound {
+        width:100%;
+        margin-left: 5px;
+        position: relative;
+    }
+    .info-money-extra {
+        display: none !important;
+    }
+    .info-money-extra-1024{
+        display: block !important;
+    }
+    .info-money-percent{
+        width: 90px !important;
+        padding-right: 18px;
+    }
+    #info-money .info-money-bound {
+        margin: 0;
+        width: 80px;
+    }
+    #info-money .row{
+        margin-bottom: 10px; 
+    }
+    .total-sum-money{
+        float: left;
+        margin-left:5px;
+        width: 290px; 
+    }
+    #info-money .info-money-text{
+        font-size: 14px;
+    }
+}
+#sale-price-1024{
+    display: none;
+    padding-top: 5px;
+    width: 185px;
+    float: left;
+}
+.pos-price {
+    position: absolute;
+    top: 15px;
+    left: 13px;
+    color: #aaa;
+}
+.clear{
+    clear: both;
+}
+.info-money-extra-1024{
+    display: none;
+    width: 175px;
+    height: 110px;
+    float: left;
+}
+.info-money-extra-1024 .row #sub-fee{
+    position: relative;
+    float: left;
+}
+.sub-fee{
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    color: #aaa;
+}
+ 
+@media only screen and (max-width: 980px) {
+ 
+}
+ 
+@media only screen and (max-width: 800px) {
+   
+}
+ 
+@media only screen and (max-width: 780px) {
+    
+}
+ 
+@media only screen and (max-width: 768px) {
+   
+}
+ 
+@media only screen and (max-width: 720px) {
+ 
+}
+ 
+@media only screen and (max-width: 640px) {
+   
+}
+ 
+@media only screen and (max-width: 600px) {
+   
+}
+ 
+@media only screen and (max-width: 568px) {
+    
+}
+ 
+@media only screen and (max-width: 563px) {
+ 
+}
+ 
+@media only screen and (max-width: 549px) {
+ 
+}
+ 
+@media only screen and (max-width: 534px) {
+ 
+}
+ 
+@media only screen and (max-width: 480px) {
+    
+}
+ 
+@media only screen and (max-width: 360px) {
+    
+}
+ 
+@media only screen and (max-width: 338px) {
+ 
+}
+ 
+@media only screen and (max-width: 330px) {
+ 
+}
+ 
+@media only screen and (max-width: 320px) {
+ 
+}

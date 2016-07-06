@@ -1,0 +1,27 @@
+<div class="row row_insert">
+    <div class="row col-sm-4">
+        {if="$row_list"}
+        {loop="$row_list"}
+        <div class="row col-sm-12 row_insert_item">
+            <div class="col-xs-8"><input type="text" class="form-control" name="{$value.input_name}" value="{$value.input_value}"/></div>
+            <button class="btn btn-default" type="button" onclick="removeRow(this)">{$remove_btn_label}</button>
+            <div class="margin-10b"></div>
+        </div>
+        {/loop}
+        {/if}
+        <div class="row col-sm-12 row_insert_item item_template hidden">
+            <div class="col-xs-8"><input type="text" class="form-control" name="{$input_name}" value="{$input_value}"/></div>
+            <button class="btn btn-default" type="button" onclick="removeRow(this)">{$remove_btn_label}</button>
+            <div class="margin-10b"></div>
+        </div>
+        <div class="row col-sm-12 row_insert_item">
+            <div class="col-xs-8"><input type="text" class="form-control col-sm-10" name="{$input_name}" value="{$input_value}"/></div>
+        </div>
+        <div class="row margin-10b"></div>
+    </div>
+    <div class="col-sm-8">
+        <div class="row col-sm-2">
+            <button class="btn btn-default" type="button" onclick="addRow(this)">{$add_btn_label}</button>
+        </div>
+    </div>
+</div>

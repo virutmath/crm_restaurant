@@ -1,0 +1,17 @@
+<div ng-controller="SettingController as setting">
+    <md-content class="md-padding">
+        <md-input-container>
+            <label>Địa chỉ IP máy chủ</label>
+            <input ng-model="setting.ipServer">
+        </md-input-container>
+        <md-input-container>
+            <label>Tài khoản</label>
+            <input ng-model="setting.username"/>
+        </md-input-container>
+        <md-input-container>
+            <label>Mật khẩu</label>
+            <input type="password" ng-model="setting.password"/>
+        </md-input-container>
+        <md-button class="md-raised md-primary" ng-click="setting.saveSetting()">Lưu cài đặt</md-button>
+    </md-content>
+</div>

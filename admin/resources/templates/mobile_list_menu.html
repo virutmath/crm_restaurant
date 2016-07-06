@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>Login Admin</title>
+    {$load_header}
+</head>
+<body>
+<div class="wrapper">
+    <div class="padding-bottom-control">
+        <div class="desk-infomation" data-desk_id="{$desk_id}">
+            <span class="tittle" data-desk_name="{$desk_name}">{$desk_name}</span>
+            Giờ vào: <input class="date-time" readonly="readonly" value="{$start_time}"/>
+            Ghi chú: <input class="desk-note" value=""/>
+            Khách hàng: 
+            <select class="select desk-customer">
+                <option value="0">--Chọn khách hàng--</option>
+                {loop="$list_cus"}
+                <option value="{$value.cus_id}">{$value.cus_name}</option>
+                {/loop}
+            </select>
+            Nhân viên: 
+            <select class="select desk-user">
+                <option value="0">--Chọn nhân viên--</option>
+                {loop="$list_use"}
+                <option value="{$value.use_id}">{$value.use_name}</option>
+                {/loop}
+            </select>
+        </div>
+        <div class="menu-list">
+            <span class="tittle">thực đơn</span>
+            <ul>
+                {$list_menu}
+            </ul>
+        </div>
+    </div>    
+</div>
+<div class="control">
+    <span class="cancel-desk">Hủy bàn</span>
+    <span class="detail_desk" onclick="deskDetail();">chi tiết bàn</span>
+</div>
+<div id="mindow"></div>
+{$custom_script}
+</body>
+</html>

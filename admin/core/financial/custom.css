@@ -1,0 +1,29 @@
+#sum-fntext {
+    border-left: 1px solid #c0c0c0;
+    border-right: 1px solid #c0c0c0;
+    background: #f0f0f0;
+}
+#sum-financial {
+    font-size: 18px;
+    line-height: 24px;
+}
+.footer-control {
+    line-height: 38px;
+}
+.filter-system-ticket {
+    border-bottom: 1px solid #ccc;
+}
+.filter-system-ticket label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: normal;
+}
+.filter-system-ticket label input[type=checkbox] {
+    float: left;
+    margin-top: 12px;
+    margin-right: 3px;
+}
+
+.filter-system-ticket > .col-xs-6:last-child {
+    padding-left: 20px;
+}

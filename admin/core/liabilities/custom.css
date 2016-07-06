@@ -1,0 +1,59 @@
+html,body,#wrapper-full,.left-column,.right-column{height: 100%;}
+.payments_liability, .bill_detail {float:left; padding-right:10px;cursor:pointer;}
+.total-pos {width: 100%; border-bottom: 1px solid #ddd; padding:1px; margin-top: 3px;}
+.col-xs-6-lft, .col-xs-6-rgh {float:left;box-sizing: border-box;line-height: 25px;}
+.ttl-hd {border:0; text-align: center;font-weight: bold; font-size: 11px;width: 60%;}
+.col-xs-6-lft {width: 65%;}
+.col-xs-6-rgh {width: 35%;}
+.col-xs-6-rgh .ttl-hd {text-align: right; float: right; padding-right:7px;}
+.col-xs-6-lft-l {padding-left: 10px;}
+.col-xs-6-lft-r .ttl-hd {padding-right: 0;}
+#wrapper-full {position: relative;}
+.footer-control {position: absolute; bottom:30px;}
+.pay_libility {width: 100%; height: 200px; background: red;}
+.show_number_bill {float:left;}
+.show_number_bill .form-control {font-size: 11px; width: 75%; float: left; width: auto;}
+.show_number_bill span {font-size: 11px; float: left; padding: 4px 2px 3px;}
+.table-listing-bound {width:100%;}
+.control-bill-in, .show_number_bill {float:left;}
+.clear {clear:both;}
+.left-column, .right-column {position: relative;}
+.bottom {position: absolute; bottom: 30px; width: 98%;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

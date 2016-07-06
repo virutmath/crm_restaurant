@@ -1,0 +1,186 @@
+#overlay {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: transparent;
+}
+#modal {
+    display: none;
+    position: absolute;
+    z-index: 11;
+    top: 50px;
+    left: 50%;
+    width: 500px;
+    height: 270px;
+    margin-left: -250px;
+    background: #fff;
+    border: 1px solid #999;
+    box-shadow: 0 0 10px #999;
+}
+
+.modal-close {
+    cursor: pointer;
+}
+
+.modal-wrapper {
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #aaa;
+    box-shadow: 0 0 10px #aaa;
+    padding: 10px;
+}
+
+.modal-wrapper .modal-header {
+    width: 100%;
+    padding : 0;
+    height: 18px;
+    border-bottom: 1px solid #ccc;
+}
+
+.modal-wrapper .modal-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: -4px;
+    width: 100%;
+    text-align: center;
+}
+
+.modal-wrapper .modal-header .modal-close {
+    position: absolute;
+    top: 3px;
+    font-size: 20px;
+    font-weight: bold;
+    right: 10px;
+    color: #999;
+    cursor: pointer;
+}
+
+.modal-wrapper .modal-header .modal-close:hover {
+    color: #333;
+}
+
+.modal-wrapper .modal-body {
+    padding: 0;
+}
+
+.modal-wrapper .modal-body > iframe {
+    width: 100%;
+    height: 330px;
+}
+
+.modal-wrapper .modal-footer {
+    width: 100%;
+    line-height: 34px;
+    padding: 0;
+    margin-top: 0;
+}
+
+.modal-wrapper .modal-footer .module-name {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+    width: 30%;
+    text-align: left;
+}
+
+.modal-wrapper .modal-footer .module-rightname {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+#m-window {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 12;
+    background: transparent;
+}
+.mwindow {
+    position: absolute;
+    background: rgb(187,209,102);
+    border: 1px solid #aaa;
+    padding: 30px 6px 6px 6px;
+    box-shadow: 0 0 3px #bbb;
+    left: 50%;
+}
+.mwindow-wrapper {
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 1px solid #aaa;
+    box-shadow: inset 0 0 2px #ccc;
+}
+.mwindow .mwindow-header {
+    font-size: 13px;
+    background: rgb(187,209,102);
+    color: #222;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: -31px;
+    line-height: 20px;
+    height: 30px;
+}
+.mwindow .mwindow-header label {
+    text-align: center;
+    margin-bottom: 0;
+    padding : 4px 0;
+    font-size: 15px;
+    font-weight: normal;
+    display: inline-block;
+}
+.mwindow .mwindow-close{
+    font-size: 18px;
+    float: right;
+    font-weight: normal;
+    padding: 0 10px;
+    line-height: 20px;
+    background: #C75050;
+    color: #fff;
+    cursor: default;
+}
+.mwindow .mwindow-close:hover {
+    background: #DD5858;
+    cursor: default;
+}
+.mwindow .content-mini-window {
+    height: 100%;
+}
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.1);
+    font-size: 100px;
+    display: none;
+}
+#loading .fa-cog {
+    position: fixed;
+    top : 50%;
+    left : 50%;
+    margin-left: -50px;
+    margin-top: -100px;
+}
+#loading #loading-text {
+    position: fixed;
+    top : 50%;
+    left : 50%;
+    margin-left: -120px;
+    margin-top: 10px;
+    font-size: 30px;
+}

@@ -1,0 +1,22 @@
+<div class="padding-bottom-control">
+    <div class="desk-infomation" data-desk_id="{$desk_id}">
+        <span class="tittle">{$desk_name}</span>
+        Giờ vào: <input class="date-time" readonly="readonly" data-time_int="{$start_time_int}" value="{$start_time}"/>
+        Ghi chú: <input class="desk-note date-time" value="{$cud_note}"/>
+        Khách hàng: 
+        <select class="select desk-customer date-time" disabled="disable">
+            <option value="{$cus_id}">{$cus_name}</option>
+        </select>
+        Nhân viên: 
+        <select class="select desk-user date-time" disabled="disable">
+            <option value="{$use_id}">{$use_name}</option>
+        </select>
+    </div>
+    <div class="menu-list">
+        <span class="tittle">món đã chọn</span>
+        <ul class="list-menu-active">
+            {$list_menu}
+        </ul>
+    </div>
+</div>
+    

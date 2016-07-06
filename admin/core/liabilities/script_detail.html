@@ -1,0 +1,67 @@
+<script>
+    //chỉnh kích thước khung wrapper ngay khi load js
+    var windowHeight        = windowHeight || $(window).height();
+    var wrapperHeight       = windowHeight;
+    var wrapperContent      = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var sectionContent_id   = $('.section-content');
+    var offsetTopContent    = sectionContent_id.offset().top;
+    var content             = wrapperHeight - offsetTopContent;
+    var sectionContent_class = $('.section-content');
+    sectionContent_class.height(content - 40);
+    var table_scoll = $('.table-listing-bound');
+    table_scoll.height(content - 40);
+    // scroll table
+    //table scroll
+    table_scoll.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane : false
+    });
+    
+    var close   = $('.bill-close');
+    var filter  = $('.filters');   
+// date time
+    $('.datetime-local').datepicker({
+        format : 'dd/mm/yyyy'
+    });
+// click vào nút đóng cửa sổ của iframe chi tiết công nợ khách hàng và nhà cung cấp.. 
+    close.click(function(){
+        window.parent.communicateParentWindow('close_detail');
+    });
+// hàm active vào bản ghi trong chi tiết công nợ    
+    function active_record(record_id){
+        record_item = $('#record_'+record_id);
+        $('#table-listing tr').removeClass('active');
+        record_item.addClass('active');
+    }
+// lọc hóa đơn công nợ theo ngày tháng
+    filter.click(function(){
+        var time_start  = $('.frm-dt-lft').val();
+        var time_end    = $('.frm-dt-rgh').val();
+        if($('#check-all').is(':checked')){
+            $('.frm-dt-lft').val('');
+            $('.frm-dt-rgh').val('');
+            time_start = '';
+            time_end = '';
+        }
+        var table = '';
+        if($(this).hasClass('supplier')) table = 'supplier';
+        if($(this).hasClass('customer')) table = 'customer';
+        var id   = $(this).data('id');
+        $.ajax({
+            type : 'get',
+            data : {
+                type: table, 
+                id : id, 
+                time_start: time_start,
+                time_end: time_end
+            },
+            dataType : 'html',
+            url : 'detail.php',
+            success : function(resp){
+                $('#table_result').html(resp);
+            }
+        })
+    });
+</script>

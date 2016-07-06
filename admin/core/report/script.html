@@ -1,0 +1,464 @@
+<script>
+
+    //phân trang ajax
+    ajax_paging = true;
+    var ajax_url = {
+        listRecord : 'listRecord'
+    };
+
+    var left_column_wrapper     = $('.left-column').find('.column-wrapper');
+    var right_column_wrapper    = $('.right-column').find('.column-wrapper');
+
+    var left_session_column     = $('.session-left').find('.column-wrapper');
+    var right_session_column    = $('.session-right').find('.column-wrapper');
+//    var table_listing           = right_session_column.find('.table-listing-bound');
+
+    //chỉnh kích thước khung wrapper
+    var windowHeight        = windowHeight || $(window).height();
+    var wrapperHeight       = windowHeight;
+    var wrapperContent      = $('#wrapper-full');
+    wrapperContent.height(wrapperHeight);
+    var offsetTopContent    = wrapperContent.offset().top;
+    left_column_wrapper.height(wrapperHeight - offsetTopContent - 75);
+    right_column_wrapper.height(wrapperHeight - offsetTopContent - 75);
+    left_session_column.height(wrapperHeight - offsetTopContent - 45);
+    right_session_column.height(wrapperHeight - offsetTopContent - 65);
+
+
+//    table_listing.height(wrapperHeight - offsetTopContent - 45);
+    // fix scroll left
+    //cấp phát lại table scroll
+    if(left_session_column.find('.enscroll-track').length < 1){
+        left_session_column.enscroll({
+            showOnHover: false,
+            minScrollbarLength: 28,
+            addPaddingToPane : false
+        });
+    }
+    function fixScrollMenu() {
+        //cấp phát lại table scroll
+        if(right_session_column.parent('.session-right').find('.enscroll-track').length < 1){
+            right_session_column.enscroll({
+                showOnHover: false,
+                minScrollbarLength: 28,
+                addPaddingToPane : false
+            });
+        }
+    }
+    // date time input
+    $('.datetime-local').datepicker({
+        format : 'dd/mm/yyyy'
+    });
+
+    // srcipt call iframe
+    var report = $('#report');
+    $('.menu_sidebar li').click(function(){
+        var link = $(this).find('a').data("cat")+'.php';
+        var text = $(this).find('a').text();
+        $('.right-column .section-title').html(text);
+        if ($(this).find('a').hasClass('active_link')) return false;
+        else 
+        {
+            $(this).find('a').addClass('active_link');
+            $(this).siblings().find('a').removeClass('active_link');    
+        }
+        report.attr('src',link);
+    });
+
+    //Dạng category đa cấp, nhấn vào parent node thì toggle child node
+    $('li[data-cat_parent]').find('.collapse-li').unbind('click').click(function () {
+        $cat_parent = $(this).closest('li[data-cat_parent]').attr('data-cat_parent');
+//        console.log($cat_parent);
+        if($(this).hasClass('fa-plus-square-o'))
+            $(this).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+        else
+            $(this).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+        $('.cat_item[data-parent="' + $cat_parent + '"]').toggle("medium");
+
+    });
+    // category cho product, khi nhấn vào parent_item thì toggle products
+    $('li[data-cat]').find('.collapse-li').unbind('click').click(function () {
+        $cat_parent_pro = $(this).closest('li[data-cat]').attr('data-cat');
+        if($(this).hasClass('fa-plus-square-o'))
+            $(this).removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+        else
+            $(this).removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+        $('.product_item[data-cat_pro="' + $cat_parent_pro + '"]').toggle("medium");
+
+    });
+
+    // khi check all thì tất cả các mặt hàng sẽ được checked
+    $('#chk_all').unbind('click').click(function(){
+        if(this.checked){
+            $('.group_product').each(function(){
+                this.checked = true;
+            });
+        }else {
+            $('.group_product').each(function(){
+                this.checked = false;
+            });
+        }
+    });
+
+    // plug-in checkbox theo tung category
+    (function($){
+        $.fn.extend({
+
+            checktree: function(){
+                $(this)
+                        .addClass('checktree-root')
+                        .on('change', 'input[type="checkbox"]', function(e){
+                            e.stopPropagation();
+                            e.preventDefault();
+
+                            checkParents($(this));
+                            checkChildren($(this));
+                        })
+                ;
+
+                var checkParents = function (c)
+                {
+                    var parentLi = c.parents('ul:eq(0)').parents('li:eq(0)');
+
+                    if (parentLi.length)
+                    {
+                        var siblingsChecked = parseInt($('input[type="checkbox"]:checked', c.parents('ul:eq(0)')).length),
+                                rootCheckbox = parentLi.find('input[type="checkbox"]:eq(0)')
+                                ;
+
+                        if (c.is(':checked'))
+                            rootCheckbox.prop('checked', true);
+                        else if (siblingsChecked === 0)
+                            rootCheckbox.prop('checked', false);
+
+                        checkParents(rootCheckbox);
+                    }
+                };
+
+                var checkChildren = function (c)
+                {
+                    var childLi = $('ul li input[type="checkbox"]', c.parents('li:eq(0)'));
+
+                    if (childLi.length)
+                        childLi.prop('checked', c.is(':checked'));
+                }
+            }
+
+        });
+    })(jQuery);
+    $('#tree').checktree();
+
+
+    // ham loc du lieu khi ban ajax
+    function fillData(){
+        // lay tat ca gia tri value checkbox cua product
+        var array_product = [];
+        $('input.pro_item').each(function () {
+            if(this.checked == true){
+                item = parseInt($(this).val());
+                array_product.push(item);
+            }
+        });
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+        store_id    = $('#store_id').val();
+
+        $.ajax({
+            type : 'post',
+            url  : 'ajax.php',
+            data : {
+                action      : 'reportData',
+                products    : array_product,
+                start_date  : start_date,
+                end_date    : end_date,
+                store_id    : store_id
+            },
+            dataType : 'json',
+            success : function (html) {
+                loadingProgress('hide');
+                alert('success');
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+    //lọc giá trị tồn kho
+    function fillStock(){
+        // lay tat ca gia tri value checkbox cua product
+
+        var array_product = [];
+        $('input.pro_item').each(function () {
+            if(this.checked == true){
+                item = parseInt($(this).val());
+                array_product.push(item);
+            }
+        });
+        store_id = $('#store_id').val();
+
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {
+                action : 'reportStock',
+                products : array_product,
+                store_id : store_id
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#right-column').find('.section-content').html(resp.content);
+                $('#total-money').html(resp.total);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+
+    //thống kê bán hàng theo menus
+    function fillMenus(){
+        // lay tat ca gia tri value checkbox cua product
+        var array_product = [];
+        $('input.pro_item').each(function () {
+            if(this.checked == true){
+                item = parseInt($(this).val());
+                array_product.push(item);
+            }
+        });
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+        store_id    = $('#store_id').val();
+
+        $.ajax({
+            type : 'post',
+            url  : 'ajax.php',
+            data : {
+                action      : 'revenueMenus',
+                products    : array_product,
+                start_date  : start_date,
+                end_date    : end_date,
+                store_id    : store_id
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#right-column').find('.section-content').html(resp.content);
+                $('#total-money').html(resp.total);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+    //thống kê bán hàng theo nhân viên
+    function fillStaff(){
+        // lay tat ca gia tri value checkbox cua product
+        var array_staff = [];
+        $('input.pro_item').each(function () {
+            if(this.checked == true){
+                item = parseInt($(this).val());
+                array_staff.push(item);
+            }
+        });
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+
+        $.ajax({
+            type : 'post',
+            url  : 'ajax.php',
+            data : {
+                action      : 'revenueStaff',
+                staffs      : array_staff,
+                start_date  : start_date,
+                end_date    : end_date
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#right-column').find('.section-content').html(resp.content);
+                $('#total-bill').html(resp.all_bill);
+                $('#total-money').html(resp.total);
+                $('#total-round').html(resp.round_money);
+                $('#total-debit').html(resp.debit_money);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+    //thống kê bán hàng theo khách hàng
+    function fillCustomers(){
+        // lay tat ca gia tri value checkbox cua product
+        var array_customers = [];
+        $('input.pro_item').each(function () {
+            if(this.checked == true){
+                item = parseInt($(this).val());
+                array_customers.push(item);
+            }
+        });
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+
+        $.ajax({
+            type : 'post',
+            url  : 'ajax.php',
+            data : {
+                action      : 'revenueCustomers',
+                customers      : array_customers,
+                start_date  : start_date,
+                end_date    : end_date
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#right-column').find('.section-content').html(resp.content);
+                $('#total-bill').html(resp.all_bill);
+                $('#total-money').html(resp.total);
+                $('#total-round').html(resp.round_money);
+                $('#total-debit').html(resp.debit_money);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+    //thống kê mặt hàng
+    function fillProducts(){
+        // lay tat ca gia tri value checkbox cua product
+
+        var array_product = [];
+        $('input.pro_item').each(function () {
+            if(this.checked == true){
+                item = parseInt($(this).val());
+                array_product.push(item);
+            }
+        });
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+        store_id = $('#store_id').val();
+
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {
+                action : 'reportProducts',
+                products : array_product,
+                start_date  : start_date,
+                end_date    : end_date,
+                store_id : store_id
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#right-column').find('.section-content').html(resp.content);
+                $('#total-money').html(resp.total);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+    //thống kê chi tiết bán hàng
+    function fillBillDetail(){
+        // lay tat ca gia tri value checkbox cua product
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+        store_id = $('#store_id').val();
+        admin_id = $('#admin_id').val();
+
+        $.ajax({
+            type : 'post',
+            url : 'report_bill_detail.php',
+            data : {
+                action : ajax_url.listRecord,
+                start_date  : start_date,
+                end_date    : end_date,
+                store_id : store_id,
+                admin_id : admin_id
+
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#content-column').html(resp.content);
+                $('#money_default').html(resp.money_default);
+                $('#money_discount').html(resp.money_discount);
+                $('#money_service').html(resp.money_service);
+                $('#money_vat').html(resp.money_vat);
+                $('#money_real').html(resp.money_real);
+                $('#money_true').html(resp.money_true);
+                $('#money_cash').html(resp.money_cash);
+                $('#money_debit').html(resp.money_debit);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+
+    //thống kê chi tiết theo phiên đăng nhập
+    function fillBillAdmin(){
+        // lay tat ca gia tri value checkbox cua product
+        start_date  = $('#start_date').val();
+        end_date    = $('#end_date').val();
+        admin_id = $('#admin_id').val();
+
+        $.ajax({
+            type : 'post',
+            url : 'report_bill_admin.php',
+            data : {
+                action : ajax_url.listRecord,
+                start_date  : start_date,
+                end_date    : end_date,
+                admin_id : admin_id
+
+            },
+            dataType : 'json',
+            success : function (resp) {
+                loadingProgress('hide');
+                $('#content-column').html(resp.content);
+                $('#money_default').html(resp.money_default);
+                fixScrollMenu();
+            },
+            beforeSend : function () {
+                loadingProgress('show');
+            },
+            error : function () {
+                loadingProgress('hide');
+            }
+        })
+    }
+</script>

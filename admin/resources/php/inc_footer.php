@@ -1,0 +1,1 @@
+<div class="fr ft_text"><?=WEBSITE_NAME?> - Copyright &copy; 2013</div>

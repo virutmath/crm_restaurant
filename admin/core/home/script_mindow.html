@@ -1,0 +1,47 @@
+<script>
+    var table_left = $('#mindow-listing-menu').find('.table-listing-bound');
+    //table scroll
+    table_left.enscroll({
+        showOnHover: true,
+        minScrollbarLength: 28,
+        addPaddingToPane: false
+    });
+    //khi ấn đồng ý chuyển bàn sẽ xử lý đến file ajax.php
+    function moveDesk(){
+        var from_desk = $('#from_desk').val();
+        var to_desk = $('#to_desk').val();
+        $.ajax({
+            type :'POST',
+            url :'ajax.php',
+            data : {action:'moveDesk',from_desk_id:from_desk,to_desk_id:to_desk},
+            dataType:'json',
+            success:function(resp){
+                if(resp.error){
+                    alert(resp.error);
+                    return false;
+                }else{
+                    window.parent.communicateParentWindow('moveDesk',{from_desk:from_desk,to_desk:to_desk});
+                }
+            }
+        });
+    }
+    //khi ấn đồng ý chuyển bàn sẽ xử lý đến file ajax.php
+    function joinDesk(){
+        var from_desk = $('#from_desk').val();
+        var to_desk = $('#to_desk').val();
+        $.ajax({
+            type :'POST',
+            url :'ajax.php',
+            data : {action:'joinDesk',from_desk_id:from_desk,to_desk_id:to_desk},
+            dataType:'json',
+            success:function(resp){
+                if(resp.error){
+                    alert(resp.error);
+                    return false;
+                }else {
+                    window.parent.communicateParentWindow('joinDesk',{from_desk:from_desk,to_desk:to_desk});
+                }
+            }
+        });
+    }
+</script>

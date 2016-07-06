@@ -1,0 +1,10 @@
+.infor_bill_trash tr td {padding: 5px 0;}
+.bill-close {float: right; opacity: .4;}
+.bill-close:hover {opacity: 1; cursor: pointer;}
+.print-close {padding:5px; border-top:1px solid #333;}
+
+
+
+
+
+

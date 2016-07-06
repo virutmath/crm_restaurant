@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    {$load_header}
+    <script>
+        var total_debit = {$total_debit};
+    </script>
+    {$link_custom_script}
+</head>
+<body>
+<div id="wrapper-full">
+    <div class="col-xs-12" id="content-column">
+        <div id="view-information">
+            <form method="" action="">
+                <div class="information-debit" data-id_object="{$record_id}" data-type="{$type}">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td width="120">
+                                <span class="name-obj" style="color: red;"><strong>Mã {$name_object}: {$id}</strong></span>
+                            </td>
+                            <td>
+                                <span class="name-obj">{$name}</span>
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td><label>Tổng tiền còn nợ:</label></td>
+                            <td>{$total_money}</td>
+                        </tr>
+                        <tr>
+                            <td><label>Thanh toán tiếp:</label></td>
+                            <td><input class="text-right next-pay" id="pay_next_money" value="0"/></td>
+                        </tr>
+                        <tr>
+                            <td><label>Tổng HĐ còn nợ:</label></td>
+                            <td>
+                                <input class="number_bill" readonly="readonly" value="{$number_bill}"/>
+                                <input type="checkbox" onclick="pay_all_debit()" id="pay_all"/> 
+                                <label for="pay_all" onclick="pay_all_debit()">Thanh toán hết</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>Thanh toán bằng:</label></td>
+                            <td>
+                                <input type="radio" class="check" value="0" id="money" name="pay" checked="checked"/>
+                                <label for="money" style="margin-right: 30px;"> Tiền mặt</label>
+                                <input type="radio" class="check" value="1" id="card" name="pay"/>
+                                <label for="card"> Thẻ</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="avatar-debit">
+                    {$avatar}
+                </div>
+                <div class="clear note">
+                    <label>Ghi chú: </label>
+                    <textarea class="text-area-note"></textarea>
+                </div>
+                <p class="luuy"><strong>Lưu ý: </strong>Hệ thống ưu tiên thanh toán hóa đơn có ghi nợ trước</p>
+            </form>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-xs-12 footer-button">
+        <span class="bill-close"><i class="fa fa-sign-out"></i> Đóng cửa sổ</span>
+        <span class="save-pay-debit"><i class="fa fa-floppy-o"></i> Lưu lại</span>    
+    </div>
+    
+    {$custom_script}
+    <div id="modal"></div>
+    <div id="overlay"></div>
+    <div id="m-window"></div>
+    <div id="loading">
+        <i class="fa fa-spin fa-cog"></i>
+        <span id="loading-text">Đang tải dữ liệu...</span>
+    </div>
+</div>
+</body>
+</html>

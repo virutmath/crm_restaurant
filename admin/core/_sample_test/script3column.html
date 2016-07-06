@@ -1,0 +1,350 @@
+<script>
+    var ajax_url = {
+        add_left : 'loadFormAddCategory',
+        edit_left :'loadFormEditCategory',
+        trash_left : 'deleteCategory',
+        add_right : 'loadFormAddRecord',
+        add_center : 'loadFormAddRecord',
+        edit_center : 'loadFormEditRecord',
+        edit_right : 'loadFormEditRecord',
+        trash_right : 'deleteRecord',
+        recoveryRow : 'recoveryRecord',
+        terminalDelete : 'terminalDeleteRecord',
+        listRecord : 'listRecord'
+    }
+    var btn_refresh = $('.modal-control .control-btn-refresh');
+    var btn_add_left = $('.left-column .control-btn-add');
+    var btn_add_center = $('.center-column .control-btn-add');
+    var btn_edit_center = $('.center-column .control-btn-edit');
+    var btn_add_right = $('.right-column .control-btn-add');
+    var btn_edit_left = $('.left-column .control-btn-edit');
+    var btn_edit_right = $('.right-column .control-btn-edit');
+    var btn_trash_left = $('.left-column .control-btn-trash');
+    var btn_trash_center = $('.center-column .control-btn-trash');
+    var btn_trash_right = $('.right-column .control-btn-trash');
+    var right_column_wrapper = $('.right-column').find('.column-wrapper');
+    var center_column_wrapper = $('.center-column').find('.section-content');
+
+    function deactivate_control(type){
+        switch (type){
+            case 'left':
+                btn_edit_left.addClass('deactivate');
+                btn_trash_left.addClass('deactivate');
+                break;
+            case 'center':
+                btn_edit_center.addClass('deactivate');
+                btn_trash_center.addClass('deactivate');
+                break;
+            case 'right':
+                btn_edit_right.addClass('deactivate');
+                btn_trash_right.addClass('deactivate');
+                break;
+        }
+    }
+
+    function active_control(type){
+        switch (type){
+            case 'left':
+                btn_edit_left.removeClass('deactivate');
+                btn_trash_left.removeClass('deactivate');
+                break;
+            case 'center':
+                btn_edit_center.removeClass('deactivate');
+                btn_trash_center.removeClass('deactivate');
+                break;
+            case 'right':
+                btn_edit_right.removeClass('deactivate');
+                btn_trash_right.removeClass('deactivate');
+                break;
+        }
+    }
+    function recycleRow(record_id){
+        if(record_id && confirm('Bạn xác nhận khôi phục bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.recoveryRow,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('right');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+    function terminalDelete(record_id){
+        if(record_id && confirm('Bạn xác nhận xóa vĩnh viễn bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                data : {action: ajax_url.terminalDelete,record_id : record_id},
+                dataType : 'json',
+                url : 'ajax.php',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        deactivate_control('right');
+                    }else{
+                        alert(resp.error);
+                    }
+                }
+            })
+        }
+    }
+
+    //refresh
+    btn_refresh.unbind('click').click(function(){
+        window.location.reload();
+    });
+
+    //add left
+    btn_add_left.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.add_left});
+    });
+
+    //edit left
+    btn_edit_left.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var cat_id = parseInt($('.cat_name.active').parent('li').data('cat'));
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.edit_left, cat_id : cat_id})
+    })
+
+    //delete left
+    btn_trash_left.unbind('click').click(function(){
+        if($(this).hasClass('deactivate')){
+            return false;
+        }
+        var cat_active = $('.cat_name.active').parent('li');
+        var cat_id = parseInt(cat_active.data('cat'));
+        var cat_count = cat_active.data('count-record');
+        if(cat_count > 0){
+            alert('Bạn không thể xóa nhóm này vì nó vẫn còn chứa các bản ghi. Vui lòng xóa bản ghi trước');
+            return false;
+        }
+        if(confirm('Bạn muốn xóa nhóm này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action : ajax_url.trash_left,cat_id : cat_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        cat_active.remove();
+                        deactivate_control('left');
+                    }
+                }
+            })
+        }
+    })
+
+    //add right
+    btn_add_right.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.add_right});
+    })
+    //add_center
+    btn_add_center.unbind('click').click(function(){
+        var modal = new Modal();
+        modal.width = 600;
+        modal.height = 400;
+        modal.miniLoad('ajax.php',{action:ajax_url.add_center});
+    })
+
+    //edit right
+    btn_edit_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        var modal = new Modal();
+        modal.miniLoad('ajax.php',{action:ajax_url.edit_right,record_id:record_id})
+    });
+    //edit center
+    btn_edit_center.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        var modal = new Modal();
+        modal.width = 600;
+        modal.height = 550;
+        modal.miniLoad('ajax.php',{action:ajax_url.edit_center,record_id:record_id})
+    });
+    //delete center
+    btn_trash_center.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        if(confirm('Bạn muốn xóa bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action:ajax_url.trash_right,record_id : record_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        //deactivate các nút bên phải
+                        deactivate_control('center');
+                    }
+                }
+            })
+        }
+    })
+    //delete right
+    btn_trash_right.unbind('click').click(function () {
+        if($(this).hasClass('deactivate')) return false;
+        var record_id = $('.record-item.active').data('record_id');
+        if(confirm('Bạn muốn xóa bản ghi này?')){
+            $.ajax({
+                type : 'post',
+                url : 'ajax.php',
+                data : {action:ajax_url.trash_right,record_id : record_id},
+                dataType : 'json',
+                success : function(resp){
+                    if(resp.success){
+                        $('#record_'+record_id).remove();
+                        //deactivate các nút bên phải
+                        deactivate_control('right');
+                    }
+                }
+            })
+        }
+    })
+
+    $('.list-vertical-crm').find('li').unbind('click').click(function() {
+
+        if ($(this).find('.cat_name').hasClass('active')) {
+            return false;
+        }
+        var cat_id = $(this).data('cat');
+        $('label.cat_name').removeClass('active');
+        $(this).find('.cat_name').addClass('active');
+        if($(this).hasClass('list-vertical-item')){
+            active_control('left')
+        }else{
+            deactivate_control('left');
+        }
+        //load danh sách bên right column
+        $.ajax({
+            type : 'post',
+            url : 'ajax.php',
+            data : {action : ajax_url.listRecord, cat_id : cat_id},
+            success : function (html) {
+                center_column_wrapper.html(html);
+                //deactivate các phím sửa xóa bên phải
+                deactivate_control('center');
+            }
+        })
+    });
+
+
+
+    //function
+    function active_record(record_id){
+        var record_item = $('#record_'+record_id);
+        console.log(record_item);
+        if(record_item.hasClass('active')){
+            return false;
+        }
+        $('#table-listing tr').removeClass('active');
+        record_item.addClass('active');
+        //nếu là bản ghi trong thùng rác thì không hiện nút sửa xóa
+        if(record_item.hasClass('menu-trash')){
+            return false;
+        }
+        //active các nút sửa xóa
+        active_control('center');
+    }
+
+
+
+    //context menu
+    $.contextMenu({
+        selector : '.menu-normal',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới',
+                callback : function(key, opt){
+                    btn_add_center.trigger('click');
+                }
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin',
+                callback : function (key,opt){
+                    var trigger = opt.$trigger;
+                    active_record(trigger.data('record_id'));
+                    btn_edit_center.trigger('click');
+                }
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa',
+                callback : function(key,opt){
+                    var trigger = opt.$trigger;
+                    console.log(trigger.data('record_id'));
+                    active_record(trigger.data('record_id'));
+                    btn_trash_center.trigger('click');
+                }
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục ',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                disabled : true,
+                className : 'not-selectable'
+            }
+        }
+    });
+    $.contextMenu({
+        selector : '.menu-trash',
+        items : {
+            add : {
+                name : '<i class="fa fa-file-o"></i> Thêm mới',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            edit : {
+                name : '<i class="fa fa-edit"></i> Thay đổi thông tin',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            trash : {
+                name : '<i class="fa fa-trash"></i> Xóa',
+                disabled : true,
+                className : 'not-selectable'
+            },
+            sep1 : '<hr>',
+            refresh : {
+                name : '<i class="fa fa-refresh"></i> Làm mới danh sách',
+                callback : function (key, opt){
+                    btn_refresh.trigger('click');
+                }
+            },
+            recycle : {
+                name : '<i class="fa fa-recycle"></i> Khôi phục',
+                callback : function (key, opt) {
+                    recycleRow(opt.$trigger.data('record_id'))
+                }
+            },
+            delete : {
+                name : '<i class="fa fa-trash"></i> Xóa vĩnh viễn',
+                callback : function (key, opt){
+
+                }
+            }
+        }
+    })
+
+</script>

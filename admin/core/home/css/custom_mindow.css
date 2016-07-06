@@ -1,0 +1,17 @@
+.content_column{
+    margin: 50px auto;
+}
+.footer-button {
+    background-color: #f0f0f0;
+    padding:3px 0;
+    border-top: 1px solid #d0d0d0;
+}
+#content-column{
+    height: 175px;
+}
+.footer-button .control-btn {
+    border: 1px solid transparent;
+    font-size: 12px;
+    margin-bottom: 0;
+    margin-top: 2px;
+}

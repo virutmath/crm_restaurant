@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html  ng-app="crmRestaurant" ng-csp="">
+<head>
+    <link rel="stylesheet" href="asserts/angular-csp.css" type="text/css"/>
+    <link rel="stylesheet" href="asserts/angular-material.min.css" type="text/css"/>
+    <link rel="stylesheet" href="asserts/font-awesome.min.css" type="text/css"/>
+    <link rel="stylesheet" href="asserts/main.css" type="text/css"/>
+    <title>CRM Restaurant Work offline</title>
+    <meta charset="utf-8"/>
+</head>
+<body>
+    <div id="wrapper" ng-controller="CommonController">
+        <md-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="Bán hàng">
+                    <md-content>
+                        <div id="home-frame" class="content-tab" ng-include="'home.html'"></div>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Cài đặt">
+                    <md-content>
+                        <div id="setting-frame" class="content-tab" ng-include="'setting.html'"></div>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+        <div id="connection-status">
+            <a ng-if="online" href="{{onlineAppUrl}}" target="_blank">
+                <span class="status online">{{connection_status}}</span>
+            </a>
+            <a href="#" ng-if="!online">
+                <span class="status">{{connection_status}}</span>
+            </a>
+        </div>
+    </div>
+    <script src="scripts/angular.min.js"></script>
+    <script src="scripts/angular-animate.min.js"></script>
+    <script src="scripts/angular-route.min.js"></script>
+    <script src="scripts/angular-aria.min.js"></script>
+    <script src="scripts/angular-material.min.js"></script>
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/function.js"></script>
+    <script src="scripts/controllers.js"></script>
+</body>
+</html>
