@@ -1,0 +1,78 @@
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 09/07/2016 - 17:14:51
+| FILE		| D:\xampp\htdocs\crm_restaurant\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1023
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1468077291,
+                            1468077291,
+                            30000,
+                            "Bán hàng",
+                            "1",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 06/07/2016 - 18:15:04
+| FILE		| D:\xampp\htdocs\crm_restaurant\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1023
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1467821704,
+                            1467821704,
+                            420000,
+                            "Bán hàng",
+                            "7",
+                            "Khách lẻ",
+                            "",
+                            30,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 06/07/2016 - 18:13:28
+| FILE		| D:\xampp\htdocs\crm_restaurant\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1023
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1467821608,
+                            1467821608,
+                            420000,
+                            "Bán hàng",
+                            "6",
+                            "Khách lẻ",
+                            "",
+                            30,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------

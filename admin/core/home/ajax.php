@@ -1020,6 +1020,7 @@ class HomeAjax extends AjaxCommon
                             ' . $configuration['con_default_agency'] .'
                             )';
             $db_insert = new db_execute($sql_insert);
+	        logs('log.txt', $sql_insert);
             if ($db_insert->total) {
                 //thanh toán xong thì xóa bàn
                 $db_delete_desk = new db_execute('DELETE FROM current_desk WHERE cud_desk_id = ' . $desk_id);
