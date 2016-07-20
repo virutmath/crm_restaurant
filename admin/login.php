@@ -101,7 +101,7 @@ if ($action == "login") {
         <div class="right_content">
             <form method="post" action="" class="form-horizontal" autocomplete="off">
                 <div class="login_container">
-                    <div class="title_login"><img src="../pictures/logo.png">CRM Restaurant</div>
+                    <div class="title_login">QUẢN LÝ NHÀ HÀNG CHUYÊN NGHIỆP</div>
                     <div class="errorMsg"></div>
                         <span class="input-icon">
                             <input type="text" name="username" class="form-control" placeholder="Tài khoản" autocomplete="off"/>
