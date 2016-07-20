@@ -32,7 +32,7 @@ $admin_id       = getValue('admin_id','int','POST',0);
 
 $start_today = convertDateTime(time(),'0:0:0');// bắt đầu trong ngày từ 00
 $end_today   = convertDateTime(time(),'0:0:0') + 86400 - 1; // kết thúc ngày
-
+$sql_search = '';
 if( $isAjaxRequest ){
 
     if ($start_date){

@@ -84,6 +84,10 @@ while($row = mysqli_fetch_assoc($db_age->result)) {
     $list_agencies[] = $row;
 }
 unset($db_age);
+//nếu chưa có chi nhánh => nhảy đến trang restaurant_setting
+if(!$list_agencies) {
+	redirect('restaurant_setting.php');
+}
 
 if(!$config_data){
     $db_sed = new db_query('SELECT sed_id, sed_name, age_name

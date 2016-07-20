@@ -50,6 +50,10 @@ if($isAdmin) {
 $db_con = new db_query($sql_configuration);
 $configuration = mysqli_fetch_assoc($db_con->result);
 unset($db_con);
+//nếu chưa có configuration thì chuyển sang phần user_config
+if(!$configuration) {
+	redirect('/admin/user_config.php');
+}
 //lấy danh sách bàn trong cửa hàng hiện tại
 $db_desk = new db_query('SELECT *
                          FROM desks

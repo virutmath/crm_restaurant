@@ -151,7 +151,7 @@ ob_start();
                 <li data-cat="<?= $cat['cat_id'] ?>" class="list-vertical-item">
                     <label class="cat_name"><i class="fa fa-minus-square-o collapse-li"></i> <?= $cat['cat_name'] ?>
                     </label>
-                    <ul>
+                    <ul class="list-unstyled">
                         <?
                         //foreach lại 1 lần nữa trong mảng categoy để lấy ra các category con của cat cha hiện tại
                         foreach ($list_category as $cat_child) {

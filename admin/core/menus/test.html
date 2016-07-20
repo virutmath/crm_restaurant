@@ -1,0 +1,9 @@
+<a href="ajax.php" onclick="test(this)">aaaaaaa</a>
+<script>
+    function test(obj) {
+        obj.addEventListener('click', function (event) {
+            event.preventDefault();
+            alert(1);
+        });
+    }
+</script>

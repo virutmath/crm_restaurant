@@ -156,8 +156,8 @@ div#navigator-online {
 #menu {
     width: 100%;
     float: left;
-    border-bottom: 4px solid #C75050;
-    background: #f0f0f0;
+    border-bottom: 4px solid #357ca5;
+    background: #fff;
     padding-top: 5px;
     padding-bottom: 4px;
 }
@@ -213,7 +213,7 @@ div#navigator-online {
     color : #777;
 }
 #menu > ul > li > a:hover {
-    color : #C75050;
+    color : #357ca5;
 }
 #menu > ul.ul-right > li > a {
     padding : 0;
@@ -225,14 +225,14 @@ div#navigator-online {
 }
 
 #menu .ul-right:hover {
-    color : #C75050;
+    color : #357ca5;
     cursor: pointer;
 }
 
 #menu > ul > li > a.active {
-    background: #C75050;
+    background: #357ca5;
     color: #fff;
-    border-top: 2px solid #C75050;
+    border-top: 2px solid #357ca5;
 }
 .list-function-menu {
     left: 0;
@@ -242,7 +242,7 @@ div#navigator-online {
     background: #fff;
     padding: 1px;
     border-right: 1px solid #ccc;
-    border-bottom: 4px solid #c75050;
+    border-bottom: 4px solid #357ca5;
 }
 .list-function-menu a {
     text-decoration: none;
@@ -255,7 +255,7 @@ div#navigator-online {
 }
 
 .list-function-menu .function-item {
-    padding: 2px 10px 2px 5px;
+    padding: 6px 10px 6px 5px;
     border: 1px solid transparent;
 }
 .list-function-menu .function-item:hover {
@@ -315,9 +315,9 @@ div#navigator-online {
     font-size: 14px;
     box-sizing: border-box;
     padding: 0 10px;
-    background: #0066b3;
-    border-top: 1px solid #00345C;
-    box-shadow: inset 1px 0 5px #00345C;
+    background: #357ca5;
+    border-top: 1px solid #357ca5;
+    box-shadow: inset 1px 0 5px #357ca5;
     width: 100%;
     color: #fff;
 }

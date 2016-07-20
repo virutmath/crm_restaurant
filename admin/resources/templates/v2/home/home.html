@@ -151,47 +151,6 @@
                 </div>
             </div>
             <div id="sale-control">
-                
-                <div id="sale-price-1024">
-                    <input type="text" class="pull-left"
-                               onchange="HomeScript.inputChangeFunction('menu_number')"
-                               onkeyup="HomeScript.keyUpFunction('menuNumber')" placeholder="Number" id="cdm_number" name="cdm_number"
-                               disabled/>
-                    <div class="cdm_discount_bound">
-                        <div class="cdm_menu_discount">
-                            <input type="text" class="col-xs-8"
-                                   onchange="HomeScript.inputChangeFunction('menu_discount')"
-                                   onkeyup="HomeScript.keyUpFunction('menuDiscount')" placeholder="Sale" id="cdm_menu_discount"
-                                   name="cdm_menu_discount"
-                                   disabled/>
-                            <span class="sale-pt"><strong>%</strong></span>
-                        </div>
-                        <span id="setting-menu-discount" onclick="HomeScript.view.settingMenuDiscount()" 
-                                class="col-xs-4">
-                            <i class="fa fa-cog"></i>
-                        </span>
-                    </div>
-                    <div class="clear"></div>
-                    <div class="row">
-                        <div class="men_price_bound">
-                            <span class="men_price_span pull-left" id="men_price">0</span>
-                            <span class="pos-price"><strong>Price 1:</strong></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="men_price_bound">
-                            <span class="men_price_span pull-left" id="men_price1">0</span>
-                            <span class="pos-price"><strong>Price 2:</strong></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="men_price_bound">
-                            <span class="men_price_span pull-left" id="men_price2">0</span>
-                            <span class="pos-price"><strong>Price 3:</strong></span>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="sale-price" class="col-xs-3">
                     <div class="row">
                         <label for="cdm_number" class="row-title pull-left">Số lượng</label>
@@ -239,67 +198,6 @@
                     <span id="men_name"></span>
                 </div>
                 <div id="info-money" class="col-xs-7-5">
-                    
-
-                    <div class="info-money-extra-1024">
-                        <div class="row">
-                            <div id="sub-fee">
-                                <input type="text" placeholder="Sub-fee"
-                                   onchange="HomeScript.inputChangeFunction('extra_fee')"
-                                   onkeyup="HomeScript.keyUpFunction('extraFee')" class="pull-left info-money-percent"
-                                   name="cud_extra_fee"
-                                   id="cud_extra_fee" disabled/>
-                                <span class="sub-fee"><strong>%</strong></span>    
-                            </div>
-                            
-                            <div class="info-money-bound">
-                                <span class="info-money-text" id="extra_fee_text">0</span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="sub-fee">
-                                <input type="text" placeholder="Sale"
-                                       onchange="HomeScript.inputChangeFunction('customer_discount')"
-                                       onkeyup="HomeScript.keyUpFunction('customerDiscount')"
-                                       class="pull-left info-money-percent"
-                                       name="cud_customer_discount" id="cud_customer_discount" disabled/>
-                                <span class="sub-fee"><strong>%</strong></span>  
-                            </div>
-                            <div class="info-money-bound">
-                                <span class="info-money-text" id="discount-text">0</span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="sub-fee">
-                                <input type="text" placeholder="VAT"
-                                       onchange="HomeScript.inputChangeFunction('vat')"
-                                       onkeyup="HomeScript.keyUpFunction('vat')" class="pull-left info-money-percent"
-                                       name="cud_vat"
-                                       id="cud_vat" disabled/>
-                                <span class="sub-fee"><strong>%</strong></span>  
-                            </div>
-                            <div class="info-money-bound">
-                                <span class="info-money-text" id="vat-ext">0</span>
-                                <span class="info-money-space"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <input type="text" placeholder="Guests pay" onkeyup="HomeScript.keyUpFunction('customerCash')"
-                                   class="pull-left info-money-percent"
-                                   name="cud_customer_cash"
-                                   id="cud_customer_cash" disabled/>
-
-                            <div class="info-money-bound">
-                                <span class="info-money-text" id="customer_cash_text">0</span>
-                                <span class="info-money-space"></span>
-                            </div>
-                        </div>
-                    </div>
-
-
                     <div class="info-money-extra">
                         <div class="row">
                             <label for="cud_extra_fee" class="row-title pull-left">Phụ phí</label>

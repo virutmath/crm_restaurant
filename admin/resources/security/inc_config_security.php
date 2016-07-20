@@ -38,6 +38,8 @@ $js_global .= '<script src="../../resources/js/jqueryui/ui/droppable.js"></scrip
 //include reactjs
 $js_global .= '<script src="../../resources/js/reactjs/react-0.13.3.js"></script>';
 $js_global .= '<script src="../../resources/js/reactjs/react-intl.min.js"></script>';
+//$js_global .= '<script src="https://fb.me/react-15.2.1.min.js"></script>
+//<script src="https://fb.me/react-dom-15.2.1.min.js"></script>';
 if(DEVELOPER_ENVIRONMENT){
     $js_global .= '<script src="../../resources/js/reactjs/JSXTransformer-0.13.3.js"></script>';
 }

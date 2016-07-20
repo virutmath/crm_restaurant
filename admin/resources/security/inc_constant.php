@@ -26,13 +26,13 @@ define('BILL_STATUS_SUCCESS',1);
 define('BILL_STATUS_DEBIT',0);
 //Category ID cho quỹ tiền
 //Bán hàng
-define('FINANCIAL_CAT_BAN_HANG',30);
+define('FINANCIAL_CAT_BAN_HANG',1);
 //nhap hang
-define('FINANCIAL_CAT_NHAP_HANG',31);
+define('FINANCIAL_CAT_NHAP_HANG',2);
 // cong no ban hang
-define('FINANCIAL_CAT_CONG_NO_BAN_HANG',33);
+define('FINANCIAL_CAT_CONG_NO_BAN_HANG',3);
 // cong no nha cung cap
-define('FINANCIAL_CAT_CONG_NO_NHAP_HANG',32);
+define('FINANCIAL_CAT_CONG_NO_NHAP_HANG',4);
 // kieu thanh toan trong bang khuyen mai
 define('PROMOTION_TYPE_PERCENT',1);
 define('PROMOTION_TYPE_MONEY',2);

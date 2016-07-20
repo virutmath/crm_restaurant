@@ -120,7 +120,7 @@ select#store_id {
 }
 
 .cat_name.cat_sub{
-    margin-left: 20px;
+    /*margin-left: 20px;*/
 }
 .pro-image-thumb {
     border: 1px solid #ccc;
