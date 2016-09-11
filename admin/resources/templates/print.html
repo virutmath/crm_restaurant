@@ -21,25 +21,26 @@
         <div class="clearfix"></div>
         <div class="content">
             <div class="title-print text-center">Hóa đơn thanh toán</div>
-            <table class="table-info">
-                <tr>
-                    <td class="text-left">{$start_time}</td>
-                    <td class="text-left">{$location}</td>
-                    <td class="text-right">Mã HĐ:{$bill_id}</td>
-                </tr>
-            </table>
-            <table class="table-info">
-                <tr>
-                    <td class="text-left"><label>Khách hàng:</label>  {$customer_name}</td>
-                    <td class="text-left"><label>Thu ngân: </label> {$admin_name}</td>
-                </tr>
-            </table>
+            <div class="table-info">
+                <label>Bàn:</label>  {$location}
+            </div>
+            <div class="table-info">
+                <label>Thời gian:</label>  {$start_time}
+            </div>
+            <div class="table-info">
+                <label>Mã HĐ:</label>  {$bill_id}
+            </div>
+            <div class="table-info">
+                <label>Khách hàng:</label>  {$customer_name}
+            </div>
+            <div class="table-info">
+                <label>Thu ngân: </label> {$admin_name}
+            </div>
             <div class="table-listmenu">
-                <table class="table table-bordered " id="table-listing">
+                <table style="width: 100%;" id="table-listing">
                     <thead>
                         <tr>
-                            <th class="center"><strong>STT</strong> </th>
-                            <th class="text-left" width="50%"><strong>Tên thực đơn</strong></th>
+                            <th class="text-left" width="50%"><strong>Thực đơn</strong></th>
                             <th class="center" width="15%"><strong>SL</strong> </th>
                             <th class="center" width="15%"><strong>Giá bán</strong></th>
                             <th class="center" width="15%"><strong>TT</strong></th>
@@ -48,7 +49,7 @@
                     {$list_menu}
                     <tfoot>
                         <tr>
-                            <td colspan="4" rowspan="4" class="text-right">
+                            <td colspan="3" rowspan="4" class="text-right">
                                 <strong>Tổng tiền: </strong><br/>
                                 <strong>Phụ phí ({$desk_extra}%) : </strong><br/>
                                 <strong>Chiết khấu ({$desk_discount}%) :  </strong><br/>

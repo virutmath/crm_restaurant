@@ -1,9 +1,7 @@
 <script>
     // nút in trong iframe mwindow
     $("#print_button").click(function(){
-        $("div.page-wrap").printArea({
-            mode:"iframe"
-        });
+        window.print();
     });
 
     $('.page-wrap').enscroll({

@@ -1,7 +1,7 @@
 .page-wrap{
-    width: 98%;
+    width: 100%;
     margin: 0 auto;
-    height: 560px !important;
+    padding-right: 10px;
 }
 .header{
     display: block;
@@ -52,28 +52,31 @@
     right: 10px;
 }
 @media print {
+    .logo img{
+        width: 30px;
+    }
     .btn_print {
         display: none;
     }
     .table-info{
-        font-size: 9px !important;
+        font-size: 8px !important;
         padding: 2px 0;
     }
     .title-print{
-        font-size: 9px !important;
+        font-size: 8px !important;
     }
     .info-top>span{
-        font-size: 9px !important;
+        font-size: 8px !important;
     }
-    .table-bordered>thead>tr>th,
-    .table-bordered>tbody>tr>th,
-    .table-bordered>tfoot>tr>th,
-    .table-bordered>thead>tr>td,
-    .table-bordered>tbody>tr>td,
-    .table-bordered>tfoot>tr>td
+    #table-listing>thead>tr>th,
+    #table-listing>tbody>tr>th,
+    #table-listing>tfoot>tr>th,
+    #table-listing>thead>tr>td,
+    #table-listing>tbody>tr>td,
+    #table-listing>tfoot>tr>td
     {
         margin: 0 !important;
-        font-size: 9px !important;
+        font-size: 8px !important;
         padding: 3px !important;
     }
     .footer-text{
