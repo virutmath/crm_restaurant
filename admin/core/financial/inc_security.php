@@ -24,9 +24,9 @@ $modal_title = array(
 $number_date_in = 30;
 //Thời gian hiển thị mặc định phiếu thu
 $default_end_date_in = time();
-$default_start_date_in = $default_end_date_in;
+$default_start_date_in = $default_end_date_in - 86400 * 7;
 //Số ngày mặc định hiển thị phiếu chi
 $number_date_out = 30;
 //Thời gian hiển thị mặc định phiếu thu
 $default_end_date_out = time();
-$default_start_date_out = $default_end_date_out;
+$default_start_date_out = $default_end_date_out - 86400 * 7;
