@@ -516,7 +516,7 @@ $(document).ready(function(){
         });
     //auto numeric
     if($('[data-role="auto-numeric"]').length){
-        $('[data-role="auto-numeric"]').autoNumeric('init',{lZero:'allow'});
+        $('[data-role="auto-numeric"]').autoNumeric('init',{lZero:'allow',mDec : 0});
     }
 
     //date picker

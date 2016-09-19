@@ -144,7 +144,7 @@ abstract class AbstractAjax {
 
     public function initAutoNumeric() {
         return 'if($(\'[data-role="auto-numeric"]\').length){
-                                        $(\'[data-role="auto-numeric"]\').autoNumeric(\'init\',{lZero:\'deny\'});
+                                        $(\'[data-role="auto-numeric"]\').autoNumeric(\'init\',{lZero:\'deny\',mDec:1});
                                     }';
     }
 

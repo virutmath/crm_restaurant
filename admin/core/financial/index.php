@@ -212,9 +212,11 @@ $total_row = mysqli_num_rows($db_listing->result);
 //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
 $left_column .= $list->showHeader($total_row, '', 'id="table-listing-left"');
 $i = 0;
+$total_money = 0;
 while($row = mysqli_fetch_assoc($db_listing->result)){
     $i++;
-    $left_column .= $list->start_tr($i,$row[$id_field],'class="menu-normal record-item" onclick="active_record('.$row[$id_field].')" data-record_id="'.$row[$id_field].'"');
+	$total_money += $row['fin_money'];
+    $left_column .= $list->start_tr($i,$row[$id_field],'class="menu-normal record-item" ondblclick="detailRecord(\'left\')" onclick="active_record('.$row[$id_field].')" data-record_id="'.$row[$id_field].'"');
     /* code something */
     //Ngày tạo
     $left_column .= '<td class="center" width="">' . date('d/m/Y H:i', $row['fin_date']) . '</td>';
@@ -228,8 +230,7 @@ while($row = mysqli_fetch_assoc($db_listing->result)){
     $left_column .= '<td class="text-right" width="80">' . format_number($row['fin_money']) . '</td>';
     $left_column .= $list->end_tr();
 }
-$left_column .= $list->showFooter();
-
+$left_column .= $list->showFooter('','<p><b>Tổng:</b> '.format_number($total_money).'</p>');
 
 //Khối bên phải, hiển thị danh sách phiếu chi
 $right_control = list_admin_control_button($add_btn,$edit_btn,$trash_btn,1);
@@ -264,9 +265,11 @@ $total_row = mysqli_num_rows($db_listing->result);
 //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-right
 $right_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
 $i = 0;
+$total_money = 0;
 while($row = mysqli_fetch_assoc($db_listing->result)){
     $i++;
-    $right_column .= $list->start_tr($i,$row[$id_field],'class="menu-normal record-item" onclick="active_record('.$row[$id_field].')" data-record_id="'.$row[$id_field].'"');
+	$total_money += $row['fin_money'];
+    $right_column .= $list->start_tr($i,$row[$id_field],'class="menu-normal record-item" ondblclick="detailRecord(\'right\')" onclick="active_record('.$row[$id_field].')" data-record_id="'.$row[$id_field].'"');
     /* code something */
     //Ngày tạo
     $right_column .= '<td class="center" width="">' . date('d/m/Y H:i', $row['fin_date']) . '</td>';
@@ -280,9 +283,7 @@ while($row = mysqli_fetch_assoc($db_listing->result)){
     $right_column .= '<td class="text-right" width="80">' . format_number($row['fin_money']) . '</td>';
     $right_column .= $list->end_tr();
 }
-$right_column .= $list->showFooter();
-
-
+$right_column .= $list->showFooter('','<p><b>Tổng:</b> '.format_number($total_money).'</p>');
 
 //footer control
 //Hiển thị phiếu thu - chi hệ thống

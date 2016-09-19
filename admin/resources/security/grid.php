@@ -223,7 +223,7 @@ class dataGrid{
 	function showDelete($record_id, $extra = ''){
 		return '<td width="10" class="center"><a href="#" onclick="Grid.delete_one('.$record_id.');return false;"><i class="fa fa-trash-o"></i></a></td>';
 	}
-    function showFooter($extra = ''){
+    function showFooter($extra = '',$extra_table = ''){
         $cols = $this->stt + 3;
         $footer = '<tr class="footer"><td colspan="'.$cols.'">';
         if(file_exists('quickedit.php')){
@@ -231,7 +231,7 @@ class dataGrid{
         }
         $footer .= '<span class="fl nowrap">Hiển thị '. $this->total_row . '/' .$this->total_record .' dòng</span>';
         $footer .= $this->generate_page();
-        $footer .= '</td></tr></table></div>';
+        $footer .= '</td></tr></table>'.$extra_table.'</div>';
         $footer .= form_close($extra);
         return $footer;
     }

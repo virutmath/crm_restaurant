@@ -377,7 +377,7 @@ class MenuAjax extends AjaxCommon {
                                   FROM products
                                   LEFT JOIN units ON uni_id = pro_unit_id
                                   ORDER BY pro_name ASC
-                                  LIMIT 100');
+                                  LIMIT 1000');
         $list_product = array(' -- Chọn nguyên liệu -- ');
         $list_unit = array();
         while($row = mysqli_fetch_assoc($db_query->result)) {

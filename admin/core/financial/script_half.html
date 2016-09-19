@@ -204,7 +204,13 @@
     });
 
 
-
+    function detailRecord(type){
+        var record_id = $('.record-item.active').data('record_id');
+        var modal = new Modal();
+        modal.width = 600;
+        modal.height = 450;
+        modal.miniLoad('ajax.php', {action: ajax_url['edit_'+type], record_id: record_id})
+    }
 
     //function
     function active_record(record_id){
