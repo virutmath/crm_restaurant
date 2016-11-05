@@ -253,7 +253,7 @@ class FinancialAjax extends AjaxCommon {
         );
 
         //close modal
-        $this->closeModal('edit_money_ticket_in');
+        $this->closeModal('edit_money_ticket_in', $record_id);
     }
     function loadFormAddMoneyTicketOut() {
         //Kiểm tra quyền add
@@ -507,7 +507,7 @@ class FinancialAjax extends AjaxCommon {
         );
 
         //close modal
-        $this->closeModal('edit_money_ticket_out');
+        $this->closeModal('edit_money_ticket_out', $record_id);
     }
 
     function getUserList() {

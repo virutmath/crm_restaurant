@@ -7,6 +7,7 @@
  */
 $css_global = '';
 $css_global .= '<link rel="stylesheet" type="text/css" href="../../resources/css/bootstrap.min.css" media="screen"/>';
+$css_global .= '<link rel="stylesheet" type="text/css" href="../../resources/js/select2/css/select2.min.css" media="screen"/>';
 $css_global .= '<link rel="stylesheet" type="text/css" href="../../resources/js/jquery.contextMenu.css" media="screen"/>';
 $css_global .= '<link rel="stylesheet" type="text/css" href="../../resources/js/enscroll.css" media="screen"/>';
 $css_global .= '<link rel="stylesheet" type="text/css" href="../../resources/css/font-awesome.min.css" media="screen"/>';
@@ -44,6 +45,7 @@ if(DEVELOPER_ENVIRONMENT){
     $js_global .= '<script src="../../resources/js/reactjs/JSXTransformer-0.13.3.js"></script>';
 }
 
+$js_global .= '<script src="../../resources/js/select2/js/select2.full.min.js" type="text/javascript"></script>';
 $js_global .= '<script src="../../resources/js/plupload/plupload.full.js" type="text/javascript"></script>';
 $js_global .= '<script src="../../resources/js/bootstrap-tagsinput.js" type="text/javascript"></script>';
 $js_global .= '<script src="../../resources/js/bootstrap.min.js" type="text/javascript"></script>';

@@ -59,9 +59,7 @@ while($row = mysqli_fetch_assoc($db_menu->result)){
         }
         $list_menu .= '<tbody>
                         <tr class="menu-normal record-item">
-                            <td width="15" class="center">
-                                <span style="color:#142E62; font-weight:bold">'.$i.'</span>
-                            </td>
+                            
                             <td class="text-left">'.$array_menu[$row_menu['bid_menu_id']].'</td>
                             <td class="center">'.number_format($row_menu['bid_menu_number']).'</td>
                             <td class="text-right">'.number_format($price_menu).'</td>

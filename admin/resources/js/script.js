@@ -518,7 +518,6 @@ $(document).ready(function(){
     if($('[data-role="auto-numeric"]').length){
         $('[data-role="auto-numeric"]').autoNumeric('init',{lZero:'allow',mDec : 0});
     }
-
     //date picker
     if($('input[datepick-element="1"]').length){
         $('input[datepick-element="1"]').datepicker({

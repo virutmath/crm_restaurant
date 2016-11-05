@@ -173,6 +173,33 @@ class MenuAjax extends AjaxCommon {
             ))
         );
         $this->add(
+	        $this->form->checkbox(array(
+		        'label'=>'Là combo',
+		        'name'=>'men_is_combo',
+		        'id'=>'men_is_combo',
+		        'value'=> 1,
+		        'currentValue'=>0
+	        ))
+        );
+	    $this->add(
+		    $this->form->form_group_custom(array(
+			    'label'=>'Chọn thực đơn trong combo',
+		    ))
+	    );
+	    $this->add(
+			'<select class="form-control select2" multiple name="men_children" id="men_children">
+				<option value="1">Menu 1</option>
+				<option value="2">menu 2</option>
+				<option value="3">4</option>
+				<option value="4">5</option>
+				<option value="5">6</option>
+				<option value="6">7</option>
+			</select><script>$(\'.select2\').select2();</script>'
+	    );
+	    $this->add(
+		    $this->form->form_group_custom('close')
+	    );
+        $this->add(
             $this->form->textarea(array(
                 'label'=>'Ghi chú',
                 'name'=>'men_note',

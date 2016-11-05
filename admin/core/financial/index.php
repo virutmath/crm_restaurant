@@ -158,6 +158,7 @@ $list = new dataGrid($id_field,3000);
 $list->add('', 'Ngày thu');
 $list->add('','Số phiếu');
 $list->add('','Người nhận');
+$list->add('','Danh mục');
 $list->add('','Diễn giải');
 $list->add('','Số tiền');
 
@@ -224,8 +225,10 @@ while($row = mysqli_fetch_assoc($db_listing->result)){
     $left_column .= '<td class="center" width="">' . format_codenumber($row[$id_field], 6) . '</td>';
     //Người trả
     $left_column .= '<td width="120">'.$row['fin_username'].'</td>';
-    //Mô tả
+    //Danh mục
     $left_column .= '<td>'.$row['cat_name'].'</td>';
+	//Mô tả
+	$left_column .= '<td>'.$row['fin_reason_other'].'</td>';
     //số tiền
     $left_column .= '<td class="text-right" width="80">' . format_number($row['fin_money']) . '</td>';
     $left_column .= $list->end_tr();
@@ -244,6 +247,7 @@ $list = new dataGrid($id_field,3000);
 $list->add('','Ngày chi');
 $list->add('','Số phiếu');
 $list->add('','Người nhận');
+$list->add('','Danh mục');
 $list->add('','Diễn giải');
 $list->add('','Số tiền');
 
@@ -277,8 +281,10 @@ while($row = mysqli_fetch_assoc($db_listing->result)){
     $right_column .= '<td class="center" width="">' . format_codenumber($row[$id_field], 6) . '</td>';
     //Người nhận
     $right_column .= '<td width="120">'.$row['fin_username'].'</td>';
-    //Mô tả
+    //Danh mục
     $right_column .= '<td>'.$row['cat_name'].'</td>';
+    //Mô tả
+    $right_column .= '<td>'.$row['fin_reason_other'].'</td>';
     //số tiền
     $right_column .= '<td class="text-right" width="80">' . format_number($row['fin_money']) . '</td>';
     $right_column .= $list->end_tr();
