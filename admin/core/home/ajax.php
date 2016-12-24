@@ -567,6 +567,7 @@ class HomeAjax extends AjaxCommon
         //update customer tới bàn này
         $db = new db_query('UPDATE current_desk SET cud_note = "' . $note_text . '" WHERE cud_desk_id = ' . $desk_id . ' LIMIT 1');
         $array_return['success'] = 1;
+//        $array_return['sql'] = 'UPDATE current_desk SET cud_note = "' . $note_text . '" WHERE cud_desk_id = ' . $desk_id . ' LIMIT 1';
         $this->add($array_return);
         //log action
         log_action(ACTION_LOG_EDIT, 'Thay đổi ghi chú của hóa đơn ("' . $note_text . '") bàn ID ' . $desk_id);
@@ -938,7 +939,8 @@ class HomeAjax extends AjaxCommon
                                 bii_round_money,
                                 bii_service_desk_id,
                                 bii_money_debit,
-                                bii_date_debit
+                                bii_date_debit,
+                                bii_note
                             )
                             VALUES (
                             ' . $bii_start_time . ',
@@ -957,7 +959,8 @@ class HomeAjax extends AjaxCommon
                             ' . $bii_round_money . ',
                             ' . $bii_service_desk_id . ',
                             ' . $bii_money_debit . ',
-                            ' . $bii_date_debit . '
+                            ' . $bii_date_debit . ',
+                            "'. $desk_detail['cud_note'].'"
                             )';
             $db_insert = new db_execute_return();
             $bill_success_id = $db_insert->db_execute($sql_insert);

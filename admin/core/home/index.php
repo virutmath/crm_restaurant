@@ -70,7 +70,7 @@ if (!DISPLAY_LISTING_MENU_BY_CATEGORY) {
     $db_listing = new db_query('SELECT *
                             FROM menus
                             WHERE 1 ' . $list->sqlSearch() . $sql_search . '
-                            ORDER BY ' . $list->sqlSort() . ' men_id ASC
+                            ORDER BY ' . $list->sqlSort() . ' men_name ASC
                             ' . $list->limit($total));
     $total_row = mysqli_num_rows($db_listing->result);
 
@@ -127,7 +127,7 @@ if (!DISPLAY_LISTING_MENU_BY_CATEGORY) {
         $db_cat_child = new db_query('SELECT cat_id,cat_name FROM categories_multi WHERE cat_type = "menus" AND cat_parent_id = ' . $row['cat_id']);
         while($row_cat_child = mysqli_fetch_assoc($db_cat_child->result)) {
             //lấy ra các menu con của danh mục này
-            $db_menu = new db_query('SELECT men_id,men_name FROM menus WHERE men_cat_id = '. $row_cat_child['cat_id']);
+            $db_menu = new db_query('SELECT men_id,men_name FROM menus WHERE men_cat_id = '. $row_cat_child['cat_id'] . ' ORDER BY men_name ASC');
             $list_menu = $db_menu->resultArray();
             $count += count($list_menu);
             $row_cat_child['list_menu_child'] = $list_menu;
@@ -135,7 +135,7 @@ if (!DISPLAY_LISTING_MENU_BY_CATEGORY) {
             $row['list_cat_child'][] = $row_cat_child;
         }
         //lấy ra các menu của danh mục này
-        $db_menu = new db_query('SELECT men_id,men_name FROM menus WHERE men_cat_id = ' . $row['cat_id']);
+        $db_menu = new db_query('SELECT men_id,men_name FROM menus WHERE men_cat_id = ' . $row['cat_id'] . ' ORDER BY men_name ASC');
         $list_menu = $db_menu->resultArray();
         $row['list_menu_child'] = $list_menu;
         $row['count_menu'] = $count + count($list_menu);

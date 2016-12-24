@@ -63,7 +63,7 @@ $content_column .=
         </tr>
         <tr>
             <td>Ngày tạo: </td>
-            <td><strong>'.date("d/m/Y h:i",$bill_start_time).'</strong></td>
+            <td><strong>'.date("d/m/Y H:i",$bill_start_time).'</strong></td>
         </tr>
         <tr>
             <td>Người tạo: </td>
@@ -71,7 +71,7 @@ $content_column .=
         </tr>
         <tr>
             <td>Cập nhật lần cuối: </td>
-            <td><strong>'.date("d/m/Y h:i",$last_times).'</strong></td>
+            <td><strong>'.date("d/m/Y H:i",$last_times).'</strong></td>
         </tr>
         <tr>
             <td>Người cập nhật: </td>

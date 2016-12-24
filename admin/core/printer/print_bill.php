@@ -22,7 +22,7 @@ $customer_id    = $row_bill_in['bii_customer_id'];
 $desk_extra     = $row_bill_in['bii_extra_fee'];
 $desk_discount  = $row_bill_in['bii_discount'];
 $bill_cus_id    = $row_bill_in['bii_customer_id'];
-$start_time     = date(' h:i d/m/Y',$row_bill_in['bii_start_time']);
+$start_time     = date(' H:i d/m/Y',$row_bill_in['bii_start_time']);
 unset($db_bill_in);
 
 // lấy ra thông tin vị trí bàn ăn
@@ -129,10 +129,10 @@ $rainTpl->assign('desk_discount',$desk_discount);
 $rainTpl->assign('desk_vat',$desk_vat);
 $rainTpl->assign('desk_extra',$desk_extra);
 $rainTpl->assign('extra_fee',number_format($extra_fee));
-$rainTpl->assign('discount_money',number_format($discount_money));
-$rainTpl->assign('vat_money',number_format($vat_money));
+$rainTpl->assign('discount_money',number_format(floor($discount_money/1000) * 1000));
+$rainTpl->assign('vat_money',number_format(ceil($vat_money/1000) * 1000));
+$rainTpl->assign('pay_money',number_format(ceil($pay_money/1000) * 1000));
 $rainTpl->assign('bill_id',format_codenumber($bill_id,6,PREFIX_BILL_CODE));
-$rainTpl->assign('pay_money',number_format($pay_money));
 $rainTpl->assign('error_msg',print_error_msg($bg_errorMsg));
 
 

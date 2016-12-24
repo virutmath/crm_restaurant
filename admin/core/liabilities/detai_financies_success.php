@@ -46,7 +46,7 @@ $content_column .= '<div class="section-content">';
 $content_column .= $list->showHeader(1);
 $content_column .= $list->start_tr(1,$bill_id,'class="menu-normal record-item" data-record_id="'.$bill_id.'"');
 $content_column .= '<td class="center">'.format_codenumber($bill_id,6,'').'</td>';
-$content_column .= '<td class="center">'.date('d/m/Y h:i',$ngay_no).'</td>';
+$content_column .= '<td class="center">'.date('d/m/Y H:i',$ngay_no).'</td>';
 $content_column .= '<td class="text-right">'.number_format($so_no).'</td>';
 $content_column .= '<td class="text-right">'.number_format($thanhtoan).'</td>';
 $content_column .= $list->end_tr();

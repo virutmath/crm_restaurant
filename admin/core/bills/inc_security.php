@@ -13,7 +13,7 @@ $bg_table_i = 'bill_in';
 $id_field_i = 'bii_id';
 
 $today = time();
-$formDate = gmdate("d/m/Y", $today - 2592000);
+$formDate = gmdate("d/m/Y", $today);
 $toDate = gmdate("d/m/Y", $today);
 
 //$cat_field = '';

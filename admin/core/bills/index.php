@@ -53,7 +53,7 @@ if($isAjaxRequest && isset($_POST['active'])){
 }
 else
 {
-    $and_bii_cus_id = $type_bill_fillter . ' >= ' . (convertDateTime($today,'0:0:0') - 2592000) . $type_bill_fillter . ' <= ' . convertDateTime($today,'23:59:59');
+    $and_bii_cus_id = $type_bill_fillter . ' >= ' . (convertDateTime($today,'0:0:0')) . $type_bill_fillter . ' <= ' . convertDateTime($today,'23:59:59');
 }// end ton tai $isAjaxRequest
 $db_count = new db_count('SELECT count(*) as count
                             FROM '.$bg_table_i.' 
@@ -158,7 +158,7 @@ if($isAjaxRequest && isset($_POST['id_brand'])){
     if ( $time_start ) $and_bio_sup_id .= $type_bill_fillter . ' >= ' . $time_start;
     if ( $time_end ) $and_bio_sup_id .= $type_bill_fillter . ' <= ' . $time_end;
 }else{
-    $and_bio_sup_id = $type_bill_fillter . ' >= ' . ( convertDateTime($today,'0:0:0') - 2592000 ) . $type_bill_fillter . ' <= ' . convertDateTime($today,'23:59:59');
+    $and_bio_sup_id = $type_bill_fillter . ' >= ' . ( convertDateTime($today,'0:0:0')) . $type_bill_fillter . ' <= ' . convertDateTime($today,'23:59:59');
 }
 $db_count = new db_count('SELECT count(*) as count
                             FROM '.$bg_table_o.'

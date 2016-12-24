@@ -1,6 +1,7 @@
 <?php
 session_start();
 ob_start();
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 require_once 'inc_constant.php';
 if(DEVELOPER_ENVIRONMENT) {
     error_reporting(E_ALL);
@@ -12,6 +13,7 @@ require_once('../../../classes/generate_form.php');
 require_once("../../../classes/simple_html_dom.php");
 require_once('../../../classes/rain.tpl.class.php');
 require_once('../../../classes/PHPExcel.php');
+require_once('../../../classes/kint/Kint.class.php');
 require_once('../../../classes/Patterns/autoload.php');
 require_once('../../../functions/functions.php');
 require_once('../../../functions/rewrite_functions.php');

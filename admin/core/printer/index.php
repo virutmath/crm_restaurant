@@ -34,7 +34,7 @@ unset($db_query_res);
 $db_query_desk  = new db_query('SELECT * FROM current_desk WHERE cud_desk_id = '.$desk_id.'');
 $row_desk = mysqli_fetch_assoc($db_query_desk->result);
 
-$start_time     = date(' h:i d/m/Y',$row_desk['cud_start_time']);
+$start_time     = date(' H:i d/m/Y',$row_desk['cud_start_time']);
 $desk_discount  = $row_desk['cud_customer_discount'];
 $desk_vat       = $row_desk['cud_vat'];
 $desk_extra     = $row_desk['cud_extra_fee'];
@@ -131,9 +131,9 @@ $rainTpl->assign('desk_vat',$desk_vat);
 $rainTpl->assign('desk_extra',$desk_extra);
 $rainTpl->assign('extra_fee',number_format($extra_fee));
 $rainTpl->assign('extra_fee',number_format($extra_fee));
-$rainTpl->assign('discount_money',number_format($discount_money));
-$rainTpl->assign('vat_money',number_format($vat_money));
-$rainTpl->assign('pay_money',number_format($pay_money));
+$rainTpl->assign('discount_money',number_format(floor($discount_money/1000) * 1000));
+$rainTpl->assign('vat_money',number_format(ceil($vat_money/1000) * 1000));
+$rainTpl->assign('pay_money',number_format(ceil($pay_money/1000) * 1000));
 $rainTpl->assign('error_msg',print_error_msg($bg_errorMsg));
 
 

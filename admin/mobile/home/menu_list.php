@@ -45,7 +45,7 @@ unset($db_user);
 $db_current_desk = new db_query("SELECT cud_start_time FROM current_desk
                                 WHERE cud_desk_id = " . intval($desk_id));
 $data_current_desk = mysqli_fetch_assoc($db_current_desk->result);unset($db_current_desk);
-$start_time = date('d/m/Y h:i',$data_current_desk['cud_start_time']);
+$start_time = date('d/m/Y H:i',$data_current_desk['cud_start_time']);
 //danh sach thuc don
 $db_categories_menus = new db_query('SELECT * FROM categories_multi 
                                     WHERE cat_type = "' . MENU_CAT_TYPE .'"');

@@ -596,7 +596,9 @@ HomeScript.init = function () {
 	$('.scrollable-area').enscroll({
 		showOnHover: true,
 		minScrollbarLength: 28,
-		addPaddingToPane: false
+		addPaddingToPane: false,
+		scrollIncrement: 40,
+		easingDuration: 200
 	});
 	//cấu hình numeric
 	this.domElement.menuNumber.autoNumeric({
@@ -672,7 +674,8 @@ HomeScript.inputChangeFunction = function (type) {
 			data = {
 				action: action,
 				desk_id: HomeScript.currentDesk.deskItem.des_id,
-				note: HomeScript.currentDesk.billInfo.note
+				// note: HomeScript.currentDesk.billInfo.note - sửa nhanh
+				note: $('#cud_note').val()
 			};
 			break;
 		case 'vat':
@@ -1062,6 +1065,7 @@ HomeScript.view.printBills = function () {
 	}
 };
 HomeScript.view.printOrder = function () {
+	// console.log(HomeScript.currentDesk);
 	if (HomeScript.currentDesk.deskItem.des_id && HomeScript.currentDesk.menuList.length) {
 		// lấy id bàn và menu để in hóa đơn
 		var desk_id = HomeScript.currentDesk.deskItem.des_id;
@@ -1089,11 +1093,13 @@ HomeScript.view.resetInput = function () {
 HomeScript.view.reInitScroll = function () {
 	$('.scrollable-area').each(function () {
 		if (!$(this).parent().find('.enscroll-track').length) {
-			console.log($(this));
+			// console.log($(this));
 			$(this).enscroll({
 				showOnHover: true,
 				minScrollbarLength: 28,
-				addPaddingToPane: false
+				addPaddingToPane: false,
+				scrollIncrement: 40,
+				easingDuration: 200
 			})
 		}
 	});

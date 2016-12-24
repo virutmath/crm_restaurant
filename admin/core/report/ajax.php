@@ -1,45 +1,48 @@
 <?
 require_once 'inc_security.php';
+
 //class Ajax - version 1.0
-class ReportAjax extends AjaxCommon {
-    function reportInventory(){
-        //lấy các giá trị bắn ajax về để xuất báo cáo
-        $array_product = getValue('products','arr','POST','');
-        $start_date = convertDateTime(getValue('start_date','str','POST',''),'0:0:0');
-        $end_date = convertDateTime(getValue('end_date','str','POST',''),'0:0:0');
-        $store_id = getValue('store_id','int','POST',0);
-        // select ra báo cáo với các thông tin trên
-        //lấy số lượng nhập hàng
-        $arr_pro = array();
-        foreach($array_product as $product){
-            $arr_pro[] = $product;
-        }
-        $arr_pro = implode(',',$arr_pro);
-        $total_import = 0;
-        $db_query = new db_query('SELECT bio_id FROM bill_out
-                                  WHERE bio_store_id = '.$store_id.'
-                                  AND bio_start_time >= '.$start_date.' AND bio_start_time <= '.$end_date.'');
-        while($row = mysqli_fetch_assoc($db_query->result)){
+class ReportAjax extends AjaxCommon
+{
+	function reportInventory()
+	{
+		//lấy các giá trị bắn ajax về để xuất báo cáo
+		$array_product = getValue('products', 'arr', 'POST', '');
+		$start_date = convertDateTime(getValue('start_date', 'str', 'POST', ''), '0:0:0');
+		$end_date = convertDateTime(getValue('end_date', 'str', 'POST', ''), '0:0:0');
+		$store_id = getValue('store_id', 'int', 'POST', 0);
+		// select ra báo cáo với các thông tin trên
+		//lấy số lượng nhập hàng
+		$arr_pro = array();
+		foreach ($array_product as $product) {
+			$arr_pro[] = $product;
+		}
+		$arr_pro = implode(',', $arr_pro);
+		$total_import = 0;
+		$db_query = new db_query('SELECT bio_id FROM bill_out
+                                  WHERE bio_store_id = ' . $store_id . '
+                                  AND bio_start_time >= ' . $start_date . ' AND bio_start_time <= ' . $end_date . '');
+		while ($row = mysqli_fetch_assoc($db_query->result)) {
 
-            $db_query_import = new db_query('SELECT SUM(bid_pro_number) as sum_pro FROM bill_out_detail
-                                             WHERE bid_bill_id = '.$row['bio_id'].' AND bid_pro_id IN('.$arr_pro.')');
-            $row_total = mysqli_fetch_assoc($db_query_import->result);
-            $total_import += $row_total['sum_pro'];
-        }
-        //echo $total_import;
-        unset($db_query);
+			$db_query_import = new db_query('SELECT SUM(bid_pro_number) as sum_pro FROM bill_out_detail
+                                             WHERE bid_bill_id = ' . $row['bio_id'] . ' AND bid_pro_id IN(' . $arr_pro . ')');
+			$row_total = mysqli_fetch_assoc($db_query_import->result);
+			$total_import += $row_total['sum_pro'];
+		}
+		//echo $total_import;
+		unset($db_query);
 
-        //lấy số lượng bán hàng
-        $total_menu = 0;
-        $db_query_export = new db_query('SELECT bii_id FROM bill_in
-                                  WHERE bii_store_id = '.$store_id.'
-                                  AND bii_start_time >= '.$start_date.' AND bii_start_time <= '.$end_date.'');
-        while($row_export = mysqli_fetch_assoc($db_query_export->result)){
-            $db_menu_export = new db_query('SELECT bid_menu_number,sum_menu,bid_menu_id FROM bill_in_detail
-                                            WHERE bid_bill_id = '.$row_export['bii_id'].'');
-            while($row_menu = mysqli_fetch_assoc($db_menu_export->result)){
-                //echo $total_menu = $row_menu['bid_menu_number'];
-                //echo $row_menu['bid_menu_id']."<br/>";
+		//lấy số lượng bán hàng
+		$total_menu = 0;
+		$db_query_export = new db_query('SELECT bii_id FROM bill_in
+                                  WHERE bii_store_id = ' . $store_id . '
+                                  AND bii_start_time >= ' . $start_date . ' AND bii_start_time <= ' . $end_date . '');
+		while ($row_export = mysqli_fetch_assoc($db_query_export->result)) {
+			$db_menu_export = new db_query('SELECT bid_menu_number,sum_menu,bid_menu_id FROM bill_in_detail
+                                            WHERE bid_bill_id = ' . $row_export['bii_id'] . '');
+			while ($row_menu = mysqli_fetch_assoc($db_menu_export->result)) {
+				//echo $total_menu = $row_menu['bid_menu_number'];
+				//echo $row_menu['bid_menu_id']."<br/>";
 //                $db_menu_pro = new db_query('SELECT mep_quantity,mep_product_id FROM menu_products
 //                                         WHERE bid_menu_id = '.$row_menu['bid_menu_id'].'');
 //                while($row_product = mysqli_fetch_assoc($db_menu_pro->result)){
@@ -47,256 +50,338 @@ class ReportAjax extends AjaxCommon {
 //                    //echo "<br>";
 //                    //echo $row_product['mep_quantity'];
 //                }
-            }
+			}
 
-        }unset($db_menu_pro);
-        unset($db_query_export);
-    }
+		}
+		unset($db_menu_pro);
+		unset($db_query_export);
+	}
 
-    // báo cáo giá trị tồn kho
-    function reportStock(){
-        $array_return = array();
-        //lấy các giá trị bắn ajax về để xuất báo cáo
-        $array_product  = getValue('products','arr','POST','');
-        if(!$array_product){
-            $array_return['content']    = 'Chưa chọn sản phẩm';
-            die(json_encode($array_return));
-        }
-        $store_id       = getValue('store_id','int','POST',0);
-        if(!$store_id){
-            $array_return['content']    = 'Chưa chọn kho hàng';
-            die(json_encode($array_return));
-        }
-        // select ra báo cáo với các thông tin trên
-        //lấy số lượng nhập hàng
-        $arr_pro = array();
-        foreach($array_product as $product){
-            $arr_pro[] = $product;
-        }
-        $arr_pro = implode(',',$arr_pro);
+	// báo cáo giá trị tồn kho
+	function reportStock()
+	{
+		$array_return = array();
+		//lấy các giá trị bắn ajax về để xuất báo cáo
+		$array_product = getValue('products', 'arr', 'POST', '');
+		if (!$array_product) {
+			$array_return['content'] = 'Chưa chọn sản phẩm';
+			die(json_encode($array_return));
+		}
+		$store_id = getValue('store_id', 'int', 'POST', 0);
+		if (!$store_id) {
+			$array_return['content'] = 'Chưa chọn kho hàng';
+			die(json_encode($array_return));
+		}
+		// select ra báo cáo với các thông tin trên
+		//lấy số lượng nhập hàng
+		$arr_pro = array();
+		foreach ($array_product as $product) {
+			$arr_pro[] = $product;
+		}
+		$arr_pro = implode(',', $arr_pro);
 
-        $left_column = '';
-        //Hiển thị danh sách phiếu thu bên trái
-        #Bắt đầu với datagird
-        $list = new dataGrid('pro_id', 100);
-        $list->add('', 'Tên mặt hàng');
-        $list->add('', 'ĐVT');
-        $list->add('', 'SL tồn');
-        $list->add('', 'Giá nhập TB');
-        $list->add('', 'Tổng tiền tồn');
+		$left_column = '';
+		//Hiển thị danh sách phiếu thu bên trái
+		#Bắt đầu với datagird
+		$list = new dataGrid('pro_id', 100);
+		$list->add('', 'Tên mặt hàng');
+		$list->add('', 'ĐVT');
+		$list->add('', 'SL tồn');
+		$list->add('', 'Giá nhập TB');
+		$list->add('', 'Tổng tiền tồn');
 
-        $sql_search = 'AND product_id IN('.$arr_pro.') AND store_id = '.$store_id.'';
-        // select list danh
-        $db_count = new db_count('SELECT count(*) as count
+		$sql_search = 'AND product_id IN(' . $arr_pro . ') AND store_id = ' . $store_id . '';
+		// select list danh
+		$db_count = new db_count('SELECT count(*) as count
                             FROM product_quantity
-                            WHERE 1 ' . $list->sqlSearch() .$sql_search. '
+                            WHERE 1 ' . $list->sqlSearch() . $sql_search . '
                             ');
-        $total = $db_count->total;
-        unset($db_count);
+		$total = $db_count->total;
+		unset($db_count);
 
-        $sql_query = 'SELECT * FROM product_quantity
+		$sql_query = 'SELECT * FROM product_quantity
                             WHERE 1 ' . $list->sqlSearch() . $sql_search . '
                             ORDER BY ' . $list->sqlSort() . ' product_id DESC
                             ' . $list->limit($total);
-        $db_listing = new db_query($sql_query);
+		$db_listing = new db_query($sql_query);
 
-        $total_row = mysqli_num_rows($db_listing->result);
+		$total_row = mysqli_num_rows($db_listing->result);
 
-        //tao mang hien thi ten product
-        $array_pro_name = array();
-        $db_product = new db_query('SELECT pro_id,pro_name FROM products');
-        while($row_pro = mysqli_fetch_assoc($db_product->result)){
-            $array_pro_name[$row_pro['pro_id']] = $row_pro['pro_name'];
-        }
-
-
-        //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
-        $left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
-        $i = 0;
-        $total_all  = 0;
-        while ($row = mysqli_fetch_assoc($db_listing->result)) {
-            $i++;
-            // lấy ra pro_unit_id để
-            $db_query_unit  = new db_query('SELECT pro_unit_id FROM products WHERE pro_id = '.$row['product_id'].' ');
-            $row_pro_unit   = mysqli_fetch_assoc($db_query_unit->result);
-
-            // lấy ra đơn vị tính của sản phẩm
-            $db_unit_name   = new db_query('SELECT uni_name FROM units WHERE uni_id = ' . $row_pro_unit['pro_unit_id'] . '');
-            $row_unit       = mysqli_fetch_assoc($db_unit_name->result);
-
-            // tính giá nhập trung bình
-            $db_price_ave   = new db_query('SELECT SUM(bid_pro_price) as total_price FROM bill_out_detail
-                                          WHERE bid_pro_id = '.$row['product_id'].'');
-
-            $row_price      = mysqli_fetch_assoc($db_price_ave->result);
-            //đếm có bao nhiêu sản phẩm và lấy tổng số bản ghi để tính giá trung bình
-            $db_count_price = new db_query('SELECT count(*) as count FROM bill_out_detail
-                                            WHERE bid_pro_id = '.$row['product_id'].'');
-
-            $count          = mysqli_fetch_assoc($db_count_price->result);
-            // tính công thức giá nhập trung bình
-            if($count['count'] > 0){
-                $price_average = $row_price['total_price']/$count['count'];
-            } else {
-                $price_average = 0;
-            }
+		//tao mang hien thi ten product
+		$array_pro_name = array();
+		$db_product = new db_query('SELECT pro_id,pro_name FROM products');
+		while ($row_pro = mysqli_fetch_assoc($db_product->result)) {
+			$array_pro_name[$row_pro['pro_id']] = $row_pro['pro_name'];
+		}
 
 
-            $left_column .= $list->start_tr($i, $row['product_id'], 'class="menu-normal record-item" data-record_id="' . $row['product_id'] . '"');
-            /* code something */
-            $left_column .= '<td class="text-left">' . $array_pro_name[$row['product_id']] . '</td>';
+		//Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
+		$left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
+		$i = 0;
+		$total_all = 0;
+		while ($row = mysqli_fetch_assoc($db_listing->result)) {
+			$i++;
+			// lấy ra pro_unit_id để
+			$db_query_unit = new db_query('SELECT pro_unit_id FROM products WHERE pro_id = ' . $row['product_id'] . ' ');
+			$row_pro_unit = mysqli_fetch_assoc($db_query_unit->result);
 
-            $left_column .= '<td width="100" class="center">' . $row_unit['uni_name'] . '</td>';
+			// lấy ra đơn vị tính của sản phẩm
+			$db_unit_name = new db_query('SELECT uni_name FROM units WHERE uni_id = ' . $row_pro_unit['pro_unit_id'] . '');
+			$row_unit = mysqli_fetch_assoc($db_unit_name->result);
 
-            $left_column .= '<td width="120" class="text-right">' . $row['pro_quantity'] . '</td>';
+			// tính giá nhập trung bình
+			$db_price_ave = new db_query('SELECT SUM(bid_pro_price) as total_price FROM bill_out_detail
+                                          WHERE bid_pro_id = ' . $row['product_id'] . '');
 
-            $left_column .= '<td width="120"  class="text-right">'.number_format($price_average).'</td>';
+			$row_price = mysqli_fetch_assoc($db_price_ave->result);
+			//đếm có bao nhiêu sản phẩm và lấy tổng số bản ghi để tính giá trung bình
+			$db_count_price = new db_query('SELECT count(*) as count FROM bill_out_detail
+                                            WHERE bid_pro_id = ' . $row['product_id'] . '');
 
-            $left_column .= '<td width="120"  class="text-right">'.number_format($price_average * $row['pro_quantity']).'</td>';
+			$count = mysqli_fetch_assoc($db_count_price->result);
+			// tính công thức giá nhập trung bình
+			if ($count['count'] > 0) {
+				$price_average = $row_price['total_price'] / $count['count'];
+			} else {
+				$price_average = 0;
+			}
 
-            // tổng tiền tất cả mặt hàng đã chọn
-            $total_all += ($price_average * $row['pro_quantity']);
 
-            $left_column .= $list->end_tr();
-        }unset($db_count_price);unset($db_price_ave);unset($db_listing);unset($db_unit_name);unset($db_query_unit);
-        $left_column .= $list->showFooter();
-        $total_money = number_format($total_all);
-        $array_return['content']    = $left_column;
-        $array_return['total']      = $total_money;
-        die(json_encode($array_return));
-    }
+			$left_column .= $list->start_tr($i, $row['product_id'], 'class="menu-normal record-item" data-record_id="' . $row['product_id'] . '"');
+			/* code something */
+			$left_column .= '<td class="text-left">' . $array_pro_name[$row['product_id']] . '</td>';
 
-    // Thống kê bán hàng theo thực đơn
-    function revenueMenus(){
-        /* Phần số lượng in bếp chưa có để tính số lượng chênh lệnh so với số lượng bán hàng&*/
-        $array_return = array();
+			$left_column .= '<td width="100" class="center">' . $row_unit['uni_name'] . '</td>';
 
-        //lấy các giá trị bắn ajax về để xuất báo cáo
-        $array_product  = getValue('products','arr','POST','');
-        if(!$array_product){
-            $array_return['content'] = 'Chưa chọn sản phẩm';
-            die(json_encode($array_return));
-        }
-        $start_date     = convertDateTime(getValue('start_date','str','POST',''),'0:0:0');
-        $end_date       = convertDateTime(getValue('end_date','str','POST',''),'0:0:0');
-        $store_id       = getValue('store_id','int','POST',0);
-        if(!$store_id){
-            $array_return['content'] = 'Chưa chọn kho hàng';
-            die(json_encode($array_return));
-        }
-        // select ra báo cáo với các thông tin trên
-        //lấy số lượng nhập hàng
-        $arr_pro = array();
-        foreach($array_product as $product){
-            $arr_pro[] = $product;
-        }
-        $arr_pro = implode(',',$arr_pro);
+			$left_column .= '<td width="120" class="text-right">' . $row['pro_quantity'] . '</td>';
 
-        $left_column = '';
-        //Hiển thị danh sách phiếu thu bên trái
-        #Bắt đầu với datagird
-        $list = new dataGrid('men_id', 100);
-        $list->add('', 'Tên thực đơn');
-        $list->add('', 'ĐVT');
-        $list->add('', 'SL Bán');
-        $list->add('', 'Giảm giá');
-        $list->add('', 'Tổng tiền');
+			$left_column .= '<td width="120"  class="text-right">' . number_format($price_average) . '</td>';
 
-        //lấy ra những hóa đơn có store_id đã chọn
-        $array_bii = array();
-        $db_bill = new db_query('SELECT bii_id FROM bill_in
-                                 WHERE  bii_store_id  = '.$store_id.'
-                                 AND bii_start_time <= '.$end_date.' AND bii_start_time >= '.$start_date.'
+			$left_column .= '<td width="120"  class="text-right">' . number_format($price_average * $row['pro_quantity']) . '</td>';
+
+			// tổng tiền tất cả mặt hàng đã chọn
+			$total_all += ($price_average * $row['pro_quantity']);
+
+			$left_column .= $list->end_tr();
+		}
+		unset($db_count_price);
+		unset($db_price_ave);
+		unset($db_listing);
+		unset($db_unit_name);
+		unset($db_query_unit);
+		$left_column .= $list->showFooter();
+		$total_money = number_format($total_all);
+		$array_return['content'] = $left_column;
+		$array_return['total'] = $total_money;
+		die(json_encode($array_return));
+	}
+
+	// Thống kê bán hàng theo thực đơn
+	function _revenueMenus()
+	{
+		/* Phần số lượng in bếp chưa có để tính số lượng chênh lệnh so với số lượng bán hàng&*/
+		$array_return = array();
+
+		//lấy các giá trị bắn ajax về để xuất báo cáo
+		$array_product = getValue('products', 'arr', 'POST', '');
+		if (!$array_product) {
+			$array_return['content'] = 'Chưa chọn sản phẩm';
+			die(json_encode($array_return));
+		}
+		$start_date = convertDateTime(getValue('start_date', 'str', 'POST', ''), '0:0:0');
+		$end_date = convertDateTime(getValue('end_date', 'str', 'POST', ''), '0:0:0');
+		$store_id = getValue('store_id', 'int', 'POST', 0);
+		if (!$store_id) {
+			$array_return['content'] = 'Chưa chọn kho hàng';
+			die(json_encode($array_return));
+		}
+		// select ra báo cáo với các thông tin trên
+		//lấy số lượng nhập hàng
+		$arr_pro = array();
+		foreach ($array_product as $product) {
+			$arr_pro[] = $product;
+		}
+		$arr_pro = implode(',', $arr_pro);
+
+		$left_column = '';
+		//Hiển thị danh sách phiếu thu bên trái
+		#Bắt đầu với datagird
+		$list = new dataGrid('men_id', 100);
+		$list->add('', 'Tên thực đơn');
+		$list->add('', 'ĐVT');
+		$list->add('', 'SL Bán');
+		$list->add('', 'Giảm giá');
+		$list->add('', 'Tổng tiền');
+
+		//lấy ra những hóa đơn có store_id đã chọn
+		$array_bii = array();
+		$db_bill = new db_query('SELECT bii_id FROM bill_in
+                                 WHERE  bii_store_id  = ' . $store_id . '
+                                 AND bii_start_time <= ' . $end_date . ' AND bii_start_time >= ' . $start_date . '
                                  ');
-        while($row_bill = mysqli_fetch_assoc($db_bill->result)){
-            $array_bii[] = $row_bill['bii_id'];
-        } unset($db_bill);
-        $array_bii = implode(',',$array_bii);
-        // kiểm tra mảng rỗng điều kiện bid_bill_id sẽ là mảng array(0)
-        if($array_bii == null){
-            $sql_search = 'AND bid_menu_id IN(' . $arr_pro . ') AND bid_bill_id IN(0)';
-        } else {
-            $sql_search = 'AND bid_menu_id IN(' . $arr_pro . ') AND bid_bill_id IN(' . $array_bii . ')';
-        }
+		while ($row_bill = mysqli_fetch_assoc($db_bill->result)) {
+			$array_bii[] = $row_bill['bii_id'];
+		}
+		unset($db_bill);
+		$array_bii = implode(',', $array_bii);
+		// kiểm tra mảng rỗng điều kiện bid_bill_id sẽ là mảng array(0)
+		if ($array_bii == null) {
+			$sql_search = 'AND bid_menu_id IN(' . $arr_pro . ') AND bid_bill_id IN(0)';
+		} else {
+			$sql_search = 'AND bid_menu_id IN(' . $arr_pro . ') AND bid_bill_id IN(' . $array_bii . ')';
+		}
 
 
-        // lấy ra bản ghi để thực hiển thị ajax
-        $db_count = new db_count('SELECT count(*) as count
+		// lấy ra bản ghi để thực hiển thị ajax
+		$db_count = new db_count('SELECT count(*) as count
                                   FROM bill_in_detail
-                                  WHERE 1 ' . $list->sqlSearch() .$sql_search. '
+                                  WHERE 1 ' . $list->sqlSearch() . $sql_search . '
                                   GROUP BY bid_menu_id
                             ');
-        $total = $db_count->total;
-        unset($db_count);
+		$total = $db_count->total;
+		unset($db_count);
 
-        $sql_query = 'SELECT * FROM bill_in_detail
+		$sql_query = 'SELECT * FROM bill_in_detail
                       WHERE 1 ' . $list->sqlSearch() . $sql_search . '
                       GROUP BY bid_menu_id
                       ORDER BY ' . $list->sqlSort() . 'bid_menu_id ASC
                       ' . $list->limit($total);
-        $db_listing = new db_query($sql_query);
+		$db_listing = new db_query($sql_query);
+		$total_row = mysqli_num_rows($db_listing->result);
 
-        $total_row = mysqli_num_rows($db_listing->result);
+		//tao mang hien thi ten product
+		$array_menu_name = array();
+		$db_menus = new db_query('SELECT men_id,men_name FROM menus');
+		while ($row_menus = mysqli_fetch_assoc($db_menus->result)) {
+			$array_menu_name[$row_menus['men_id']] = $row_menus['men_name'];
+		}
+		unset($db_menus);
 
-        //tao mang hien thi ten product
-        $array_menu_name = array();
-        $db_menus = new db_query('SELECT men_id,men_name FROM menus');
-        while($row_menus = mysqli_fetch_assoc($db_menus->result)){
-            $array_menu_name[$row_menus['men_id']] = $row_menus['men_name'];
-        }unset($db_menus);
 
+		//Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
+		$left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
+		$i = 0;
+		$total_all = 0; /* Tổng của tất cả hóa đơn bán hàng theo menu */
+		while ($row = mysqli_fetch_assoc($db_listing->result)) {
+			$i++;
+			// lấy ra pro_unit_id để
+			$db_query_unit = new db_query('SELECT men_unit_id FROM menus WHERE men_id = ' . $row['bid_menu_id'] . ' ');
+			$row_pro_unit = mysqli_fetch_assoc($db_query_unit->result);
+			// lấy ra đơn vị tính của sản phẩm
+			$db_unit_name = new db_query('SELECT uni_name FROM units WHERE uni_id = ' . $row_pro_unit['men_unit_id'] . '');
+			$row_unit = mysqli_fetch_assoc($db_unit_name->result);
 
-        //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
-        $left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
-        $i = 0;
-        $total_all  = 0; /* Tổng của tất cả hóa đơn bán hàng theo menu */
-        while ($row = mysqli_fetch_assoc($db_listing->result)) {
-            $i++;
-            // lấy ra pro_unit_id để
-            $db_query_unit  = new db_query('SELECT men_unit_id FROM menus WHERE men_id = '.$row['bid_menu_id'].' ');
-            $row_pro_unit   = mysqli_fetch_assoc($db_query_unit->result);
-            // lấy ra đơn vị tính của sản phẩm
-            $db_unit_name   = new db_query('SELECT uni_name FROM units WHERE uni_id = ' . $row_pro_unit['men_unit_id'] . '');
-            $row_unit       = mysqli_fetch_assoc($db_unit_name->result);
-
-            // Tổng số lượng của menu cùng id trong bảng bill_in_detail
-            $db_total_number = new db_query('SELECT SUM(bid_menu_number) AS total_number
+			// Tổng số lượng của menu cùng id trong bảng bill_in_detail
+			$db_total_number = new db_query('SELECT SUM(bid_menu_number) AS total_number
                                              FROM bill_in_detail
                                              WHERE 1 ' . $list->sqlSearch() . '
-                                             AND bid_menu_id = '.$row['bid_menu_id'].'
+                                             AND bid_menu_id = ' . $row['bid_menu_id'] . '
                                              GROUP BY bid_menu_id');
-            $row_total_number = mysqli_fetch_assoc($db_total_number->result);
+			$row_total_number = mysqli_fetch_assoc($db_total_number->result);
 
-            $total_money = ($row_total_number['total_number']*$row['bid_menu_price']);
-            $total_money = $total_money - $total_money*$row['bid_menu_discount']/100; /* tính tổng số tiền theo giảm giá thực đơn */
+			$total_money = ($row_total_number['total_number'] * $row['bid_menu_price']);
+			$total_money = $total_money - $total_money * $row['bid_menu_discount'] / 100; /* tính tổng số tiền theo giảm giá thực đơn */
 
-            $left_column .= $list->start_tr($i, $row['bid_menu_id'], 'class="menu-normal record-item" data-record_id="' . $row['bid_menu_id'] . '"');
-            /* code something */
-            $left_column .= '<td class="text-left">' . $array_menu_name[$row['bid_menu_id']] . '</td>';
+			$left_column .= $list->start_tr($i, $row['bid_menu_id'], 'class="menu-normal record-item" data-record_id="' . $row['bid_menu_id'] . '"');
+			/* code something */
+			$left_column .= '<td class="text-left">' . $array_menu_name[$row['bid_menu_id']] . '</td>';
 
-            $left_column .= '<td width="10%" class="center">' . $row_unit['uni_name'] . '</td>';
+			$left_column .= '<td width="10%" class="center">' . $row_unit['uni_name'] . '</td>';
 
-            $left_column .= '<td width="10%" class="text-right">'.number_format($row_total_number['total_number']).'</td>';
-            $left_column .= '<td width="10%" class="text-right">'.$row['bid_menu_discount'].'</td>';
+			$left_column .= '<td width="10%" class="text-right">' . number_format($row_total_number['total_number']) . '</td>';
+			$left_column .= '<td width="10%" class="text-right">' . $row['bid_menu_discount'] . '</td>';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_money).'</td>';
-
-
-            // tổng tiền tất cả mặt hàng đã chọn
-            $total_all += $total_money;
-
-            $left_column .= $list->end_tr();
-        }unset($db_count_price);unset($db_price_ave);unset($db_listing);unset($db_unit_name);unset($db_query_unit);
-
-        $left_column .= $list->showFooter();
-        $total_all  = number_format($total_all);
+			$left_column .= '<td width="15%"  class="text-right">' . number_format($total_money) . '</td>';
 
 
-        $array_return['content']    = $left_column;
-        $array_return['total']      = $total_all;
-        die(json_encode($array_return));
-    }
+			// tổng tiền tất cả mặt hàng đã chọn
+			$total_all += $total_money;
 
+			$left_column .= $list->end_tr();
+		}
+		unset($db_count_price);
+		unset($db_price_ave);
+		unset($db_listing);
+		unset($db_unit_name);
+		unset($db_query_unit);
+
+		$left_column .= $list->showFooter();
+		$total_all = number_format($total_all);
+
+
+		$array_return['content'] = $left_column;
+		$array_return['total'] = $total_all;
+		die(json_encode($array_return));
+	}
+
+	function revenueMenus()
+	{
+		$array_return = array();
+
+		//lấy các giá trị bắn ajax về để xuất báo cáo
+		$array_product = getValue('products', 'arr', 'POST', '');
+		if (!$array_product) {
+			$array_return['content'] = 'Chưa chọn sản phẩm';
+			die(json_encode($array_return));
+		}
+		$start_date = convertDateTime(getValue('start_date', 'str', 'POST', ''), '0:0:0');
+		$end_date = convertDateTime(getValue('end_date', 'str', 'POST', ''), '23:59:59');
+		$store_id = getValue('store_id', 'int', 'POST', 0);
+		if (!$store_id) {
+			$array_return['content'] = 'Chưa chọn kho hàng';
+			die(json_encode($array_return));
+		}
+
+
+		$left_column = '';
+		//Hiển thị danh sách phiếu thu bên trái
+		#Bắt đầu với datagird
+		$list = new dataGrid('men_id', 1000);
+		$list->add('', 'Tên thực đơn');
+		$list->add('', 'SL Bán');
+		$list->add('', 'Doanh thu');
+
+		$sql_listing = 'SELECT
+							count(bid_bill_id) as count,
+							bid_menu_id,
+							men_name,
+							sum(bid_menu_price) as total
+						FROM
+							`bill_in_detail`
+						INNER JOIN bill_in ON bill_in.bii_id = bill_in_detail.bid_bill_id
+						INNER JOIN menus ON menus.men_id = bid_menu_id
+						WHERE
+							bid_menu_id IN (' . implode(',', $array_product) . ')
+							AND bii_store_id = ' . $store_id . '
+							AND bill_in.bii_end_time >= ' . $start_date . '
+							AND bill_in.bii_end_time < ' . $end_date . '
+						GROUP BY bid_menu_id ' . $list->limit(count($array_product));
+		$db_listing = new db_query($sql_listing);
+		//Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
+		$left_column .= $list->showHeader(count($array_product), '', 'id="table-listing-right"');
+		$i = 0;
+		$total_all = 0; /* Tổng của tất cả hóa đơn bán hàng theo menu */
+		while ($row = mysqli_fetch_assoc($db_listing->result)) {
+			$i++;
+			$left_column .= $list->start_tr($i, $row['bid_menu_id'], 'class="menu-normal record-item" data-record_id="' . $row['bid_menu_id'] . '"');
+			/* code something */
+			$left_column .= '<td class="text-left">' . $row['men_name'] . '</td > ';
+
+			$left_column .= '<td width = "10%" class="text-right" > ' . $row['count'] . ' </td > ';
+
+			$left_column .= '<td width = "10%" class="text-right" > '.number_format($row['total']).' </td > ';
+			// tổng tiền tất cả mặt hàng đã chọn
+			$total_all += $row['total'];
+			$left_column .= $list->end_tr();
+		}
+
+		$left_column .= $list->showFooter();
+		$total_all = number_format($total_all);
+
+		$array_return['content'] = $left_column;
+		$array_return['total'] = $total_all;
+		die(json_encode($array_return));
+	}
     // Thống kê bán hàng theo nhân viên
     function revenueStaff(){
 
@@ -329,7 +414,7 @@ class ReportAjax extends AjaxCommon {
         $list->add('', 'Ghi nợ');
 
 
-        $bill_condition = 'AND bii_start_time <= '.$end_date.' AND bii_start_time >= '.$start_date.' AND bii_staff_id IN(0,' . $arr_staff . ')';
+        $bill_condition = ' AND bii_start_time <= '.$end_date.' AND bii_start_time >= '.$start_date.' AND bii_staff_id IN(0, ' . $arr_staff . ')';
 
         // lấy ra bản ghi để thực hiển thị ajax
         $db_count = new db_count('SELECT count(*) as count
@@ -357,7 +442,7 @@ class ReportAjax extends AjaxCommon {
         }unset($db_staff);
 
         //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
-        $left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
+        $left_column .= $list->showHeader($total_row, '', 'id = "table-listing-right"');
         $i = 0;
         $total_bill_all = 0;
         while ($row = mysqli_fetch_assoc($db_listing->result)) {
@@ -386,17 +471,17 @@ class ReportAjax extends AjaxCommon {
                 $staff_name = $array_staff_name[$row['bii_staff_id']];
             }
 
-            $left_column .= $list->start_tr($i, $row['bii_staff_id'], 'class="menu-normal record-item" data-record_id="' . $row['bii_staff_id'] . '"');
+            $left_column .= $list->start_tr($i, $row['bii_staff_id'], 'class="menu-normal record-item" data - record_id = "' . $row['bii_staff_id'] . '"');
             /* code something */
-            $left_column .= '<td class="text-left">'.$staff_name.'</td>';
+            $left_column .= ' < td class="text-left" > '.$staff_name.'</td > ';
 
-            $left_column .= '<td width="10%"  class="center">'.$total_bill.'</td>';
+            $left_column .= '<td width = "10%"  class="center" > '.$total_bill.'</td > ';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_staff_money).'</td>';
+            $left_column .= '<td width = "15%"  class="text-right" > '.number_format($total_staff_money).'</td > ';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_round_money - $total_debit).' </td>';
+            $left_column .= '<td width = "15%"  class="text-right" > '.number_format($total_round_money - $total_debit).' </td > ';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_debit).' </td>';
+            $left_column .= '<td width = "15%"  class="text-right" > '.number_format($total_debit).' </td > ';
 
             $left_column .= $list->end_tr();
 
@@ -409,7 +494,7 @@ class ReportAjax extends AjaxCommon {
         $db_arr_staff_money = new db_query('SELECT SUM(bii_true_money)  AS true_money,
                                                    SUM(bii_round_money) AS round_money,
                                                    SUM(bii_money_debit) AS debit_money
-                                                   FROM bill_in WHERE bii_staff_id IN('.$arr_staff.',0)');
+                                                   FROM bill_in WHERE bii_staff_id IN('.$arr_staff.', 0)');
         $row_arr_staff_money = mysqli_fetch_assoc($db_arr_staff_money->result);
         $total_staff_money  = $row_arr_staff_money['true_money']; /* Tổng doanh thu*/
         $total_round_money  = $row_arr_staff_money['round_money'] - $row_arr_staff_money['debit_money']; /* Doanh thu ghi có*/
@@ -457,7 +542,7 @@ class ReportAjax extends AjaxCommon {
         $list->add('', 'Ghi nợ');
 
 
-        $bill_condition = 'AND bii_start_time <= '.$end_date.' AND bii_start_time >= '.$start_date.' AND bii_customer_id IN(0,' . $arr_customers . ')';
+        $bill_condition = ' AND bii_start_time <= '.$end_date.' AND bii_start_time >= '.$start_date.' AND bii_customer_id IN(0, ' . $arr_customers . ')';
 
         // lấy ra bản ghi để thực hiển thị ajax
         $db_count = new db_count('SELECT count(*) as count
@@ -485,7 +570,7 @@ class ReportAjax extends AjaxCommon {
         }unset($db_customers);
 
         //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
-        $left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
+        $left_column .= $list->showHeader($total_row, '', 'id = "table-listing-right"');
         $i = 0;
         $total_bill_all = 0;
         while ($row = mysqli_fetch_assoc($db_listing->result)) {
@@ -514,17 +599,17 @@ class ReportAjax extends AjaxCommon {
                 $customer_name = $array_customer_name[$row['bii_customer_id']];
             }
 
-            $left_column .= $list->start_tr($i, $row['bii_customer_id'], 'class="menu-normal record-item" data-record_id="' . $row['bii_customer_id'] . '"');
+            $left_column .= $list->start_tr($i, $row['bii_customer_id'], 'class="menu-normal record-item" data - record_id = "' . $row['bii_customer_id'] . '"');
             /* code something */
-            $left_column .= '<td class="text-left">'.$customer_name.'</td>';
+            $left_column .= ' < td class="text-left" > '.$customer_name.'</td > ';
 
-            $left_column .= '<td width="10%"  class="center">'.$total_bill.'</td>';
+            $left_column .= '<td width = "10%"  class="center" > '.$total_bill.'</td > ';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_staff_money).'</td>';
+            $left_column .= '<td width = "15%"  class="text-right" > '.number_format($total_staff_money).'</td > ';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_round_money - $total_debit).' </td>';
+            $left_column .= '<td width = "15%"  class="text-right" > '.number_format($total_round_money - $total_debit).' </td > ';
 
-            $left_column .= '<td width="15%"  class="text-right">'.number_format($total_debit).' </td>';
+            $left_column .= '<td width = "15%"  class="text-right" > '.number_format($total_debit).' </td > ';
 
             $left_column .= $list->end_tr();
 
@@ -537,7 +622,7 @@ class ReportAjax extends AjaxCommon {
         $db_arr_staff_money = new db_query('SELECT SUM(bii_true_money)  AS true_money,
                                                    SUM(bii_round_money) AS round_money,
                                                    SUM(bii_money_debit) AS debit_money
-                                                   FROM bill_in WHERE bii_customer_id IN('.$arr_customers.',0)');
+                                                   FROM bill_in WHERE bii_customer_id IN('.$arr_customers.', 0)');
         $row_arr_customer_money = mysqli_fetch_assoc($db_arr_staff_money->result);
         $total_staff_money  = $row_arr_customer_money['true_money']; /* Tổng doanh thu*/
         $total_round_money  = $row_arr_customer_money['round_money'] - $row_arr_customer_money['debit_money']; /* Doanh thu ghi có*/
@@ -591,7 +676,7 @@ class ReportAjax extends AjaxCommon {
         // tảo mảng bill_id lọc theo thời gian và theo kho hàng
         $array_bill = array();
         $db_bill_out = new db_query('SELECT bio_id FROM bill_out WHERE bio_start_time >= '.$start_date.'
-                                     AND bio_start_time <='.$end_date.' AND bio_store_id = '.$store_id.'');
+			AND bio_start_time <= '.$end_date.' AND bio_store_id = '.$store_id.'');
         while($row_bill_out = mysqli_fetch_assoc($db_bill_out->result)){
             $array_bill[] = $row_bill_out['bio_id'];
         }unset($db_bill_out);
@@ -631,7 +716,7 @@ class ReportAjax extends AjaxCommon {
 
 
         //Vì đây là module cần 2 table listing nên khai báo thêm table_extra id=table-listing-left
-        $left_column .= $list->showHeader($total_row, '', 'id="table-listing-right"');
+        $left_column .= $list->showHeader($total_row, '', 'id = "table-listing-right"');
         $i = 0;
         $total_all   = 0;
         while ($row = mysqli_fetch_assoc($db_listing->result)) {
@@ -653,15 +738,15 @@ class ReportAjax extends AjaxCommon {
             $row_total      = mysqli_fetch_assoc($db_price_ave->result);
 
 
-            $left_column .= $list->start_tr($i, $row['bid_pro_id'], 'class="menu-normal record-item" data-record_id="' . $row['bid_pro_id'] . '"');
+            $left_column .= $list->start_tr($i, $row['bid_pro_id'], 'class="menu-normal record-item" data - record_id = "' . $row['bid_pro_id'] . '"');
             /* code something */
-            $left_column .= '<td class="text-left">' . $array_pro_name[$row['bid_pro_id']] . '</td>';
+            $left_column .= ' < td class="text-left" > ' . $array_pro_name[$row['bid_pro_id']] . ' </td > ';
 
-            $left_column .= '<td width="100" class="center">' . $row_unit['uni_name'] . '</td>';
+            $left_column .= '<td width = "100" class="center" > ' . $row_unit['uni_name'] . ' </td > ';
 
-            $left_column .= '<td width="120" class="text-right">'.$row_total['total_number'].'</td>';
+            $left_column .= '<td width = "120" class="text-right" > '.$row_total['total_number'].' </td > ';
 
-            $left_column .= '<td width="120"  class="text-right">'.number_format($row_total['total_price']).'</td>';
+            $left_column .= '<td width = "120"  class="text-right" > '.number_format($row_total['total_price']).' </td > ';
 
             // tổng tiền tất cả mặt hàng đã chọn
             $total_all += $row_total['total_number']*$row_total['total_price'];

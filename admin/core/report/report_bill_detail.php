@@ -101,7 +101,7 @@ while ($row = mysqli_fetch_assoc($db_listing->result)) {
     $i++;
     $content_column .= $list->start_tr($i, $row[$id_field], 'class="menu-normal record-item" data-record_id="' . $row[$id_field] . '"');
     /* code something */
-    $content_column .= '<td class="center">' . date('d/m/Y h:i',$row['bii_start_time']) .'</td>';
+    $content_column .= '<td class="center">' . date('d/m/Y H:i',$row['bii_start_time']) .'</td>';
     $content_column .= '<td class="center">' . $location . '</td>';
     $content_column .= '<td class="center">' . format_codenumber($row['bii_id'],6,PREFIX_BILL_CODE)  . '</td>';
     $content_column .= '<td class="text-right">'.number_format($row['bii_true_money']).'</td>';// Số tiền tổng chưa giảm

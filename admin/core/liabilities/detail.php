@@ -130,7 +130,7 @@ while($data_bill    = mysqli_fetch_assoc($db_list_bill->result)){
     $i++;
     $table_result       .= $list->start_tr($i,$data_bill[$bill_id],'class="menu-normal record-item" onclick="active_record('.$data_bill[$bill_id].')"');
     $table_result       .= '<td class="center">'.format_codenumber($data_bill[$bill_id],6,'').'</td>';
-    $table_result       .= '<td class="center"  width="170">'.date("d-m-Y h:i",$data_bill[$date]).'</td>';
+    $table_result       .= '<td class="center"  width="170">'.date("d-m-Y H:i",$data_bill[$date]).'</td>';
     $table_result       .= '<td class="text-right" width="100">'.number_format($data_bill[$debit]).'</td>';
     $table_result       .= '<td class="text-right"> </td>';
     $table_result       .= '<td class="center">Chưa Thanh Toán</td>';

@@ -23,7 +23,7 @@ $db_current_desk = new db_query("SELECT * FROM current_desk WHERE cud_desk_id = 
 $data_current_desk = mysqli_fetch_assoc($db_current_desk->result);unset($db_current_desk);
 // thoi gian khoi tao ban
 $start_time_int = $data_current_desk['cud_start_time'];
-$start_time = date("d/m/Y h:i", $start_time_int);
+$start_time = date("d/m/Y H:i", $start_time_int);
 // ghi chu
 $cud_note = $data_current_desk['cud_note'];
 // customer id

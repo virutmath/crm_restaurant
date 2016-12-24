@@ -155,7 +155,7 @@ while ($row = mysqli_fetch_assoc($db_listing->result)) {
     /* code something */
     $content_column .= '<td class="center">' . $array_admin[$row['log_admin_id']].'</td>';
 
-    $content_column .= '<td class="center">'.date('d/m/Y h:i:s',$row['log_time_in']).'</td>';
+    $content_column .= '<td class="center">'.date('d/m/Y H:i:s',$row['log_time_in']).'</td>';
     $content_column .= '<td class="text-right">'.number_format($total_money_real).'</td>';
     $content_column .= '<td class="text-right">'.number_format($money_real_in).'</td>';
     $content_column .= '<td class="text-right">'.number_format($money_cash_in).'</td>';
