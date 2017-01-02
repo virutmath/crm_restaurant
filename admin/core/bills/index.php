@@ -24,7 +24,7 @@ $sql            = new db_query("SELECT * FROM trash WHERE tra_table = 'bill_in'"
 $count          = mysqli_num_rows($sql->result);unset($sql);
 
 $left_control .= '<div class="control-table-listing top_right_control">
-    <span class="control-btn deactivate control-bill-in"><i class="fa fa-print"></i> In HĐ</span>
+    <span class="control-btn deactivate control-bill-in" onclick="printBill()"><i class="fa fa-print"></i> In HĐ</span>
     <span class="control-btn"><i class="fa fa-cog"></i> Cài đặt</span>
     <span class="control-btn control-list-trash"><i class="fa fa-recycle"></i> Thùng rác ('.$count.')</span>
 </div>';

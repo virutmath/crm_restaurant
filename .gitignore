@@ -1,4 +1,4 @@
 .idea/
 temp/
 /admin/resources/caches/*
-
+bower_components

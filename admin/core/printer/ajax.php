@@ -13,10 +13,10 @@ class PrinterAjax extends AjaxCommon {
                     SET cdm_printed_number = cdm_printed_number + ' . $menu['print_number'].'
                     WHERE cdm_menu_id = '.$menu['men_id'].'
                     AND cdm_desk_id = '.$desk_id;
-            $db_update = new db_execute($sql);
-            if($db_update->total) {
+//            $db_update = new db_execute($sql);
+//            if($db_update->total) {
                 $array_menu_success[] = $menu;
-            }
+//            }
         }
         if(!$array_menu_success) {
             return;

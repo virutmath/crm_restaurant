@@ -56,6 +56,7 @@
     #print-area {
         margin: 10px auto;
         max-width : 600px;
+        font-size: 16px;
     }
     #print-area .font-small {
         font-size: 9px;
@@ -69,5 +70,8 @@
     }
     #print-area table th {
         text-align: center;
+    }
+    #print-area table.table-bordered>tbody>tr>td {
+        font-size: 14px;
     }
 }
