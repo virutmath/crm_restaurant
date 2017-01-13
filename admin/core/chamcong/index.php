@@ -33,15 +33,34 @@ require_once 'inc_security.php';
             <td>
                <button class="btn btn-primary">Checkin</button>
                <button class="btn btn-danger">Checkout</button>
-               <input type="checkbox" value="1" checked ng-model="lunch">
+               <md-checkbox ng-model="user.hasLunch" aria-label="Ăn trưa" ng-change="updateEating(user)">
+                    Ăn trưa 
+                </md-checkbox>
             </td>
             <td>
                <button class="btn btn-primary">Checkin</button>
                <button class="btn btn-danger">Checkout</button>
-               <input type="checkbox" value="1" checked ng-model="dinner">
+               <md-checkbox ng-model="user.hasDinner" aria-label="Ăn tối">
+                    Ăn tối
+                </md-checkbox>
             </td>
          </tr>
       </table>
+   </div>
+   <div class="time-log">
+        <table class="table">
+            <tr>
+                <th>Tên nhân viên</th>
+                <th>Log</th>
+                <th>Tổng giờ làm</th>
+            </tr>
+            <tr ng-repeat="user in $ctrl.timeLogs">
+                <td>{{user.use_name}}</td>
+                <td>
+                    Giờ vào : {{user.}}
+                </td>
+            </tr>
+        </table>
    </div>
 </div>
 </body>

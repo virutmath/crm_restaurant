@@ -1,6 +1,8 @@
 crm.controller('TimeCheckingController', function (requestService) {
 	let self = this;
 	self.list = [];
+	self.lunch = true;
+	self.dinner = true;
 	//lấy danh sách nhân viên
 	self.init = () => {
 		let params = {

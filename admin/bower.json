@@ -1,0 +1,28 @@
+{
+  "name": "crm_admin",
+  "homepage": "https://github.com/virutmath/crm_restaurant",
+  "authors": [
+    "Kien Dang <kiendt.it@hotmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.1",
+    "bootstrap": "^3.3.7",
+    "angular-animate": "^1.6.1",
+    "angular-aria": "^1.6.1",
+    "angular-sanitize": "^1.6.1",
+    "angular-cookies": "^1.6.1",
+    "angular-material": "^1.1.1",
+    "font-awesome": "fontawesome#^4.7.0",
+    "Ionicons": "ionicons#^2.0.1"
+  }
+}
