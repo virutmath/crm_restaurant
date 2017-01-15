@@ -562,6 +562,9 @@ function getValue($value_name, $data_type = "int", $method = "GET", $default_val
 		case "POST":
 			if (isset($_POST[$value_name])) $value = $_POST[$value_name];
 			break;
+		case "REQUEST":
+			if (isset($_REQUEST[$value_name])) $value = $_REQUEST[$value_name];
+			break;
 		case "COOKIE":
 			if (isset($_COOKIE[$value_name])) $value = $_COOKIE[$value_name];
 			break;

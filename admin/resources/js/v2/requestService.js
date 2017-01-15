@@ -4,9 +4,10 @@ crm.service('requestService', function ($http) {
 		let httpConfig = {
 			method: method,
 			url: url,
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		};
 		if (method == 'get') httpConfig.params = params;
-		else httpConfig.data = params;
+		else httpConfig.data = $.param(params);
 
 		$http(httpConfig).then((response) => {
 			// console.log(response);
@@ -15,7 +16,7 @@ crm.service('requestService', function ($http) {
 			}
 		}, (response) => {
 			if(callback) {
-				callback(response);
+				callback(response.data);
 			}
 		})
 	}
