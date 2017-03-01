@@ -3,6 +3,7 @@ session_start();
 ob_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 require_once 'inc_constant.php';
+require_once '../../../vendor/autoload.php';
 if(DEVELOPER_ENVIRONMENT) {
     error_reporting(E_ALL);
 }else{
@@ -21,6 +22,7 @@ require_once('../../../functions/form.php');
 require_once('../../../functions/date_functions.php');
 require_once("../../../functions/file_functions.php");
 
+require_once 'eloquent.database.php';
 require_once('functions.php');
 require_once('grid.php');
 require_once('AbstractAjax.php');

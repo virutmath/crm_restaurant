@@ -23,6 +23,7 @@
     "angular-cookies": "^1.6.1",
     "angular-material": "^1.1.1",
     "font-awesome": "fontawesome#^4.7.0",
-    "Ionicons": "ionicons#^2.0.1"
+    "Ionicons": "ionicons#^2.0.1",
+    "lodash": "^4.17.4"
   }
 }

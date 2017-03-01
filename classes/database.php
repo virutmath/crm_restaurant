@@ -7,7 +7,7 @@ class db_init
     var $password;
     var $database;
 
-    function db_init()
+    function __construct()
     {
         // Khai bao Server o day
         $this->server = "localhost";
@@ -33,7 +33,7 @@ class db_query
     var $links;
     var $time_slow_log = 0.5;
 
-    function db_query($query, $file_include_name = "")
+    function __construct($query, $file_include_name = "")
     {
         $generate_time = microtime_float();
         $dbinit = new db_init();
@@ -160,7 +160,7 @@ class db_execute
     var $links;
     var $total = 0;
 
-    function db_execute($query, $utf8 = 1)
+    function __construct($query, $utf8 = 1)
     {
         $dbinit = new db_init();
 
@@ -182,7 +182,7 @@ class db_count
 {
     var $total;
 
-    function db_count($sql)
+    function __construct($sql)
     {
         $db_ex = new db_query($sql);
         if ($row = mysqli_fetch_assoc($db_ex->result)) {
@@ -204,7 +204,7 @@ class db_execute_return
     var $result;
     var $total = 0;
 
-    function db_execute($query)
+    function __construct($query)
     {
         $dbinit = new db_init();
         $this->links = mysqli_connect($dbinit->server, $dbinit->username, $dbinit->password);

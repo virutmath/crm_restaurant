@@ -13,10 +13,11 @@ require_once 'inc_security.php';
 	<link rel="stylesheet" href="/admin/resources/bower_components/angular-material/angular-material.min.css">
 	<link rel="stylesheet" href="/admin/resources/bower_components/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" href="/admin/resources/bower_components/Ionicons/css/ionicons.min.css">
-	<link rel="stylesheet" href="css/home.less">
+	<link rel="stylesheet" href="/admin/resources/css/common_v2.css">
+	<link rel="stylesheet" href="css/home.css">
 </head>
 <body ng-controller="HomeController as ctrl">
-<section layout="row" flex>
+<section layout="row" flex layout-fill="">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
 			<h2 class="md-flex">Danh mục</h2>
@@ -25,8 +26,22 @@ require_once 'inc_security.php';
 	<md-sidenav
 			class="md-sidenav-right"
 			md-component-id="right"
-			md-is-locked-open="$mdMedia('gt-md')"
+			md-is-locked-open="$mdMedia('gt-sm')"
 			md-whiteframe="4">
+        <p class="left-sidebar-header padding-10 mt2">
+            <i class="fa fa-chevron-left pull-left mt5"></i>
+            <span class="f18 padding-10l">Danh sách bàn</span>
+        </p>
+        <div class="padding-10">
+            <select ng-model="ctrl.section" class="form-control">
+                <option ng-value="section" ng-repeat="section in ctrl.sections">{{section.sec_name}}</option>
+            </select>
+        </div>
+        <div layout="row" layout-wrap>
+            <div layout-padding flex="50" ng-repeat="desk in ctrl.desks[ctrl.section.sec_id]">
+                <div class="desk-item text-center">{{desk.des_name}}</div>
+            </div>
+        </div>
 	</md-sidenav>
 </section>
 
