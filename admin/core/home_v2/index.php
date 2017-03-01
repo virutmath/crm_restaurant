@@ -48,6 +48,7 @@ require_once 'inc_security.php';
 </body>
 <script src="/admin/resources/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/admin/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/admin/resources/bower_components/lodash/lodash.js"></script>
 <script src="/admin/resources/bower_components/angular/angular.js"></script>
 <script src="/admin/resources/bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="/admin/resources/bower_components/angular-aria/angular-aria.min.js"></script>
