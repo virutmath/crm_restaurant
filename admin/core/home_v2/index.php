@@ -26,20 +26,32 @@ require_once 'inc_security.php';
 	<md-sidenav
 			class="md-sidenav-right"
 			md-component-id="right"
-			md-is-locked-open="$mdMedia('gt-sm')"
+			md-is-locked-open="$mdMedia('gt-xs')"
 			md-whiteframe="4">
         <p class="left-sidebar-header padding-10 mt2">
-            <i class="fa fa-chevron-left pull-left mt5"></i>
-            <span class="f18 padding-10l">Danh sách bàn</span>
+            <i class="fa fa-chevron-left pull-left mt5" ng-show="ctrl.showDesk" ng-click="ctrl.showDesk=false;"></i>
+            <span class="f18 padding-10l" ng-bind="ctrl.showDesk ? 'Chi tiet ban' : 'Danh sách bàn'"></span>
         </p>
-        <div class="padding-10">
-            <select ng-model="ctrl.section" class="form-control">
-                <option ng-value="section" ng-repeat="section in ctrl.sections">{{section.sec_name}}</option>
-            </select>
+        <div ng-hide="ctrl.showDesk">
+            <div class="padding-10">
+                <select ng-model="ctrl.section" class="form-control">
+                    <option ng-value="section" ng-repeat="section in ctrl.sections">{{section.sec_name}}</option>
+                </select>
+            </div>
+            <div layout="row" layout-wrap>
+                <div layout-padding flex="50" ng-repeat="desk in ctrl.desks[ctrl.section.sec_id]">
+                    <div class="desk-item text-center" ng-click="ctrl.selectDesk(desk)">{{desk.des_name}}</div>
+                </div>
+            </div>
         </div>
-        <div layout="row" layout-wrap>
-            <div layout-padding flex="50" ng-repeat="desk in ctrl.desks[ctrl.section.sec_id]">
-                <div class="desk-item text-center">{{desk.des_name}}</div>
+        <div ng-show="ctrl.showDesk" class="padding-10">
+            <p>{{ctrl.desk.des_name}}</p>
+            <div class="desk-detail p5">
+                <div class="row" ng-repeat="menu in ctrl.desk.menus">
+                    <div class="col-xs-6">{{menu.men_name}}</div>
+                    <div class="col-xs-3">{{menu.cdm_number}}</div>
+                    <div class="col-xs-3">{{menu.cdm_price | currency:'':0}}đ</div>
+                </div>
             </div>
         </div>
 	</md-sidenav>

@@ -17,6 +17,20 @@ function getDesks()
 	die();
 }
 
+function getDeskDetail()
+{
+	$arrayReturn = [];
+	$id = getValue('id');
+	$desk = DB::table('current_desk')->where('cud_desk_id', $id)->first();
+	$arrayReturn['desk'] = $desk;
+	$menus = DB::table('current_desk_menu')
+		->join('menus', 'men_id','=','cdm_menu_id')
+		->where('cdm_desk_id', $id)
+		->get();
+	echo json_encode($menus);
+	die();
+}
+
 
 $action = getValue('action', 'str', 'REQUEST');
 if ($action && is_callable($action)) {
