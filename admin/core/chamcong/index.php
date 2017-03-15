@@ -93,7 +93,7 @@ require_once 'inc_security.php';
 <script src="/admin/resources/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
 <script src="/admin/resources/bower_components/angular-cookies/angular-cookies.min.js"></script>
 <script src="/admin/resources/bower_components/angular-material/angular-material.min.js"></script>
-<script src="/admin/resources/js/v2/app.js"></script>
-<script src="/admin/resources/js/v2/requestService.js"></script>
+<script src="/admin/resources/js/v2/src/app.js"></script>
+<script src="/admin/resources/js/v2/src/requestService.js"></script>
 <script src="script.js"></script>
 </html>

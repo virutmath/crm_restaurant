@@ -1,9 +1,12 @@
-md-toolbar {
-  min-height: 48px;
-  max-height: 48px;
+section {
+  height: 100%;
+}
+.sidenav {
+  width: 400px;
 }
 .left-sidebar-header {
   border-bottom: 1px solid #ccc;
+  height: 48px;
 }
 .desk-item {
   background: #f0f0f0;
@@ -17,6 +20,26 @@ md-toolbar {
     background: #e0e0e0;
   }
 }
-md-sidenav {
-  width: 500px;
+.main-content {
+  margin-right: 400px;
+  border-right: 1px solid #ccc;
+  height: 100%;
+  overflow-y: auto;
+  .navbar {
+    height: 50px;
+    border-radius: 0;
+  }
+  .menu-item {
+    text-align: center;
+    .imgthumb {
+      width: 100px;
+      height: 70px;
+      margin: 0 auto;
+    }
+    p {
+      margin-top: 5px;
+      height: 40px;
+      overflow: hidden;
+    }
+  }
 }

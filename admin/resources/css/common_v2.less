@@ -1,3 +1,9 @@
+.lh24 {
+  line-height: 24px;
+}
+.lh32{
+  line-height: 32px;
+}
 /** fast margin **/
 .fast-margin(@n, @i: 1) when (@i =< @n) {
   .margin-@{i}0 {
@@ -130,3 +136,15 @@
 }
 
 .fast-fontsize(24);
+
+.imgthumb {
+  overflow: hidden;
+  img {
+    width: 100%;
+  }
+}
+loading {
+  display: block;
+  text-align: center;
+  padding: 10px;
+}

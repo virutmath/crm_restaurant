@@ -29,6 +29,12 @@ require_once('AbstractAjax.php');
 require_once('AjaxCommon.php');
 require_once('functions_1.php');
 require_once('inc_config_security.php');
+require_once('inc_assets_v2.php');
+//model
+require_once '../../resources/models/current_desk_menu.php';
+require_once '../../resources/models/current_desk.php';
+require_once '../../resources/models/menu.php';
+
 RainTpl::configure("base_url", null );
 RainTpl::configure("tpl_dir", "../../resources/templates/" );
 RainTpl::configure("cache_dir", "../../resources/caches/" );

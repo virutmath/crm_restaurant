@@ -2,3 +2,9 @@
 temp/
 /admin/resources/caches/*
 bower_components
+node_modules
+vendor
+admin/core/home_v2/css/home.css
+admin/resources/css/common_v2.css
+admin/core/home_v2/js/dist/
+admin/resources/js/v2/dist/

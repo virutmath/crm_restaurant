@@ -1,5 +1,5 @@
 <?
-if(strpos($_SERVER['HTTP_HOST'],'localhost') === false){
+if(strpos($_SERVER['HTTP_HOST'],'localhost') === false && strpos($_SERVER['HTTP_HOST'],'192.168') === false){
 	define('DB_USER','u637983774_crm');
 	define('DB_NAME','u637983774_crm');
 	define('DB_PASS','PskNKIne64');
