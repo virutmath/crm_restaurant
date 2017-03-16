@@ -2,8 +2,8 @@
 require_once '../../resources/security/security.php';
 $module_id	= 3;
 $module_name = 'Quản lý bán hàng';
+checkLogged('/admin/login.php?redirect='.urlencode(getURL()));
 checkAccessModule($module_id);
-checkLogged();
 $bg_errorMsg = '';
 $bg_table = 'bills';
 $id_field = 'bil_id';
