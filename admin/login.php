@@ -1,6 +1,8 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(E_ALL);
+require_once '../vendor/autoload.php';
+require_once("../classes/database.php");
 require_once 'resources/security/eloquent.database.php';
 require_once 'resources/models/admin_users.php';
 require_once 'resources/models/logs_session.php';
@@ -8,7 +10,6 @@ require_once('../classes/rain.tpl.class.php');
 require_once("../functions/functions.php");
 require_once("../functions/date_functions.php");
 require_once('resources/security/inc_constant.php');
-require_once("../classes/database.php");
 require_once("resources/security/functions.php");
 require_once("resources/security/functions_1.php");
 $username = getValue("username", "str", "POST", "", 1);
@@ -22,7 +23,7 @@ if ($action == "login") {
 		$isAdmin = 0;
 		$isSuperAdmin = 0;
 
-		$check_isAdmin = Admin_User::where('admin_id', $user_id)
+		$check_isAdmin = Admin_User::where('adm_id', $user_id)
 			->join('admin_users_groups', 'adm_group_id', '=', 'adu_group_id')
 			->first();
 
@@ -40,12 +41,12 @@ if ($action == "login") {
 		$_SESSION["isAdmin"] = $isAdmin;
 		$_SESSION['isSuperAdmin'] = $isSuperAdmin;
 
-		$row_log = Logs_Session::where('log_admin_id',$user_id)->orderBy('log_time_in','desc')->first()->toArray();
+		$row_log = Logs_Session::where('log_admin_id', $user_id)->orderBy('log_time_in', 'desc')->first()->toArray();
 		$time_log_start = convertDateTime(date('d/m/Y', $row_log['log_time_in']), '0:0:0');// reset thời gian về đầu ngày
 		$time_log = convertDateTime(date('d/m/Y', time()), '0:0:0');
 		if ($time_log != $time_log_start) {
 			/* Khi đăng nhập thì lưu lại log admin đăng nhập vào khoảng thời gian nào*/
-			Logs_Session::insert(['log_admin_id'=>$user_id,'log_time_in'=>time()]);
+			Logs_Session::insert(['log_admin_id' => $user_id, 'log_time_in' => time()]);
 		}
 
 
@@ -59,14 +60,16 @@ if ($action == "login") {
 				//chưa có config thì redirect đến file config
 				redirect('user_config.php');
 			} else {
-				require_once '../classes/Mobile_Detect.php';
-				$detect_mobile = new Mobile_Detect();
-				if ($detect_mobile->isMobile()) {
-					redirect('mobile/home/');
-				} else {
-					redirect('index.php');
-				}
-
+//				require_once '../classes/Mobile_Detect.php';
+//				$detect_mobile = new Mobile_Detect();
+//				if ($detect_mobile->isMobile()) {
+//					redirect('mobile/home/');
+//				} else {
+//
+//				}
+				$redirect_url = urldecode(getValue('redirect', 'str'));
+				$redirect_url = $redirect_url ? $redirect_url : 'index.php';
+				redirect($redirect_url);
 			}
 		}
 	}
@@ -75,58 +78,58 @@ if ($action == "login") {
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="vi" lang="vi">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Administrator Managerment</title>
-    <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/css/common.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/css/home.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/css/css_login.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/css/font-awesome.min.css"/>
-    <script src="resources/js/jquery.js" type="text/javascript"></script>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+   <meta name="viewport" content="initial-scale=1, maximum-scale=1.0, minimum-scale=1.0">
+   <title>Administrator Managerment</title>
+   <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css"/>
+   <link rel="stylesheet" type="text/css" href="resources/css/common.css"/>
+   <link rel="stylesheet" type="text/css" href="resources/css/home.css"/>
+   <link rel="stylesheet" type="text/css" href="resources/css/css_login.css"/>
+   <link rel="stylesheet" type="text/css" href="resources/css/font-awesome.min.css"/>
+   <script src="resources/js/jquery.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="content_center">
-    <div class="top_head">
+   <div class="top_head">
 
-    </div>
-    <div class="left_content">
-        <p>Phần mềm quản lý nhà hàng chuyên nghiệp</p>
-        <img src="../pictures/banner.jpg" alt="image">
+   </div>
+   <div class="left_content">
+      <p>Phần mềm quản lý nhà hàng chuyên nghiệp</p>
+      <img src="../pictures/banner.jpg" alt="image">
 
-    </div>
-    <div class="right_content">
-        <form method="post" action="" class="form-horizontal" autocomplete="off">
-            <div class="login_container">
-                <div class="title_login">PANDAIN POS</div>
-                <div class="errorMsg"></div>
-                <span class="input-icon">
+   </div>
+   <div class="right_content">
+      <form method="post" action="" class="form-horizontal" autocomplete="off">
+         <div class="login_container">
+            <div class="title_login">PANDAIN POS</div>
+            <div class="errorMsg"></div>
+            <span class="input-icon">
                             <input type="text" name="username" class="form-control" placeholder="Tài khoản"
                                    autocomplete="off"/>
                             <i class="fa fa-user"></i>
                         </span>
-                <span class="input-icon">
+            <span class="input-icon">
                             <input type="password" name="password" class="form-control" placeholder="Mật khẩu"
                                    autocomplete="off"/>
                             <i class="fa fa-lock"></i>
                             <a href="#">Quên mật khẩu?</a>
                         </span>
-                <div class="group-button">
-                    <button type="submit" class="button-control">Đăng nhập</button>
-                    <input type="hidden" name="action" value="login"/>
-                </div>
-                <div class="link_help">
-                    <p><a href="#"><i class="fa fa-info-circle"></i> Liên hệ</a></p>
-                    <p><a href="#"><i class="fa fa-question-circle"></i> Hướng dẫn sử dụng</a></p>
-                </div>
-
+            <div class="group-button">
+               <button type="submit" class="button-control">Đăng nhập</button>
+               <input type="hidden" name="action" value="login"/>
             </div>
-        </form>
-    </div>
-    <div class="clearfix"></div>
-    <div class="footer">
+            <div class="link_help">
+               <p><a href="#"><i class="fa fa-info-circle"></i> Liên hệ</a></p>
+               <p><a href="#"><i class="fa fa-question-circle"></i> Hướng dẫn sử dụng</a></p>
+            </div>
 
-    </div>
+         </div>
+      </form>
+   </div>
+   <div class="clearfix"></div>
+   <div class="footer">
+
+   </div>
 </div>
 
 </body>
