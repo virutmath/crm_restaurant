@@ -29,11 +29,24 @@ class Current_Desk_Menu extends \Illuminate\Database\Eloquent\Model
 		]);
 	}
 
+	public static function deleteMenu($desk_id, $menu_id) {
+		return self::where([
+			'cdm_desk_id'=>$desk_id,
+			'cdm_menu_id'=>$menu_id
+		])->delete();
+	}
+
 	public static function checkMenuExist($desk_id, $menu_id) {
 		return !!self::where(['cdm_desk_id'=>$desk_id,'cdm_menu_id'=>$menu_id])->count();
 	}
 
 	public static function increaseDish($desk_id, $menu_id, $increment = 1) {
 		return self::where(['cdm_desk_id'=>$desk_id,'cdm_menu_id'=>$menu_id])->increment('cdm_number',$increment);
+	}
+
+	public static function decreaseDish($desk_id, $menu_id, $decrement = 1) {
+		return self::where(['cdm_desk_id'=>$desk_id,'cdm_menu_id'=>$menu_id])
+			->where('cdm_number','>',0)
+			->decrement('cdm_number',$decrement);
 	}
 }
