@@ -174,7 +174,7 @@ var MenuList = React.createClass({
 				cat_id={data.cat_id}
 				cat_name={data.cat_name}
 				count_menu={data.count_menu}
-				list_cat_child={data.list_cat_child}
+				list_menu_child={data.list_menu_child}
 				/>)
 		}
 		return <ul className="list-unstyled list-menu">
@@ -188,15 +188,12 @@ MenuList.CategoryItem = React.createClass({
 		var onClickFn = function () {
 			HomeScript.view.collapse(props.cat_id);
 		};
-		var rowCatChild = [];
-		for (var i in props.list_cat_child) {
-			var cat_child = props.list_cat_child[i];
-			rowCatChild.push(<MenuList.CategoryItemChild
-				cat_id={cat_child.cat_id}
-				cat_name={cat_child.cat_name}
-				count_menu={cat_child.count_menu}
-				list_menu_child={cat_child.list_menu_child}
-				/>);
+		var rowMenu = [];
+		for (var i in props.list_menu_child) {
+			rowMenu.push(<MenuList.MenuItem
+				men_id={props.list_menu_child[i].men_id}
+				men_name={props.list_menu_child[i].men_name}
+			/>);
 		}
 		return <li className="list-item item-cat-parent">
 			<label className="item-name" onClick={onClickFn}>
@@ -204,7 +201,7 @@ MenuList.CategoryItem = React.createClass({
 				<span>{props.cat_name} ({props.count_menu})</span>
 			</label>
 			<ul className="list-cat-child list-unstyled" data-collapse-id={props.cat_id}>
-				{rowCatChild}
+				{rowMenu}
 			</ul>
 		</li>
 	}
@@ -1106,37 +1103,44 @@ HomeScript.view.reInitScroll = function () {
 };
 HomeScript.view.searchMenu = function () {
 	var text = $.trim(HomeScript.domElement.searchMenuText.val());
-	HomeScript.listMenu = $.extend(true, [], data_list_menu);
-	if (!$.trim(text)) {
+	if(!text) {
+		HomeScript.listMenu = data_list_menu;
 		HomeScript.view.buildListMenu();
 		return true;
 	}
-	var cat_position = [];
-	for (var i in HomeScript.listMenu) {
-		var cat_parent = HomeScript.listMenu[i];
-		var cat_child_position = [];
-		for (var j in cat_parent.list_cat_child) {
-			var cat_child = cat_parent.list_cat_child[j];
-			var menu_child_position = [];
-			for (var k in cat_child.list_menu_child) {
-				var menu = cat_child.list_menu_child[k];
-				//console.log(menu.men_name.search(regex));
-				if (!HomeScript.searchText(text, menu.men_name)) {
-					menu_child_position.push(parseInt(k));
-				}
-			}
-			cat_child.list_menu_child = HomeScript.removeElementFromArray(cat_child.list_menu_child, menu_child_position);
-			if (!cat_child.list_menu_child.length) {
-				cat_child_position.push(parseInt(j));
-			}
+	var options = {
+		shouldSort: true,
+		threshold: 0.6,
+		location: 0,
+		distance: 30,
+		maxPatternLength: 32,
+		minMatchCharLength: 1,
+		keys: [
+			"list_menu_child.men_name"
+		]
+	};
+	var fuse = new Fuse(data_list_menu, options);
+	var results = fuse.search(text), results_filter = [];
+	results.forEach(function(item){
+		var options2 = {
+			shouldSort: true,
+			threshold: 0.3,
+			location: 0,
+			distance: 100,
+			maxPatternLength: 32,
+			minMatchCharLength: 1,
+			keys: [
+				"men_name"
+			]
+		};
+		var f2 = new Fuse(item.list_menu_child,options2);
+		var filter = JSON.parse(JSON.stringify(item));
+		filter.list_menu_child = f2.search(text);
+		if(filter.list_menu_child.length) {
+			results_filter.push(filter);
 		}
-		cat_parent.list_cat_child = HomeScript.removeElementFromArray(cat_parent.list_cat_child, cat_child_position);
-		if (!cat_parent.list_cat_child.length) {
-			cat_position.push(parseInt(i));
-		}
-	}
-	HomeScript.listMenu = HomeScript.removeElementFromArray(HomeScript.listMenu, cat_position);
-	//generate lại list menu
+	});
+	HomeScript.listMenu = results_filter;
 	HomeScript.view.buildListMenu();
 };
 HomeScript.view.selectedDesk = function (des_id) {
