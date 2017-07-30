@@ -8,6 +8,18 @@ crm.controller('HomeController', function (requestService, $window) {
 	self.desk = null;
 	self.dish_number = 1;
 	function init() {
+		self.getDesks();
+		self.getMenus();
+	}
+
+	self.getMenus = ()=>{
+		requestService.api('get', 'ajax.php', {action: 'getMenus'}, (error, resp) => {
+			self.loading = false;
+			self.menus = resp;
+		});
+	};
+	//lấy ra danh sách bàn
+	self.getDesks = ()=>{
 		//lấy ra số bàn
 		let params = {
 			action: 'getDesks',
@@ -21,13 +33,11 @@ crm.controller('HomeController', function (requestService, $window) {
 			self.sections = resp.sections;
 			self.section = self.sections[0];
 		});
-		requestService.api('get', 'ajax.php', {action: 'getMenus'}, (error, resp) => {
-			self.loading = false;
-			self.menus = resp;
-		});
-	}
+	};
 
+	//chọn xem bàn
 	self.selectDesk = (desk) => {
+		self.showCommonDeskTool = false;
 		self.loading = true;
 		self.showDesk = true;
 		self.desk = desk;
@@ -44,6 +54,8 @@ crm.controller('HomeController', function (requestService, $window) {
 			self.desk.menus = resp;
 		})
 	};
+	//tính số tiền của bàn
+
 	self.showAddDish = (menu) => {
 		if (!self.showDesk) {
 			self.error_msg = 'Chọn một bàn để bắt đầu thêm thực đơn';
@@ -71,6 +83,7 @@ crm.controller('HomeController', function (requestService, $window) {
 		requestService.api('post', 'ajax.php', params, (e, resp) => {
 			self.loading = false;
 			if (e) {
+				removeMenu(self.menu);
 				return false;
 			}
 			self.desk.menus = resp;
@@ -84,14 +97,15 @@ crm.controller('HomeController', function (requestService, $window) {
 			desk: self.desk.des_id,
 			menu: menu.men_id
 		};
-
+		removeMenu(menu);
 		self.loading = true;
 		requestService.api('post', 'ajax.php', params, (e, resp) => {
 			self.loading = false;
 			if (e) {
+				addMenu(menu);
 				return false;
 			}
-			self.desk.menus = resp;
+			// self.desk.menus = resp;
 		});
 	};
 	self.incMenu = (menu) => {
@@ -102,12 +116,14 @@ crm.controller('HomeController', function (requestService, $window) {
 			menu: menu.men_id
 		};
 		self.loading = true;
+		menu.cdm_number++;
 		requestService.api('post', 'ajax.php', params, (e, resp) => {
 			self.loading = false;
 			if (e) {
+				menu.cdm_number--;
 				return false;
 			}
-			self.desk.menus = resp;
+			// self.desk.menus = resp;
 		});
 	};
 	self.decMenu = (menu) => {
@@ -120,14 +136,44 @@ crm.controller('HomeController', function (requestService, $window) {
 			desk: self.desk.des_id,
 			menu: menu.men_id
 		};
+		menu.cdm_number--;
+		if(menu.cdm_number <= 0) {
+			removeMenu(menu);
+		}
 		requestService.api('post', 'ajax.php', params, (e, resp) => {
 			self.loading = false;
 			if (e) {
 				alert(e.msg);
 				return false;
 			}
-			self.desk.menus = resp;
+			// self.desk.menus = resp;
 		});
+	};
+	function removeMenu(menu){
+		let indexOf = self.desk.menus.indexOf(menu);
+		if(indexOf > -1) {
+			self.desk.menus.splice(indexOf,1);
+		}
+	}
+	function hasMenu(menu) {
+		return self.desk.menus.indexOf(menu) > -1;
+	}
+	function addMenu(menu) {
+		if(hasMenu(menu)) {
+			menu.cdm_number++;
+		}else{
+			self.desk.menus.push(menu);
+		}
+	}
+	self.totalMoneyDesk = ()=>{
+		let total = 0;
+		if(self.desk && self.desk.menus) {
+			self.desk.menus.forEach(function(menu){
+				total += menu.cdm_number * menu.cdm_price;
+			});
+		}
+
+		return total;
 	};
 	init();
 });

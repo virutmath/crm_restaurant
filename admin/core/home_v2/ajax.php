@@ -27,8 +27,14 @@ class Home_v2 {
 			->join('sections', 'des_sec_id', '=', 'sec_id')
 			->get();
 		//xử lý group by
-		$desks = $desks->groupBy('sec_id');
-		$arrayReturn['desks'] = $desks->toArray();
+		$desks = $desks->groupBy('sec_id')->toArray();
+		foreach ($desks as $section) {
+			foreach ($section as $desk) {
+				//kiểm tra xem bàn có mở ko
+				$desk->opened = !!Current_Desk::where('cud_desk_id',$desk->des_id)->first();
+			}
+		}
+		$arrayReturn['desks'] = $desks;
 		$this->ajaxResponse($arrayReturn);
 	}
 
