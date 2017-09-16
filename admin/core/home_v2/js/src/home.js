@@ -12,14 +12,14 @@ crm.controller('HomeController', function (requestService, $window) {
 		self.getMenus();
 	}
 
-	self.getMenus = ()=>{
+	self.getMenus = () => {
 		requestService.api('get', 'ajax.php', {action: 'getMenus'}, (error, resp) => {
 			self.loading = false;
 			self.menus = resp;
 		});
 	};
 	//lấy ra danh sách bàn
-	self.getDesks = ()=>{
+	self.getDesks = () => {
 		//lấy ra số bàn
 		let params = {
 			action: 'getDesks',
@@ -60,7 +60,7 @@ crm.controller('HomeController', function (requestService, $window) {
 		if (!self.showDesk) {
 			self.error_msg = 'Chọn một bàn để bắt đầu thêm thực đơn';
 			return false;
-		}else{
+		} else {
 			self.error_msg = null;
 		}
 		self.menu = menu;
@@ -70,7 +70,7 @@ crm.controller('HomeController', function (requestService, $window) {
 		if (!(self.showDesk && self.menu)) {
 			self.error_msg = 'Chọn một bàn để thêm thực đơn';
 			return false;
-		}else {
+		} else {
 			self.error_msg = null;
 		}
 		let params = {
@@ -129,7 +129,7 @@ crm.controller('HomeController', function (requestService, $window) {
 	self.decMenu = (menu) => {
 		if (!self.showDesk) return false;
 		//nếu số lượng đang là 0 thì ko giảm nữa
-		if(!menu.cdm_number) return false;
+		if (!menu.cdm_number) return false;
 		self.loading = true;
 		let params = {
 			action: 'decMenu',
@@ -137,7 +137,7 @@ crm.controller('HomeController', function (requestService, $window) {
 			menu: menu.men_id
 		};
 		menu.cdm_number--;
-		if(menu.cdm_number <= 0) {
+		if (menu.cdm_number <= 0) {
 			removeMenu(menu);
 		}
 		requestService.api('post', 'ajax.php', params, (e, resp) => {
@@ -149,31 +149,42 @@ crm.controller('HomeController', function (requestService, $window) {
 			// self.desk.menus = resp;
 		});
 	};
-	function removeMenu(menu){
+	function removeMenu(menu) {
 		let indexOf = self.desk.menus.indexOf(menu);
-		if(indexOf > -1) {
-			self.desk.menus.splice(indexOf,1);
+		if (indexOf > -1) {
+			self.desk.menus.splice(indexOf, 1);
 		}
 	}
+
 	function hasMenu(menu) {
 		return self.desk.menus.indexOf(menu) > -1;
 	}
+
 	function addMenu(menu) {
-		if(hasMenu(menu)) {
+		if (hasMenu(menu)) {
 			menu.cdm_number++;
-		}else{
+		} else {
 			self.desk.menus.push(menu);
 		}
 	}
-	self.totalMoneyDesk = ()=>{
+
+	self.totalMoneyDesk = () => {
 		let total = 0;
-		if(self.desk && self.desk.menus) {
-			self.desk.menus.forEach(function(menu){
+		if (self.desk && self.desk.menus) {
+			self.desk.menus.forEach(function (menu) {
 				total += menu.cdm_number * menu.cdm_price;
 			});
 		}
 
 		return total;
+	};
+	self.payment = () => {
+		$('.modal').modal('hide');
+		$('#modal-payment').modal('show');
+	};
+
+	self.printOrder = () => {
+		
 	};
 	init();
 });

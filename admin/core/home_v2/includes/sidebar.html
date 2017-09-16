@@ -28,7 +28,7 @@
 		<p class="f18 text-center">{{ctrl.desk.des_name}}</p>
 		<div class="desk-detail p5">
 			<div class="row padding-10b text-center">
-				<div class="col-xs-7"><b>Tên thực đơn</b></div>
+					<div class="col-xs-7"><b>Tên thực đơn</b></div>
 				<div class="col-xs-2"><b>SL</b></div>
 				<div class="col-xs-3"><b>Đơn giá</b></div>
 			</div>
@@ -53,6 +53,8 @@
 			<p class="f20">
 				Tổng tiền: <b>{{ctrl.totalMoneyDesk() | currency: '':0}}đ</b>
 			</p>
+			<button class="btn btn-lg btn-success" ng-click="ctrl.printOrder()">In bếp</button>
+			<button class="btn btn-lg btn-danger" ng-click="ctrl.payment()">Thanh toán</button>
 		</div>
 	</div>
 	<loading ng-show="ctrl.loading"></loading>
