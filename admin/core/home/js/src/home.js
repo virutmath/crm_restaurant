@@ -78,6 +78,7 @@ function MenuInDesk(data) {
         cdm_status: 0
 	};
 	$.extend(_default, data);
+    this.cdm_id = _default.cdm_id;
 	this.cdm_price = parseFloat(_default.cdm_price);
 	this.cdm_price_type = _default.cdm_price_type;
 	this.cdm_number = parseFloat(_default.cdm_number);
@@ -253,7 +254,7 @@ var TableHead = React.createClass({
 		return <thead>
 		<tr>
 			<th width="32px;">STT</th>
-			<th width="32px;">Trạng thái</th>
+			<th width="70px;">Trạng thái</th>
 			<th width="40%">
 				<strong>Tên thực đơn</strong>
 			</th>
@@ -325,7 +326,7 @@ HomeScript.react.TableMenu = React.createClass({
 			var menuItem = HomeScript.currentDesk.menuList[i];
 			rowsMenu.push(<TableRow
 				stt={++i}
-				id={menuItem.men_id}
+				id={menuItem.cdm_id}
 				name={menuItem.men_name}
 				unit={menuItem.men_unit}
 				number={menuItem.cdm_number}
@@ -484,7 +485,11 @@ HomeScript.deleteMenu = function (menu_id) {
 	$.ajax({
 		type: 'post',
 		url: 'ajax.php',
-		data: {action: 'deleteMenu', menu_id: menu_id, desk_id: HomeScript.currentDesk.deskItem.des_id},
+		data: {
+			action: 'deleteMenu',
+			menu_id: menu_id,
+			desk_id: HomeScript.currentDesk.deskItem.des_id
+		},
 		dataType: 'json',
 		success: function (resp) {
 			if (resp.success == 1) {
@@ -661,9 +666,10 @@ HomeScript.inputChangeFunction = function (type) {
 
             data = {
                 action: action,
+				cdm_id: HomeScript.currentMenu.menuItem.cdm_id,
                 desk_id: HomeScript.currentDesk.deskItem.des_id,
                 menu_id: HomeScript.currentMenu.menuItem.men_id,
-                status:  HomeScript.currentMenu.menuItem.cdm_status
+                status: HomeScript.currentMenu.menuItem.cdm_status
             };
             break;
         case 'menu_done':
@@ -671,6 +677,7 @@ HomeScript.inputChangeFunction = function (type) {
             // HomeScript.currentMenu.menuItem.cdm_status = 2;
             data = {
                 action: action,
+                cdm_id: HomeScript.currentMenu.menuItem.cdm_id,
                 desk_id: HomeScript.currentDesk.deskItem.des_id,
                 menu_id: HomeScript.currentMenu.menuItem.men_id,
                 status: HomeScript.currentMenu.menuItem.cdm_status
@@ -680,6 +687,7 @@ HomeScript.inputChangeFunction = function (type) {
 			action = 'updateMenuNumber';
 			data = {
 				action: action,
+                cdm_id: HomeScript.currentMenu.menuItem.cdm_id,
 				desk_id: HomeScript.currentDesk.deskItem.des_id,
 				menu_id: HomeScript.currentMenu.menuItem.men_id,
 				number: HomeScript.currentMenu.menuItem.cdm_number
@@ -689,6 +697,7 @@ HomeScript.inputChangeFunction = function (type) {
 			action = 'updateMenuDiscount';
 			data = {
 				action: action,
+                cdm_id: HomeScript.currentMenu.menuItem.cdm_id,
 				desk_id: HomeScript.currentDesk.deskItem.des_id,
 				menu_id: HomeScript.currentMenu.menuItem.men_id,
 				discount: HomeScript.currentMenu.menuItem.cdm_menu_discount
@@ -810,7 +819,7 @@ HomeScript.keyUpFunction = function (type) {
 
 	billInfo.customerDiscount = parseFloat(domElement.customerDiscount.autoNumeric('get'));
 	this.currentDesk.menuList.map(function (menuItem) {
-		if (menuItem.men_id == curMenu.men_id) {
+		if (menuItem.cdm_id == curMenu.cdm_id) {
 			menuItem.cdm_number = curMenu.cdm_number;
             menuItem.cdm_status = curMenu.cdm_status;
 		}
@@ -888,6 +897,7 @@ HomeScript.selectDesk = function (elem) {
 			data: {action: 'getCurrentDeskDetail', desk_id: HomeScript.currentDesk.deskItem.des_id},
 			dataType: 'json',
 			success: function (resp) {
+				console.log(resp);
 				HomeScript.parseResponseCurrentData(resp);
 				//tính tiền
 				HomeScript.cashCurrentBill();
@@ -903,7 +913,7 @@ HomeScript.selectMenuInDesk = function (menu_id) {
 	HomeScript.currentMenu.domElement = $('#record_' + menu_id);
 	var tmpMn;
 	HomeScript.currentDesk.menuList.map(function (menuItem) {
-		if (menuItem.men_id == menu_id) {
+		if (menuItem.cdm_id == menu_id) {
 			tmpMn = menuItem;
 		}
 	});
@@ -1236,7 +1246,7 @@ HomeScript.view.selectedCurrentMenu = function () {
 	if (!HomeScript.currentMenu.menuItem) {
 		return false;
 	}
-	HomeScript.currentMenu.domElement = $('.record-item#record_' + HomeScript.currentMenu.menuItem.men_id);
+	HomeScript.currentMenu.domElement = $('.record-item#record_' + HomeScript.currentMenu.menuItem.cdm_id);
 	HomeScript.domElement.centerListing.find('.record-item').removeClass('active');
 	HomeScript.currentMenu.domElement.addClass('active');
 	this.selectedPriceMenu(HomeScript.currentMenu.menuItem.cdm_price_type);
@@ -1262,7 +1272,7 @@ HomeScript.view.selectedPriceMenu = function (price_type) {
 HomeScript.view.settingMenuDiscount = function () {
 	var result_percent = 0, result_money = 0;
 	//nếu current_menu không tồn tại thì return luôn
-	if (!HomeScript.currentMenu.menuItem.men_id) {
+	if (!HomeScript.currentMenu.menuItem.cdm_id) {
 		return false;
 	}
 	var mindow = new Mindows();

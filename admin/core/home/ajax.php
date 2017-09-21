@@ -589,6 +589,9 @@ class HomeAjax extends AjaxCommon
         check_desk_exist($desk_id);
         $menu_id = getValue('menu_id', 'int', 'POST', 0);
         $number = getValue('number', 'int', 'POST', 0);
+
+        $cdm_id = getValue('cdm_id', 'int', 'POST', 0);
+
         $array_return = array();
         if (!$desk_id || !$menu_id) {
             $array_return['error'] = 'Bàn chưa được mở hoặc thực đơn chưa được chọn';
@@ -614,12 +617,14 @@ class HomeAjax extends AjaxCommon
                                  WHERE cdm_desk_id = ' . $desk_id . '
                                     AND cdm_menu_id = ' . $menu_id . '
                                     AND cdm_printed_number < ' . $number . '
+                                    AND cdm_id = ' . (int)$cdm_id . '
                                  LIMIT 1';
         //bỏ qua check đã in bếp
         $sql = 'UPDATE current_desk_menu
                                  SET cdm_number = ' . $number . '
                                  WHERE cdm_desk_id = ' . $desk_id . '
                                     AND cdm_menu_id = ' . $menu_id . '
+                                    AND cdm_id = ' . (int)$cdm_id . '
                                  LIMIT 1';
         $db_ex = new db_execute($sql);
         if (!$db_ex->total) {
@@ -642,6 +647,8 @@ class HomeAjax extends AjaxCommon
         $desk_id = getValue('desk_id', 'int', 'POST', 0);
         check_desk_exist($desk_id);
         $menu_id = getValue('menu_id', 'int', 'POST', 0);
+        $cdm_id = getValue('cdm_id', 'int', 'POST', 0);
+
         $discount = getValue('discount', 'flo', 'POST', 0);
         $array_return = array();
         if (!$desk_id || !$menu_id) {
@@ -665,7 +672,10 @@ class HomeAjax extends AjaxCommon
         //cập nhật số lượng vào thực đơn
         $db_ex = new db_execute('UPDATE current_desk_menu
                                  SET cdm_menu_discount = ' . $discount . '
-                                 WHERE cdm_desk_id = ' . $desk_id . ' AND cdm_menu_id = ' . $menu_id . '
+                                 WHERE 
+                                 cdm_desk_id = ' . $desk_id . ' 
+                                 AND cdm_menu_id = ' . $menu_id . '
+                                 AND cdm_id = ' . (int)$cdm_id . '
                                  LIMIT 1');
         $array_return['success'] = 1;
         $this->add($array_return);
@@ -1279,12 +1289,19 @@ class HomeAjax extends AjaxCommon
     public function updateMenuStatus()
     {
 
+        $cdm_id = getValue('cdm_id', 'int', 'POST');
         $desk_id = getValue('desk_id', 'int', 'POST');
         $menu_id = getValue('menu_id', 'int', 'POST');
         $status = getValue('status', 'int', 'POST');
 
-        $db = new db_execute('UPDATE current_desk_menu SET cdm_status = ' . (int)$status . ' 
-        WHERE cdm_desk_id = ' . (int)$desk_id . ' AND cdm_menu_id = ' . (int)$menu_id);
+        $db = new db_execute('UPDATE current_desk_menu 
+SET 
+  cdm_status = ' . (int)$status . ' 
+WHERE 
+    cdm_desk_id = ' . (int)$desk_id . ' 
+    AND cdm_menu_id = ' . (int)$menu_id . ' 
+    AND cdm_id = ' . (int)$cdm_id
+        );
 
         $array_return = array('success' => 1, 'error' => 0, 'msg' => 'Update trạng thái món thành công.');
         $this->add($array_return);
