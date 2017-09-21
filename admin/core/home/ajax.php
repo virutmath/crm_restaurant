@@ -89,27 +89,50 @@ class HomeAjax extends AjaxCommon
 
     public function deleteMenu()
     {
-        $menu_id = getValue('menu_id', 'int', 'POST', 0);
+//        $menu_id = getValue('menu_id', 'int', 'POST', 0);
+        $cdm_id = getValue('cdm_id', 'int', 'POST', 0);
+        $note = getValue('cdm_note', 'str', 'POST', '');
         $desk_id = getValue('desk_id', 'int', 'POST', 0);
-        if (!$menu_id || !$desk_id) {
+        if (!$cdm_id || !$desk_id) {
             echo 'error!';
 
             return;
         }
         check_desk_exist($desk_id);
+
+        //Không xóa. Mà chỉ set số lượng về 0 và update vào trường note
+
+        $db_update_delete = new db_execute('
+UPDATE
+  current_desk_menu
+SET
+  cdm_number = 0,
+  cdm_note = \'' . $note . '\'
+WHERE
+  cdm_id = ' . (int)$cdm_id . '
+        ');
+        if ($db_update_delete->total) {
+            unset($db_update_delete);
+            $this->add(array('success' => 1));
+            log_action(ACTION_LOG_DELETE, 'Hủy thực đơn ID ' . $cdm_id . ' ở bàn ID ' . $desk_id . '. Lý do ' . $note);
+        } else {
+            $this->add(array('success' => 0, 'error' => 'Thực đơn đã in bếp, bạn không thể hủy bỏ thực đơn này'));
+        }
+        /*
         // xoa thuc don trong ban
         $db_deleteMenu = new db_execute('DELETE FROM current_desk_menu
-                                         WHERE cdm_menu_id = ' . $menu_id . '
+                                         WHERE cdm_id = ' . (int)$cdm_id . '
                                             AND cdm_desk_id = ' . $desk_id . '
                                          AND cdm_printed_number = 0');
 
         if ($db_deleteMenu->total) {
             unset($deleteMenu);
             $this->add(array('success' => 1));
-            log_action(ACTION_LOG_DELETE, 'Hủy thực đơn ID ' . $menu_id . ' ở bàn ID ' . $desk_id);
+            log_action(ACTION_LOG_DELETE, 'Hủy thực đơn ID ' . $cdm_id . ' ở bàn ID ' . $desk_id);
         } else {
             $this->add(array('success' => 0, 'error' => 'Thực đơn đã in bếp, bạn không thể hủy bỏ thực đơn này'));
         }
+        */
     }
 
     public function openDesk()
@@ -333,13 +356,13 @@ class HomeAjax extends AjaxCommon
 
         $db_count = new db_count('SELECT count(*) AS count
                                   FROM current_desk_menu
-                                  WHERE cdm_desk_id = ' . $desk_id);
+                                  WHERE cdm_desk_id = ' . $desk_id . ' AND cdm_number > 0');
         $total = $db_count->total;
         unset($db_count);
         $db_listing = new db_query('SELECT *
                                     FROM current_desk_menu
                                     LEFT JOIN menus ON cdm_menu_id = men_id
-                                    WHERE cdm_desk_id = ' . $desk_id . ' ' .
+                                    WHERE cdm_desk_id = ' . $desk_id . '  AND cdm_number > 0 ' .
             $this->list->limit($total));
         $total_row = mysqli_num_rows($db_listing->result);
         $list_menu .= $this->list->showHeader($total_row);
@@ -380,7 +403,7 @@ class HomeAjax extends AjaxCommon
                      FROM current_desk_menu
                      LEFT JOIN menus ON men_id = cdm_menu_id
                      LEFT JOIN units ON uni_id = men_unit_id
-                     WHERE cdm_desk_id = ' . $desk_id;
+                     WHERE cdm_desk_id = ' . $desk_id . ' AND cdm_number > 0';
         $db_query = new db_query($sql_menu);
         $array_data = array();
         while ($row = mysqli_fetch_assoc($db_query->result)) {

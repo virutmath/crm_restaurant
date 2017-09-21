@@ -478,7 +478,7 @@ HomeScript.deleteDesk = function (elem) {
 	})
 };
 /* Hàm xóa menu trong bảng menu đã chọn*/
-HomeScript.deleteMenu = function (menu_id) {
+HomeScript.deleteMenu = function (menu_id, note) {
 	if (!menu_id) {
 		bootbox.alert('Chọn thực đơn để xóa');
 	}
@@ -487,7 +487,8 @@ HomeScript.deleteMenu = function (menu_id) {
 		url: 'ajax.php',
 		data: {
 			action: 'deleteMenu',
-			menu_id: menu_id,
+			cdm_id: menu_id,
+            cdm_note: note,
 			desk_id: HomeScript.currentDesk.deskItem.des_id
 		},
 		dataType: 'json',
@@ -503,7 +504,7 @@ HomeScript.deleteMenu = function (menu_id) {
 };
 HomeScript.removeMenu = function (menu_id) {
 	for (var i in HomeScript.currentDesk.menuList) {
-		if (menu_id == HomeScript.currentDesk.menuList[i].men_id) {
+		if (menu_id == HomeScript.currentDesk.menuList[i].cdm_id) {
 			// console.log(menu_id);
 			HomeScript.currentDesk.menuList.splice(i, 1);
 			break;
@@ -1404,11 +1405,22 @@ HomeScript.contextMenu = function () {
 				name: '<i class="fa fa-trash"></i>  Xóa thực đơn này',
 				callback: function (key, opt) {
 					var _this = $(this);
-					bootbox.confirm('Bạn muốn hủy thực đơn này?', function (result) {
-						if (result) {
-							HomeScript.deleteMenu(_this.attr('data-id'));
-						}
-					});
+					// bootbox.confirm('Bạn muốn hủy thực đơn này?', function (result) {
+					// 	if (result) {
+					// 		HomeScript.deleteMenu(_this.attr('data-id'));
+					// 	}
+					// });
+                    bootbox.prompt({
+                        title: "Bạn muốn hủy thực đơn này?",
+                        inputType: 'textarea',
+                        callback: function (result) {
+                            if(result !== null && result.trim() !== '')
+                            {
+                                //Thực hiện xóa và log lại lý do
+                                HomeScript.deleteMenu(_this.attr('data-id'), result);
+                            }
+                        }
+                    });
 				}
 			}
 		}
