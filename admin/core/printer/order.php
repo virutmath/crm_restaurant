@@ -41,7 +41,8 @@ men_id,men_name,cdm_number,cdm_printed_number,men_unit_id, cdm_status
                               FROM menus
                               LEFT JOIN current_desk_menu ON cdm_menu_id = men_id
                               WHERE cdm_desk_id = ' . $desk_id . '
-                              AND cdm_printed_number < cdm_number');
+                              AND cdm_printed_number < cdm_number
+                              ORDER BY cdm_status ASC');
 $list_menu = array();
 $stt = 1;
 $status_labels = [
