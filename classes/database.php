@@ -1,5 +1,6 @@
 ﻿<?
 require_once 'config_db.php';
+
 class db_init
 {
     var $server;
@@ -10,7 +11,7 @@ class db_init
     function __construct()
     {
         // Khai bao Server o day
-        $this->server = "localhost";
+        $this->server = defined('DB_HOST') ? DB_HOST : "localhost";
         $this->username = DB_USER;
         $this->password = DB_PASS;
         $this->database = DB_NAME;
@@ -27,6 +28,7 @@ class db_init
 
 ?>
 <?
+
 class db_query
 {
     var $result;
@@ -53,9 +55,9 @@ class db_query
         //echo $query;
         $time_start = $this->microtime_float();
         // thực hiện 1 truy vấn trên cơ sở dữ liệu
-        mysqli_query($this->links,"SET NAMES 'utf8'");
+        mysqli_query($this->links, "SET NAMES 'utf8'");
         // $query: thực hiện 1 câu SQL 
-       
+
         $this->result = mysqli_query($this->links, $query);
 
         $time_end = $this->microtime_float();
@@ -149,12 +151,14 @@ class db_query
     function microtime_float()
     {
         list($usec, $sec) = explode(" ", microtime());
+
         return ((float)$usec + (float)$sec);
     }
 }
 
 ?>
 <?
+
 class db_execute
 {
     var $links;
@@ -192,12 +196,14 @@ class db_count
         }
         $db_ex->close();
         unset($db_ex);
+
         return $this->total;
     }
 }
 
 ?>
 <?
+
 class db_execute_return
 {
     var $links;
@@ -215,13 +221,14 @@ class db_execute_return
         mysqli_query($this->links, $query);
         $this->total = mysqli_affected_rows($this->links);
         $last_id = 0;
-        $this->result = mysqli_query($this->links,"select LAST_INSERT_ID() as last_id");
+        $this->result = mysqli_query($this->links, "select LAST_INSERT_ID() as last_id");
 
         if ($row = mysqli_fetch_array($this->result)) {
             $last_id = $row["last_id"];
         }
 
         mysqli_close($this->links);
+
         return $last_id;
     }
 }

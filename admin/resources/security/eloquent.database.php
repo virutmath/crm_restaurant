@@ -1,17 +1,18 @@
 <?php
+
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 $capsule = new Capsule;
 
 $capsule->addConnection(array(
-	'driver'    => 'mysql',
-	'host'      => 'localhost',
-	'database'  => DB_NAME,
-	'username'  => DB_USER,
-	'password'  => DB_PASS,
-	'charset'   => 'utf8',
-	'collation' => 'utf8_unicode_ci',
-	'prefix'    => ''
+    'driver' => 'mysql',
+    'host' => defined('DB_HOST') ? DB_HOST : 'localhost',
+    'database' => DB_NAME,
+    'username' => DB_USER,
+    'password' => DB_PASS,
+    'charset' => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix' => '',
 ));
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
