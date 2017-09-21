@@ -74,7 +74,8 @@ function MenuInDesk(data) {
 		cdm_price_type: 'men_price',
 		cdm_number: 0,
 		cdm_desk_id: 0,
-		cdm_menu_discount: 0
+		cdm_menu_discount: 0,
+        cdm_status: 0
 	};
 	$.extend(_default, data);
 	this.cdm_price = parseFloat(_default.cdm_price);
@@ -82,6 +83,7 @@ function MenuInDesk(data) {
 	this.cdm_number = parseFloat(_default.cdm_number);
 	this.cdm_desk_id = _default.cdm_desk_id;
 	this.cdm_menu_discount = parseFloat(_default.cdm_menu_discount);
+	this.cdm_status = _default.cdm_status;
 	return this;
 }
 MenuInDesk.prototype = new MenuItem();
@@ -251,6 +253,7 @@ var TableHead = React.createClass({
 		return <thead>
 		<tr>
 			<th width="32px;">STT</th>
+			<th width="32px;">Trạng thái</th>
 			<th width="40%">
 				<strong>Tên thực đơn</strong>
 			</th>
@@ -273,6 +276,8 @@ var TableHead = React.createClass({
 		</thead>
 	}
 });
+
+
 var TableRow = React.createClass({
 	mixins: [IntlMixin],
 	render: function () {
@@ -281,9 +286,27 @@ var TableRow = React.createClass({
 		var onClickFn = function () {
 			HomeScript.selectMenuInDesk(id);
 		};
+		var statusLabel = {
+            0: {
+                label: "Chưa làm.",
+                bg: "red"
+            },
+            1: {
+                label: "Đang làm.",
+                bg: "yellow"
+            },
+            2: {
+                label: "Đã ra.",
+                bg: "green"
+            }
+        };
+		// console.log(statusLabel);
 		return <tbody>
 		<tr id={element_id} data-id={id} className="menu-desk-menu record-item" onClick={onClickFn}>
 			<td className="center">{this.props.stt}</td>
+			<td className="center">
+                {statusLabel[this.props.status].label}
+			</td>
 			<td>{this.props.name}</td>
 			<td className="center">{this.props.unit}</td>
 			<td className="center"><FormattedNumber value={this.props.number}/></td>
@@ -309,6 +332,7 @@ HomeScript.react.TableMenu = React.createClass({
 				price={menuItem.men_price}
 				discount={menuItem.cdm_menu_discount}
 				total={HomeScript.cashMenuItem(menuItem)}
+				status={menuItem.cdm_status}
 				/>);
 		}
 		return (
@@ -475,7 +499,7 @@ HomeScript.deleteMenu = function (menu_id) {
 HomeScript.removeMenu = function (menu_id) {
 	for (var i in HomeScript.currentDesk.menuList) {
 		if (menu_id == HomeScript.currentDesk.menuList[i].men_id) {
-			console.log(menu_id);
+			// console.log(menu_id);
 			HomeScript.currentDesk.menuList.splice(i, 1);
 			break;
 		}
@@ -632,6 +656,26 @@ HomeScript.inputChangeFunction = function (type) {
 	var action = '';
 	var data = {};
 	switch (type) {
+        case 'menu_doing':
+            action = 'updateMenuStatus';
+
+            data = {
+                action: action,
+                desk_id: HomeScript.currentDesk.deskItem.des_id,
+                menu_id: HomeScript.currentMenu.menuItem.men_id,
+                status:  HomeScript.currentMenu.menuItem.cdm_status
+            };
+            break;
+        case 'menu_done':
+            action = 'updateMenuStatus';
+            // HomeScript.currentMenu.menuItem.cdm_status = 2;
+            data = {
+                action: action,
+                desk_id: HomeScript.currentDesk.deskItem.des_id,
+                menu_id: HomeScript.currentMenu.menuItem.men_id,
+                status: HomeScript.currentMenu.menuItem.cdm_status
+            };
+            break;
 		case 'menu_number':
 			action = 'updateMenuNumber';
 			data = {
@@ -731,6 +775,14 @@ HomeScript.inputChangeFunction = function (type) {
 };
 HomeScript.keyUpFunction = function (type) {
 	trigger_keyup = type;
+	if(type == 'change_status_doing')
+    {
+        $('#cdm_status').val(1);
+    }
+	if(type == 'change_status_done')
+    {
+        $('#cdm_status').val(2);
+    }
 	//kiểm tra xem có bàn hiện tại và thực đơn hiện tại ko
 	if (!this.currentDesk.deskItem || $.isEmptyObject(this.currentDesk.deskItem)) {
 		bootbox.alert('Bàn chưa được mở. Vui lòng mở bàn');
@@ -748,14 +800,19 @@ HomeScript.keyUpFunction = function (type) {
 	var curMenu = this.currentMenu.menuItem,
 		billInfo = this.currentDesk.billInfo,
 		domElement = this.domElement;
+
 	curMenu.cdm_number = parseFloat(domElement.menuNumber.autoNumeric('get'));
 	curMenu.cdm_menu_discount = parseFloat(domElement.menuDiscount.autoNumeric('get'));
+	curMenu.cdm_status = $('#cdm_status').val();
+
 	billInfo.extraFee = parseFloat(domElement.extraFee.autoNumeric('get'));
 	billInfo.VAT = parseFloat(domElement.vat.autoNumeric('get'));
+
 	billInfo.customerDiscount = parseFloat(domElement.customerDiscount.autoNumeric('get'));
 	this.currentDesk.menuList.map(function (menuItem) {
 		if (menuItem.men_id == curMenu.men_id) {
 			menuItem.cdm_number = curMenu.cdm_number;
+            menuItem.cdm_status = curMenu.cdm_status;
 		}
 	});
 	this.cashCurrentBill();
@@ -876,6 +933,7 @@ HomeScript.parseResponseCurrentData = function (resp) {
 		//reset lại menuList
 		this.currentDesk.menuList = [];
 		for (i in resp.array_menu) {
+		    // console.log(resp.array_menu[i]);
 			var menuTmp = new MenuInDesk(resp.array_menu[i]);
 //                console.log(menuTmp);
 			this.currentDesk.menuList.push(menuTmp);
@@ -1184,7 +1242,7 @@ HomeScript.view.selectedCurrentMenu = function () {
 	this.selectedPriceMenu(HomeScript.currentMenu.menuItem.cdm_price_type);
 };
 HomeScript.view.selectedPriceMenu = function (price_type) {
-	console.log(HomeScript.domElement.menuPrice);
+	// console.log(HomeScript.domElement.menuPrice);
 	HomeScript.domElement.menuPrice.removeClass('active');
 	HomeScript.domElement.menuPrice1.removeClass('active');
 	HomeScript.domElement.menuPrice2.removeClass('active');

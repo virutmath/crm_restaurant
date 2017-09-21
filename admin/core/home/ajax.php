@@ -32,6 +32,7 @@ class HomeAjax extends AjaxCommon
         if (!$desk_data) {
             //Nếu bàn chưa mở thì gọi đến hàm openDesk để tạo bàn
             $this->openDesk();
+
             return;
         }
         $array_return = $desk_data;
@@ -82,31 +83,32 @@ class HomeAjax extends AjaxCommon
         // xoa thuc don trong ban
         $deleteDeskMenu = new db_execute('DELETE FROM current_desk_menu WHERE cdm_desk_id = ' . $desk_id);
         unset($deleteDeskMenu);
-        log_action(ACTION_LOG_DELETE,'Hủy bàn ID ' . $desk_id);
+        log_action(ACTION_LOG_DELETE, 'Hủy bàn ID ' . $desk_id);
         $this->add(array('success' => 1));
     }
 
     public function deleteMenu()
     {
         $menu_id = getValue('menu_id', 'int', 'POST', 0);
-        $desk_id = getValue('desk_id','int','POST',0);
+        $desk_id = getValue('desk_id', 'int', 'POST', 0);
         if (!$menu_id || !$desk_id) {
             echo 'error!';
+
             return;
         }
         check_desk_exist($desk_id);
         // xoa thuc don trong ban
         $db_deleteMenu = new db_execute('DELETE FROM current_desk_menu
                                          WHERE cdm_menu_id = ' . $menu_id . '
-                                            AND cdm_desk_id = '.$desk_id.'
+                                            AND cdm_desk_id = ' . $desk_id . '
                                          AND cdm_printed_number = 0');
 
-        if($db_deleteMenu->total) {
+        if ($db_deleteMenu->total) {
             unset($deleteMenu);
             $this->add(array('success' => 1));
-            log_action(ACTION_LOG_DELETE,'Hủy thực đơn ID '. $menu_id .' ở bàn ID ' . $desk_id);
-        }else{
-            $this->add(array('success'=>0,'error'=>'Thực đơn đã in bếp, bạn không thể hủy bỏ thực đơn này'));
+            log_action(ACTION_LOG_DELETE, 'Hủy thực đơn ID ' . $menu_id . ' ở bàn ID ' . $desk_id);
+        } else {
+            $this->add(array('success' => 0, 'error' => 'Thực đơn đã in bếp, bạn không thể hủy bỏ thực đơn này'));
         }
     }
 
@@ -127,6 +129,7 @@ class HomeAjax extends AjaxCommon
         if ($desk_data) {
             //Nếu bàn đang mở thì show ra
             $this->getCurrentDeskDetail();
+
             return;
         }
         //nếu không thì mở bàn
@@ -367,6 +370,7 @@ class HomeAjax extends AjaxCommon
             $list_menu .= $this->list->end_tr();
         }
         $list_menu .= $this->list->showFooter();
+
         return $list_menu;
     }
 
@@ -383,6 +387,7 @@ class HomeAjax extends AjaxCommon
             $row['men_image'] = $row['men_image'] ? get_picture_path($row['men_image']) : '';
             $array_data[] = $row;
         }
+
         return $array_data;
     }
 
@@ -502,6 +507,7 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return;
         }
         $cus_id = getValue('cus_id', 'int', 'POST', 0);
@@ -515,6 +521,7 @@ class HomeAjax extends AjaxCommon
         if (!$customer_data) {
             $array_return['error'] = 'Thông tin về khách hàng không tồn tại!';
             $this->add($array_return);
+
             return;
         }
         //update customer tới bàn này
@@ -541,6 +548,7 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return;
         }
         $staff_id = getValue('staff_id', 'int', 'POST', 0);
@@ -562,6 +570,7 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return;
         }
         //update customer tới bàn này
@@ -584,24 +593,27 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id || !$menu_id) {
             $array_return['error'] = 'Bàn chưa được mở hoặc thực đơn chưa được chọn';
             $this->add($array_return);
+
             return;
         }
         if ($number < 0) {
             $array_return['error'] = 'Số lượng không thể nhỏ hơn 0';
             $this->add($array_return);
+
             return;
         }
         if (!is_numeric($number)) {
             $array_return['error'] = 'Số lượng phải là số nguyên';
             $this->add($array_return);
+
             return;
         }
         //cập nhật số lượng vào thực đơn
-	    $sql = 'UPDATE current_desk_menu
+        $sql = 'UPDATE current_desk_menu
                                  SET cdm_number = ' . $number . '
                                  WHERE cdm_desk_id = ' . $desk_id . '
                                     AND cdm_menu_id = ' . $menu_id . '
-                                    AND cdm_printed_number < '.$number.'
+                                    AND cdm_printed_number < ' . $number . '
                                  LIMIT 1';
         //bỏ qua check đã in bếp
         $sql = 'UPDATE current_desk_menu
@@ -610,15 +622,17 @@ class HomeAjax extends AjaxCommon
                                     AND cdm_menu_id = ' . $menu_id . '
                                  LIMIT 1';
         $db_ex = new db_execute($sql);
-        if(!$db_ex->total){
+        if (!$db_ex->total) {
             $array_return['error'] = 'Thực đơn này đã in bếp, không thể giảm số lượng';
             $this->add($array_return);
+
             return;
         }
         $array_return['success'] = 1;
         $this->add($array_return);
         //log action
         log_action(ACTION_LOG_EDIT, 'Thay đổi số lượng thực đơn ID (' . $menu_id . ') bàn ID ' . $desk_id);
+
         return;
     }
 
@@ -633,16 +647,19 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id || !$menu_id) {
             $array_return['error'] = 'Bàn chưa được mở hoặc thực đơn chưa được chọn';
             $this->add($array_return);
+
             return;
         }
         if ($discount < 0) {
             $array_return['error'] = 'Giảm giá không thể nhỏ hơn 0';
             $this->add($array_return);
+
             return;
         }
         if ($discount > 100) {
             $array_return['error'] = 'Giảm giá không thể lớn hơn 100%';
             $this->add($array_return);
+
             return;
         }
         //cập nhật số lượng vào thực đơn
@@ -654,6 +671,7 @@ class HomeAjax extends AjaxCommon
         $this->add($array_return);
         //log action
         log_action(ACTION_LOG_EDIT, 'Thay đổi giảm giá thực đơn ID (' . $menu_id . ') bàn ID ' . $desk_id);
+
         return;
     }
 
@@ -664,12 +682,14 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return;
         }
         $extra_fee = getValue('extra_fee', 'flo', 'POST', 0);
         if ($extra_fee < 0 || $extra_fee > 100) {
             $array_return['error'] = 'Phụ phí không hợp lệ';
             $this->add($array_return);
+
             return;
         }
         //cập nhật phụ phí vào hóa đơn
@@ -680,10 +700,12 @@ class HomeAjax extends AjaxCommon
         if ($db_ex->total) {
             $array_return['success'] = 1;
             $this->add($array_return);
+
             return;
         } else {
             $array_return['error'] = 'Không có bàn nào được cập nhật';
             $this->add($array_return);
+
             return;
         }
     }
@@ -696,12 +718,14 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return;
         }
         $vat = getValue('vat', 'flo', 'POST', 0);
         if ($vat < 0 || $vat > 100) {
             $array_return['error'] = 'Thuế GTGT không hợp lệ';
             $this->add($array_return);
+
             return;
         }
         //cập nhật thuế GTGT vào hóa đơn
@@ -712,10 +736,12 @@ class HomeAjax extends AjaxCommon
         if ($db_ex->total) {
             $array_return['success'] = 1;
             $this->add($array_return);
+
             return;
         } else {
             $array_return['error'] = 'Không có bàn nào được cập nhật';
             $this->add($array_return);
+
             return;
         }
     }
@@ -727,12 +753,14 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return;
         }
         $discount = getValue('discount', 'flo', 'POST', 0);
         if ($discount < 0 || $discount > 100) {
             $array_return['error'] = 'Giảm giá không hợp lệ';
             $this->add($array_return);
+
             return;
         }
         //cập nhật giảm giá hóa đơn
@@ -743,10 +771,12 @@ class HomeAjax extends AjaxCommon
         if ($db_ex->total) {
             $array_return['success'] = 1;
             $this->add($array_return);
+
             return;
         } else {
             $array_return['error'] = 'Không có bàn nào được cập nhật';
             $this->add($array_return);
+
             return;
         }
     }
@@ -765,6 +795,7 @@ class HomeAjax extends AjaxCommon
             //đang có hóa đơn được thanh toán, exit luôn
             $array_return['error'] = 'Đang có hóa đơn khác được thanh toán, bạn vui lòng thử lại trong giây lát!';
             $this->add($array_return);
+
             return false;
         }
 
@@ -774,6 +805,7 @@ class HomeAjax extends AjaxCommon
         if (!$desk_id) {
             $array_return['error'] = 'Bàn chưa được mở';
             $this->add($array_return);
+
             return false;
         }
         //kiểm tra xem bàn có thực đơn nào không?
@@ -781,6 +813,7 @@ class HomeAjax extends AjaxCommon
         if (!$db_count->total) {
             $array_return['error'] = 'Không thể thanh toán hóa đơn trống';
             $this->add($array_return);
+
             return false;
         }
 
@@ -848,6 +881,7 @@ class HomeAjax extends AjaxCommon
             if ($date_debit < time()) {
                 $array_return['error'] = 'Ngày hẹn trả không phù hợp';
                 $this->add($array_return);
+
                 return false;
             }
         }
@@ -858,6 +892,7 @@ class HomeAjax extends AjaxCommon
             $array_return['error'] = 'Không thể xuất do không đủ số lượng tồn kho';
             $array_return['disallow_menu'] = json_encode($disallow_menu);
             $this->add($array_return);
+
             return false;
         } else {
             //Không có hóa đơn nào đang được xử lý - cập nhật trigger status thành 1 để bắt đầu vào hàm
@@ -901,7 +936,7 @@ class HomeAjax extends AjaxCommon
             $bii_admin_id = $admin_id;
 
             //loại thanh toán - tiền mặt hay thẻ.
-            $bii_type = getValue('payType','int','POST',PAY_TYPE_CASH);
+            $bii_type = getValue('payType', 'int', 'POST', PAY_TYPE_CASH);
             $bii_type = $bii_type == PAY_TYPE_CASH ? PAY_TYPE_CASH : PAY_TYPE_CARD;
             //phụ phí
             $bii_extra_fee = $desk_detail['cud_extra_fee'];
@@ -915,7 +950,7 @@ class HomeAjax extends AjaxCommon
                 $bii_true_money += $money;
             }
             //tính giảm giá, thuế và phụ phí để ra số tiền thực tế
-            $bii_true_money = $bii_true_money * (100 - $bii_discount + $bii_extra_fee)/100 * (100 + $bii_vat)/100;
+            $bii_true_money = $bii_true_money * (100 - $bii_discount + $bii_extra_fee) / 100 * (100 + $bii_vat) / 100;
             //tiền làm tròn
             $bii_round_money = round($bii_true_money, -3);
             if ($debit && $debit < $bii_true_money) {
@@ -967,7 +1002,7 @@ class HomeAjax extends AjaxCommon
                             ' . $bii_service_desk_id . ',
                             ' . $bii_money_debit . ',
                             ' . $bii_date_debit . ',
-                            "'. $desk_detail['cud_note'].'"
+                            "' . $desk_detail['cud_note'] . '"
                             )';
             $db_insert = new db_execute_return();
             $bill_success_id = $db_insert->db_execute($sql_insert);
@@ -1027,10 +1062,10 @@ class HomeAjax extends AjaxCommon
                             ' . $bii_type . ',
                             "",
                             ' . $admin_id . ',
-                            ' . $configuration['con_default_agency'] .'
+                            ' . $configuration['con_default_agency'] . '
                             )';
             $db_insert = new db_execute($sql_insert);
-	        logs('log.txt', $sql_insert);
+            logs('log.txt', $sql_insert);
             if ($db_insert->total) {
                 //thanh toán xong thì xóa bàn
                 $db_delete_desk = new db_execute('DELETE FROM current_desk WHERE cud_desk_id = ' . $desk_id);
@@ -1061,6 +1096,7 @@ class HomeAjax extends AjaxCommon
         if (!$from_desk) {
             $array_return['error'] = 'Không tồn tại bàn cần chuyển';
             $this->add($array_return);
+
             return false;
         }
         $to_desk = getValue('to_desk_id', 'int', 'POST', 0);
@@ -1068,6 +1104,7 @@ class HomeAjax extends AjaxCommon
         if (!$to_desk) {
             $array_return['error'] = 'Chưa chọn bàn chuyển đến';
             $this->add($array_return);
+
             return false;
         }
         checkPermission('edit');
@@ -1082,6 +1119,7 @@ class HomeAjax extends AjaxCommon
         $array_return['success'] = 1;
         $array_return['desk_id'] = $to_desk;
         $this->add($array_return);
+
         return false;
     }
 
@@ -1093,6 +1131,7 @@ class HomeAjax extends AjaxCommon
         if (!$from_desk) {
             $array_return['error'] = 'Không tồn tại bàn cần chuyển';
             $this->add($array_return);
+
             return false;
         }
         $to_desk = getValue('to_desk_id', 'int', 'POST', 0);
@@ -1100,6 +1139,7 @@ class HomeAjax extends AjaxCommon
         if (!$to_desk) {
             $array_return['error'] = 'Chưa chọn bàn chuyển đến';
             $this->add($array_return);
+
             return false;
         }
         checkPermission('edit');
@@ -1148,6 +1188,7 @@ class HomeAjax extends AjaxCommon
 
         $array_return['success'] = 1;
         $this->add($array_return);
+
         return false;
     }
 
@@ -1232,6 +1273,20 @@ class HomeAjax extends AjaxCommon
         }
         //trả kết quả về client
         $array_return = array('success' => 1, 'error' => 0, 'msg' => 'Tách bàn thành công');
+        $this->add($array_return);
+    }
+
+    public function updateMenuStatus()
+    {
+
+        $desk_id = getValue('desk_id', 'int', 'POST');
+        $menu_id = getValue('menu_id', 'int', 'POST');
+        $status = getValue('status', 'int', 'POST');
+
+        $db = new db_execute('UPDATE current_desk_menu SET cdm_status = ' . (int)$status . ' 
+        WHERE cdm_desk_id = ' . (int)$desk_id . ' AND cdm_menu_id = ' . (int)$menu_id);
+
+        $array_return = array('success' => 1, 'error' => 0, 'msg' => 'Update trạng thái món thành công.');
         $this->add($array_return);
     }
 }
