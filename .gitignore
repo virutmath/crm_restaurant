@@ -3,6 +3,7 @@ temp/
 /admin/resources/caches/*
 bower_components
 node_modules
+config_db.php
 vendor
 admin/core/home_v2/css/home.css
 admin/resources/css/common_v2.css
