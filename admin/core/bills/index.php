@@ -111,7 +111,7 @@ while($row = mysqli_fetch_assoc($db_listing->result)){
         $total_bii_true_money += $bii_true_money;
     }unset($data_bill_detail);
     //
-    $table_left_column .= '<td class="text-right" width="100">' . number_format($total_bii_true_money) .' '. DEFAULT_MONEY_UNIT . '</td>';
+    $table_left_column .= '<td class="text-right" width="100">' . number_format($row['bii_true_money']) .' '. DEFAULT_MONEY_UNIT . '</td>';
     $table_left_column .= $list->end_tr();
     $totalAll += $row['bii_true_money'];
 }

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel core/home_v2/js/src -d core/home_v2/js/dist && babel resources/js/v2/src -d resources/js/v2/dist"
+    "build": "babel core/home_v2/js/src -d core/home_v2/js/dist && babel resources/js/v2/src -d resources/js/v2/dist",
+    "buildv1": "babel core/home/js/src -d core/home/js/build"
   },
   "author": "",
   "license": "ISC",

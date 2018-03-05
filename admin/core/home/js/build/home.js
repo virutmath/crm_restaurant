@@ -429,7 +429,7 @@ HomeScript.react.TableMenu = React.createClass({
 				name: menuItem.men_name,
 				unit: menuItem.men_unit,
 				number: menuItem.cdm_number,
-				price: menuItem.men_price,
+				price: menuItem.cdm_price,
 				discount: menuItem.cdm_menu_discount,
 				total: HomeScript.cashMenuItem(menuItem)
 			}));
@@ -581,6 +581,11 @@ HomeScript.deleteDesk = function (elem) {
 				bootbox.alert('Bàn đã được hủy', function () {
 					window.location.reload();
 				});
+			} else {
+				console.log(resp.error);
+				bootbox.alert(resp.error, function () {
+					window.location.reload();
+				});
 			}
 		}
 	});
@@ -608,7 +613,7 @@ HomeScript.deleteMenu = function (menu_id) {
 HomeScript.removeMenu = function (menu_id) {
 	for (var i in HomeScript.currentDesk.menuList) {
 		if (menu_id == HomeScript.currentDesk.menuList[i].men_id) {
-			console.log(menu_id);
+			// console.log(menu_id);
 			HomeScript.currentDesk.menuList.splice(i, 1);
 			break;
 		}
@@ -988,6 +993,15 @@ HomeScript.selectMenuInDesk = function (menu_id) {
 	HomeScript.view.selectedCurrentMenu();
 	HomeScript.view.fillDataToInput();
 };
+//Update danh sách thực đơn khi thực đơn hiện tại thay đổi
+HomeScript.updateMenuListByCurrentMenu = function () {
+	HomeScript.currentDesk.menuList.forEach(function (menuItem, index) {
+		if (menuItem.men_id == HomeScript.currentMenu.menuItem.men_id) {
+			HomeScript.currentDesk.menuList[index] = HomeScript.currentMenu.menuItem;
+		}
+	});
+};
+
 HomeScript.parseResponseCurrentData = function (resp) {
 	//load thông tin hóa đơn
 	this.currentDesk.billInfo.customerCode = resp.customer_code;
@@ -1056,10 +1070,10 @@ HomeScript.view.buildCurrentDesk = function () {
 	React.render(React.createElement(HomeScript.react.TableMenu, null), HomeScript.domElement.centerListing[0]);
 	//cấp phát menu phải
 	HomeScript.contextMenu();
-	//fill dữ liệu vào các input
-	this.fillDataToInput();
 	//bỏ disable ở các input
 	this.switchDisableInput(false);
+	//fill dữ liệu vào các input
+	this.fillDataToInput();
 	//cấp phát thanh cuộn
 	this.reInitScroll();
 };
@@ -1097,6 +1111,8 @@ HomeScript.view.changePayType = function (pay_type) {
 	HomeScript.currentDesk.billInfo.payType = pay_type;
 };
 HomeScript.view.fillDataToInput = function () {
+	//cập nhật lại tổng tiền
+	HomeScript.cashCurrentBill();
 	var billInfo = HomeScript.currentDesk.billInfo,
 	    domElement = HomeScript.domElement,
 	    extraFeeText = number_format(billInfo.totalMoney * billInfo.extraFee / 100),
@@ -1135,20 +1151,7 @@ HomeScript.view.fillDataToInput = function () {
 		if (trigger_keyup != 'menuNumber') {
 			domElement.menuNumber.autoNumeric('set', number_format(menuItem.cdm_number));
 		}
-		domElement.menuPrice.removeClass('active').html(number_format(menuItem.men_price));
-		domElement.menuPrice1.removeClass('active').html(number_format(menuItem.men_price1));
-		domElement.menuPrice2.removeClass('active').html(number_format(menuItem.men_price2));
-		switch (menuItem.cdm_price_type) {
-			case 'men_price':
-				HomeScript.domElement.menuPrice.addClass('active');
-				break;
-			case 'men_price1':
-				HomeScript.domElement.menuPrice1.addClass('active');
-				break;
-			case 'men_price2':
-				HomeScript.domElement.menuPrice2.addClass('active');
-				break;
-		}
+		HomeScript.view.selectedPriceMenu(menuItem.cdm_price_type);
 	}
 	//reset trigger keyup
 	trigger_keyup = '';
@@ -1313,10 +1316,11 @@ HomeScript.view.selectedCurrentMenu = function () {
 	this.selectedPriceMenu(HomeScript.currentMenu.menuItem.cdm_price_type);
 };
 HomeScript.view.selectedPriceMenu = function (price_type) {
-	console.log(HomeScript.domElement.menuPrice);
-	HomeScript.domElement.menuPrice.removeClass('active');
-	HomeScript.domElement.menuPrice1.removeClass('active');
-	HomeScript.domElement.menuPrice2.removeClass('active');
+	// console.log(HomeScript.domElement.menuPrice);
+	var menuItem = HomeScript.currentMenu.menuItem;
+	HomeScript.domElement.menuPrice.removeClass('active').html(number_format(menuItem.men_price));
+	HomeScript.domElement.menuPrice1.removeClass('active').html(number_format(menuItem.men_price1));
+	HomeScript.domElement.menuPrice2.removeClass('active').html(number_format(menuItem.men_price2));
 	switch (price_type) {
 		case 'men_price':
 		default:
@@ -1695,3 +1699,37 @@ function communicateParentWindow(action, data) {
 			break;
 	}
 }
+$('.men_price_span').unbind('click').click(function () {
+	if (!HomeScript.currentDesk || !HomeScript.currentMenu) {
+		return false;
+	}
+	var _this = $(this);
+	if (_this.hasClass('active')) {
+		return false;
+	}
+	$('.men_price_span').removeClass('active');
+	_this.addClass('active');
+	$.ajax({
+		type: 'post',
+		url: 'ajax.php',
+		data: {
+			action: 'selectPriceType',
+			desk_id: HomeScript.currentDesk.deskItem.des_id,
+			menu_id: HomeScript.currentMenu.menuItem.men_id,
+			price_type: _this.attr('id')
+		},
+		dataType: 'json',
+		success: function success(resp) {
+			loadingProgress('hide');
+			//chỉnh thông số của thực đơn
+			HomeScript.currentMenu.menuItem.cdm_price = resp.price;
+			HomeScript.currentMenu.menuItem.cdm_price_type = resp.price_type;
+			//cập nhật menu list
+			HomeScript.updateMenuListByCurrentMenu();
+			HomeScript.view.buildCurrentDesk();
+		},
+		beforeSend: function beforeSend() {
+			loadingProgress('show');
+		}
+	});
+});

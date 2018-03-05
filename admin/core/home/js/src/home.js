@@ -175,7 +175,7 @@ var MenuList = React.createClass({
 				cat_name={data.cat_name}
 				count_menu={data.count_menu}
 				list_menu_child={data.list_menu_child}
-				/>)
+			/>)
 		}
 		return <ul className="list-unstyled list-menu">
 			{rowLi}
@@ -216,9 +216,9 @@ MenuList.CategoryItemChild = React.createClass({
 		var rowMenu = [];
 		for (var i in props.list_menu_child) {
 			rowMenu.push(<MenuList.MenuItem
-					men_id={props.list_menu_child[i].men_id}
-					men_name={props.list_menu_child[i].men_name}
-				/>);
+				men_id={props.list_menu_child[i].men_id}
+				men_name={props.list_menu_child[i].men_name}
+			/>);
 		}
 		return <li className="list-item item-cat-child">
 			<label className="item-name" onClick={onClickFn}>
@@ -232,17 +232,17 @@ MenuList.CategoryItemChild = React.createClass({
 	}
 });
 MenuList.MenuItem = React.createClass({
-	render : function () {
+	render: function () {
 		var props = this.props;
 		var onDbClick = function () {
 			HomeScript.addMenuToDesk(props.men_id);
 		};
 		return <li className="list-item item-menu" data-id={props.men_id}
-				   data-name={props.men_name}>
-					<label className="item-name" onDoubleClick={onDbClick}>
-						- {props.men_name}
-					</label>
-				</li>
+		           data-name={props.men_name}>
+			<label className="item-name" onDoubleClick={onDbClick}>
+				- {props.men_name}
+			</label>
+		</li>
 	}
 });
 //build danh sách thực đơn ở bàn được chọn từ currentDesk
@@ -288,7 +288,7 @@ var TableRow = React.createClass({
 			<td className="center">{this.props.unit}</td>
 			<td className="center"><FormattedNumber value={this.props.number}/></td>
 			<td className="text-right"><FormattedNumber value={this.props.price} style="currency" currency="VND"/></td>
-			<td className="center"><FormattedNumber value={this.props.discount/100} style="percent"/></td>
+			<td className="center"><FormattedNumber value={this.props.discount / 100} style="percent"/></td>
 			<td className="text-right"><FormattedNumber value={this.props.total} style="currency" currency="VND"/></td>
 		</tr>
 		</tbody>
@@ -306,10 +306,10 @@ HomeScript.react.TableMenu = React.createClass({
 				name={menuItem.men_name}
 				unit={menuItem.men_unit}
 				number={menuItem.cdm_number}
-				price={menuItem.men_price}
+				price={menuItem.cdm_price}
 				discount={menuItem.cdm_menu_discount}
 				total={HomeScript.cashMenuItem(menuItem)}
-				/>);
+			/>);
 		}
 		return (
 			<table className="table table-bordered table-hover table-listing" id="table-listing">
@@ -448,6 +448,11 @@ HomeScript.deleteDesk = function (elem) {
 				bootbox.alert('Bàn đã được hủy', function () {
 					window.location.reload();
 				});
+			}else {
+				console.log(resp.error);
+				bootbox.alert(resp.error, function () {
+					window.location.reload();
+				});
 			}
 		}
 	})
@@ -475,7 +480,7 @@ HomeScript.deleteMenu = function (menu_id) {
 HomeScript.removeMenu = function (menu_id) {
 	for (var i in HomeScript.currentDesk.menuList) {
 		if (menu_id == HomeScript.currentDesk.menuList[i].men_id) {
-			console.log(menu_id);
+			// console.log(menu_id);
 			HomeScript.currentDesk.menuList.splice(i, 1);
 			break;
 		}
@@ -761,7 +766,7 @@ HomeScript.keyUpFunction = function (type) {
 	this.cashCurrentBill();
 	var customerCash = HomeScript.domElement.customerCash.autoNumeric('get');
 	React.render(<FormattedNumber value={customerCash - billInfo.finalMoney} style="currency"
-								  currency="VND"/>, HomeScript.domElement.customerCashText[0]);
+	                              currency="VND"/>, HomeScript.domElement.customerCashText[0]);
 	this.view.buildCurrentDesk();
 };
 
@@ -855,6 +860,16 @@ HomeScript.selectMenuInDesk = function (menu_id) {
 	HomeScript.view.selectedCurrentMenu();
 	HomeScript.view.fillDataToInput();
 };
+//Update danh sách thực đơn khi thực đơn hiện tại thay đổi
+HomeScript.updateMenuListByCurrentMenu = function () {
+	HomeScript.currentDesk.menuList.forEach(function (menuItem, index) {
+		if (menuItem.men_id == HomeScript.currentMenu.menuItem.men_id) {
+			HomeScript.currentDesk.menuList[index] = HomeScript.currentMenu.menuItem;
+		}
+	});
+};
+
+
 HomeScript.parseResponseCurrentData = function (resp) {
 	//load thông tin hóa đơn
 	this.currentDesk.billInfo.customerCode = resp.customer_code;
@@ -924,10 +939,10 @@ HomeScript.view.buildCurrentDesk = function () {
 	React.render(<HomeScript.react.TableMenu />, HomeScript.domElement.centerListing[0]);
 	//cấp phát menu phải
 	HomeScript.contextMenu();
-	//fill dữ liệu vào các input
-	this.fillDataToInput();
 	//bỏ disable ở các input
 	this.switchDisableInput(false);
+	//fill dữ liệu vào các input
+	this.fillDataToInput();
 	//cấp phát thanh cuộn
 	this.reInitScroll();
 };
@@ -965,6 +980,8 @@ HomeScript.view.changePayType = function (pay_type) {
 	HomeScript.currentDesk.billInfo.payType = pay_type;
 };
 HomeScript.view.fillDataToInput = function () {
+	//cập nhật lại tổng tiền
+	HomeScript.cashCurrentBill();
 	var billInfo = HomeScript.currentDesk.billInfo,
 		domElement = HomeScript.domElement,
 		extraFeeText = number_format(billInfo.totalMoney * billInfo.extraFee / 100),
@@ -1003,20 +1020,7 @@ HomeScript.view.fillDataToInput = function () {
 		if (trigger_keyup != 'menuNumber') {
 			domElement.menuNumber.autoNumeric('set', number_format(menuItem.cdm_number));
 		}
-		domElement.menuPrice.removeClass('active').html(number_format(menuItem.men_price));
-		domElement.menuPrice1.removeClass('active').html(number_format(menuItem.men_price1));
-		domElement.menuPrice2.removeClass('active').html(number_format(menuItem.men_price2));
-		switch (menuItem.cdm_price_type) {
-			case 'men_price':
-				HomeScript.domElement.menuPrice.addClass('active');
-				break;
-			case 'men_price1':
-				HomeScript.domElement.menuPrice1.addClass('active');
-				break;
-			case 'men_price2':
-				HomeScript.domElement.menuPrice2.addClass('active');
-				break;
-		}
+		HomeScript.view.selectedPriceMenu(menuItem.cdm_price_type);
 	}
 	//reset trigger keyup
 	trigger_keyup = '';
@@ -1103,7 +1107,7 @@ HomeScript.view.reInitScroll = function () {
 };
 HomeScript.view.searchMenu = function () {
 	var text = $.trim(HomeScript.domElement.searchMenuText.val());
-	if(!text) {
+	if (!text) {
 		HomeScript.listMenu = data_list_menu;
 		HomeScript.view.buildListMenu();
 		return true;
@@ -1121,7 +1125,7 @@ HomeScript.view.searchMenu = function () {
 	};
 	var fuse = new Fuse(data_list_menu, options);
 	var results = fuse.search(text), results_filter = [];
-	results.forEach(function(item){
+	results.forEach(function (item) {
 		var options2 = {
 			shouldSort: true,
 			threshold: 0.3,
@@ -1133,10 +1137,10 @@ HomeScript.view.searchMenu = function () {
 				"men_name"
 			]
 		};
-		var f2 = new Fuse(item.list_menu_child,options2);
+		var f2 = new Fuse(item.list_menu_child, options2);
 		var filter = JSON.parse(JSON.stringify(item));
 		filter.list_menu_child = f2.search(text);
-		if(filter.list_menu_child.length) {
+		if (filter.list_menu_child.length) {
 			results_filter.push(filter);
 		}
 	});
@@ -1184,10 +1188,11 @@ HomeScript.view.selectedCurrentMenu = function () {
 	this.selectedPriceMenu(HomeScript.currentMenu.menuItem.cdm_price_type);
 };
 HomeScript.view.selectedPriceMenu = function (price_type) {
-	console.log(HomeScript.domElement.menuPrice);
-	HomeScript.domElement.menuPrice.removeClass('active');
-	HomeScript.domElement.menuPrice1.removeClass('active');
-	HomeScript.domElement.menuPrice2.removeClass('active');
+	// console.log(HomeScript.domElement.menuPrice);
+	var menuItem = HomeScript.currentMenu.menuItem;
+	HomeScript.domElement.menuPrice.removeClass('active').html(number_format(menuItem.men_price));
+	HomeScript.domElement.menuPrice1.removeClass('active').html(number_format(menuItem.men_price1));
+	HomeScript.domElement.menuPrice2.removeClass('active').html(number_format(menuItem.men_price2));
 	switch (price_type) {
 		case 'men_price':
 		default :
@@ -1566,3 +1571,37 @@ function communicateParentWindow(action, data) {
 			break;
 	}
 }
+$('.men_price_span').unbind('click').click(function () {
+	if (!HomeScript.currentDesk || !HomeScript.currentMenu) {
+		return false;
+	}
+	var _this = $(this);
+	if (_this.hasClass('active')) {
+		return false;
+	}
+	$('.men_price_span').removeClass('active');
+	_this.addClass('active');
+	$.ajax({
+		type: 'post',
+		url: 'ajax.php',
+		data: {
+			action: 'selectPriceType',
+			desk_id: HomeScript.currentDesk.deskItem.des_id,
+			menu_id: HomeScript.currentMenu.menuItem.men_id,
+			price_type: _this.attr('id')
+		},
+		dataType: 'json',
+		success: function (resp) {
+			loadingProgress('hide');
+			//chỉnh thông số của thực đơn
+			HomeScript.currentMenu.menuItem.cdm_price = resp.price;
+			HomeScript.currentMenu.menuItem.cdm_price_type = resp.price_type;
+			//cập nhật menu list
+			HomeScript.updateMenuListByCurrentMenu();
+			HomeScript.view.buildCurrentDesk();
+		},
+		beforeSend: function () {
+			loadingProgress('show');
+		}
+	})
+});

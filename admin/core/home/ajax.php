@@ -71,6 +71,12 @@ class HomeAjax extends AjaxCommon
 
     public function deleteDesk()
     {
+		try {
+			checkPermission('delete');
+		}catch (Exception $e) {
+			$this->add(array('success'=>0,'error'=>'Vui lòng liên hệ quản trị viên để hủy bàn'));
+			return;
+		}
         $desk_id = getValue('desk_id', 'int', 'POST', 0);
         if (!$desk_id) {
             return;

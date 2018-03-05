@@ -1,0 +1,1 @@
+CREATE TABLE `crm_restaurant`.`booking` ( `booking_id` INT NOT NULL AUTO_INCREMENT , `customer_id` INT NOT NULL , `partner_id` INT NOT NULL COMMENT 'đối tác đặt bàn: fb,jamja,pasgo...' , `checkin_time` INT NOT NULL , `desk_id` INT NULL COMMENT 'bàn được xếp' , `note` TEXT NOT NULL , PRIMARY KEY (`booking_id`)) ENGINE = InnoDB;

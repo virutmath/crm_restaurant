@@ -41,7 +41,10 @@ if ($action == "login") {
 		$_SESSION["isAdmin"] = $isAdmin;
 		$_SESSION['isSuperAdmin'] = $isSuperAdmin;
 
-		$row_log = Logs_Session::where('log_admin_id', $user_id)->orderBy('log_time_in', 'desc')->first()->toArray();
+		$row_log = Logs_Session::where('log_admin_id', $user_id)->orderBy('log_time_in', 'desc')->first();
+		if(!$row_log) {
+			$row_log = ['log_time_in'=>time()];
+		}
 		$time_log_start = convertDateTime(date('d/m/Y', $row_log['log_time_in']), '0:0:0');// reset thời gian về đầu ngày
 		$time_log = convertDateTime(date('d/m/Y', time()), '0:0:0');
 		if ($time_log != $time_log_start) {

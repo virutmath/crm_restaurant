@@ -208,7 +208,7 @@ class db_execute_return
 	var $result;
 	var $total = 0;
 
-	function __construct($query)
+	function db_execute($query)
 	{
 		$dbinit = new db_init();
 		$this->links = mysqli_connect($dbinit->server, $dbinit->username, $dbinit->password);

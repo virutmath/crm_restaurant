@@ -1,0 +1,1 @@
+ALTER TABLE `current_desk_menu` ADD `cdm_table_number` INT NOT NULL DEFAULT '0' COMMENT 'hiển thị số lượng đã mang xuống bàn' AFTER `cdm_printed_number`, ADD INDEX (`cdm_table_number`);

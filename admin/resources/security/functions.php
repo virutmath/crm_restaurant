@@ -129,7 +129,7 @@ function checkPermission($action)
 	if ($result['role_' . $action] == 1) {
 		return true;
 	} else {
-		die('<div style="margin: 25px auto;padding: 10px;text-align: center"><h3>Bạn không có quyền truy cập chức năng này</h3></div>');
+		throw new Exception('Bạn không có quyền truy cập chức năng này');
 	}
 }
 

@@ -42,9 +42,11 @@ $customer_id    = $row_desk['cud_customer_id'];
 unset($db_query_desk);
 
 //lấy ra tên khách hàng
-$db_customer = new db_query('SELECT cus_name FROM customers WHERE cus_id = '.$customer_id.'');
-$row_customer = mysqli_fetch_assoc($db_customer->result);
-$customer_name = $row_customer['cus_name'];
+if($customer_id) {
+	$db_customer = new db_query('SELECT cus_name FROM customers WHERE cus_id = '.$customer_id);
+	$row_customer = mysqli_fetch_assoc($db_customer->result);
+	$customer_name = $row_customer['cus_name'];
+}
 
 // tao mảng hiển thị tên menu
 $array_menu = '';

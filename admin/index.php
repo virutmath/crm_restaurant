@@ -97,6 +97,8 @@ $link_home = link_module_function('home','index.php');
 $link_settings = link_module_function('settings','index.php');
 //chiến dịch khuyến mãi
 $link_promotions  = link_module_function('promotions','index.php');
+//quan ly doi tac dat ban
+$link_booking_partner = link_module_function('booking','partner.php');
 
 
 $rainTpl->assign('link_manager_user',$link_manager_user);
@@ -115,6 +117,7 @@ $rainTpl->assign('link_manager_fins',$link_manager_fins);
 $rainTpl->assign('link_home',$link_home);
 $rainTpl->assign('link_settings',$link_settings);
 $rainTpl->assign('link_promotions',$link_promotions);
+$rainTpl->assign('link_booking_partner',$link_booking_partner);
 
 
 //Thanh điều hướng - navigate admin
