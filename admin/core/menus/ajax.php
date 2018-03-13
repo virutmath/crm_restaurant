@@ -205,7 +205,8 @@ class MenuAjax extends AjaxCommon {
                     'name'=>'men_people_count',
                     'id'=>'men_people_count',
                     'value'=> 1,
-                    'currentValue'=>0
+                    'currentValue'=>0,
+                    'helptext'=>'Dùng để xác định số người sử dụng buffet'
             ))
         );
         $this->add(
@@ -313,7 +314,8 @@ class MenuAjax extends AjaxCommon {
                     'name'=>'men_people_count',
                     'id'=>'men_people_count',
                     'value'=> 1,
-                    'currentValue'=>0
+                    'currentValue'=>$this->f['men_people_count'],
+                    'helptext'=>'Dùng để xác định số người sử dụng buffet'
             ))
         );
         $this->add(

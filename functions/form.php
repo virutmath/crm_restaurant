@@ -406,13 +406,14 @@ class form{
         switch($default['type']){
             case 'radio':
             case 'checkbox':
+                if($default['helptext']) {
+                    $control .= '<span class="help-inline">'.$default['helptext'].'</span>';
+                }
                 $control = '<div class="'.$default['type'].'">'.$control.'</div>';
                 break;
         }
         $form .= '<label class="control-label col-xs-3" for="'.$default['id'].'">'.$require.$default['label'].'</label>';
-        if($default['helptext']){
-			$form .= '<div class="col-xs-8">'.$control.'<span class="help-inline">'.$default['helptext'].'</span></div>';
-		}elseif($default['helpblock']){
+        if($default['helpblock']){
 			$form .= '<div class="col-xs-8">'.$control.'<span class="help-block">'.$default['helpblock'].'</span></div>';
 		}else{
 			$form .= '<div class="col-xs-8">'.$control.'</div>';
@@ -559,6 +560,11 @@ class form{
 		if(isset($attribute['title'])){
             $extra .= ' title="'.$attribute['title'].'"';
         }
+        if(isset($attribute['class'])) {
+            $extra .= ' class="'.$attribute['class'].'"';
+        }else{
+            $extra .= ' class="form-checkbox"';
+        }
 		if(!isset($attribute['value'])) $attribute['value'] = '';
 		$checked = FALSE;
 		if(!isset($attribute['currentValue'])) $attribute['currentValue'] = '';
@@ -614,6 +620,11 @@ class form{
         $attribute['type'] = 'checkbox';
 		if(isset($attribute['title'])){
             $extra .= ' title="'.$attribute['title'].'"';
+        }
+        if(isset($attribute['class'])) {
+            $extra .= ' class="'.$attribute['class'].'"';
+        }else{
+            $extra .= ' class="form-checkbox"';
         }
 		if(!isset($attribute['value'])) $attribute['value'] = '';
 		$checked = FALSE;

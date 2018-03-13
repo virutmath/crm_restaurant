@@ -44,3 +44,6 @@ img{max-width:100%}
     font-weight: bold;
     padding: 10px 0;
 }
+input.form-checkbox, input.form-radio {
+    margin-top: 1px;
+}

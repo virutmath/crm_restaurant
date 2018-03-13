@@ -68,6 +68,7 @@ if($action == 'execute') {
             $myform->add('men_price1','men_price1',1,0,'',0,'');
             $myform->add('men_price2','men_price2',1,0,'',0,'');
             $myform->add('men_note','men_note',0,0,'',0,'');
+            $myform->add('men_people_count','men_people_count',1,0,'',0,'');
             //echo $myform->generate_insert_SQL(); die();
             if(!$myform->checkdata()){
                 $men_image = getValue('men_image','str','POST','');
@@ -96,6 +97,7 @@ if($action == 'execute') {
             $myform->add('men_price1','men_price1',1,0,'',0,'');
             $myform->add('men_price2','men_price2',1,0,'',0,'');
             $myform->add('men_note','men_note',0,0,'',0,'');
+            $myform->add('men_people_count','men_people_count',1,0,'',0,'');
             if(!$myform->checkdata()){
                 $men_image = getValue('men_image','str','POST','');
                 if($men_image){

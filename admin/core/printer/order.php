@@ -35,6 +35,19 @@ $array_unit = array();
 while($row = mysqli_fetch_assoc($db_unit->result)) {
     $array_unit[$row['uni_id']] = $row['uni_name'];
 }
+//đếm số người từ các menu có đánh dấu men_people_count
+$query = new db_query('SELECT SUM(cdm_number) as sum
+                                FROM current_desk_menu
+                                INNER JOIN menus ON cdm_menu_id = men_id
+                                WHERE cdm_desk_id = ' . $desk_id .'
+                                AND men_people_count = 1');
+$people_count = mysqli_fetch_assoc($query->result);
+$people_count = $people_count ? $people_count['sum'] : 0;
+unset($query);
+//lấy ghi chú của bàn đang mở
+$query = new db_query('SELECT cud_note FROM current_desk WHERE cud_desk_id = ' . $desk_id);
+$note = mysqli_fetch_assoc($query->result);
+$desk_detail['note'] = $note['cud_note'];
 
 $db_list_menu = new db_query('SELECT men_id,men_name,cdm_number,cdm_printed_number,men_unit_id
                               FROM menus
@@ -58,4 +71,5 @@ $rainTpl->assign('print_date',date('d/m/Y H:i:s',time()));
 $rainTpl->assign('list_menu',$list_menu);
 $rainTpl->assign('list_menu_json',json_encode($list_menu));
 $rainTpl->assign('desk_detail',$desk_detail);
+$rainTpl->assign('people_count',$people_count);
 $rainTpl->draw('v2/printer/order');

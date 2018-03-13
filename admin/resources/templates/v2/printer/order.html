@@ -91,9 +91,17 @@
     <div class="center col-xs-12">
         <label>Phiếu in bếp</label>
     </div>
-    <div class="col-xs-12">
+    <div class="col-xs-11">
         <div class="pull-left">{$print_date}</div>
         <div class="pull-right">{$desk_detail['desk_name']}</div>
+    </div>
+    {if="$people_count"}
+    <div class="col-xs-11">
+        <div class="pull-left">Số người: {$people_count}</div>
+    </div>
+    {/if}
+    <div class="col-xs-11">
+        <div class="pull-left">Ghi chú: {$desk_detail['note']}</div>
     </div>
     <table class="table table-bordered" id="list-menu-print">
         <thead>
