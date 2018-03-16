@@ -86,7 +86,8 @@ while($row_menu = mysqli_fetch_assoc($db_query_menu->result)){
                         <tr class="menu-normal record-item">
                             <td class="text-left">'.$array_menu[$row_menu['cdm_menu_id']].'</td>
                             <td class="center">'.number_format($row_menu['cdm_number']).'</td>
-                            <td class="text-right">'.number_format($price_menu).'</td>
+                            <td class="text-right">'.number_format($row_menu['cdm_price']).'</td>
+                            <td class="text-center">'.number_format($discount_menu).'</td>
                             <td class="text-right">'.number_format($price_menu * $row_menu['cdm_number']).'</td>
                         </tr>
                     </tbody>';

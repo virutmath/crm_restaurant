@@ -1,4 +1,472 @@
 -------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 22:31:19
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521127879,
+                            1521127879,
+                            1663000,
+                            "Bán hàng",
+                            "445",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 22:24:05
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521127445,
+                            1521127445,
+                            586000,
+                            "Bán hàng",
+                            "444",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 22:17:06
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521127026,
+                            1521127026,
+                            695000,
+                            "Bán hàng",
+                            "443",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 22:09:38
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521126578,
+                            1521126578,
+                            378000,
+                            "Bán hàng",
+                            "442",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 21:56:46
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521125806,
+                            1521125806,
+                            1099000,
+                            "Bán hàng",
+                            "441",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 21:25:14
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521123914,
+                            1521123914,
+                            278000,
+                            "Bán hàng",
+                            "440",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 21:16:30
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521123390,
+                            1521123390,
+                            2170000,
+                            "Bán hàng",
+                            "439",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 21:15:43
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521123342,
+                            1521123342,
+                            378000,
+                            "Bán hàng",
+                            "438",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 21:08:15
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521122895,
+                            1521122895,
+                            278000,
+                            "Bán hàng",
+                            "437",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 21:04:44
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521122684,
+                            1521122684,
+                            523000,
+                            "Bán hàng",
+                            "436",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 20:52:16
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521121936,
+                            1521121936,
+                            407000,
+                            "Bán hàng",
+                            "435",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 20:52:12
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521121932,
+                            1521121932,
+                            293000,
+                            "Bán hàng",
+                            "434",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 20:51:52
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521121912,
+                            1521121912,
+                            505000,
+                            "Bán hàng",
+                            "433",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 20:28:41
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521120521,
+                            1521120521,
+                            575000,
+                            "Bán hàng",
+                            "432",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 20:20:59
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521120059,
+                            1521120059,
+                            581000,
+                            "Bán hàng",
+                            "431",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 19:53:54
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521118434,
+                            1521118434,
+                            233000,
+                            "Bán hàng",
+                            "430",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 19:49:47
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521118187,
+                            1521118187,
+                            253000,
+                            "Bán hàng",
+                            "429",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+| DATETIME	| 15/03/2018 - 19:33:47
+| FILE		| C:\xampp\htdocs\crm\admin\core\home\ajax.php
+| IP			| ::1
+| LINE		| 1039
+| FUNCTION	| logs
+| MESSAGES	| INSERT INTO financial
+                            (fin_date, fin_updated_time, fin_money, fin_reason_other,
+                            fin_billcode, fin_username, fin_address, fin_cat_id,
+                            fin_pay_type, fin_note, fin_admin_id, fin_agency_id)
+                            VALUES
+                            (
+                            1521117227,
+                            1521117227,
+                            258000,
+                            "Bán hàng",
+                            "428",
+                            "Khách lẻ",
+                            "",
+                            1,
+                            0,
+                            "",
+                            1,
+                            1
+                            )
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 | DATETIME	| 29/11/2017 - 1:00:48
 | FILE		| C:\xampp\htdocs\crm_restaurant\admin\core\home\ajax.php
 | IP			| ::1

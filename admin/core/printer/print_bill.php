@@ -62,7 +62,8 @@ while($row = mysqli_fetch_assoc($db_menu->result)){
                             
                             <td class="text-left">'.$array_menu[$row_menu['bid_menu_id']].'</td>
                             <td class="center">'.number_format($row_menu['bid_menu_number']).'</td>
-                            <td class="text-right">'.number_format($price_menu).'</td>
+                            <td class="text-right">'.number_format($row_menu['bid_menu_price']).'</td>
+                            <td class="text-center">'.number_format($discount_menu).'</td>
                             <td class="text-right">'.number_format($price_menu * $row_menu['bid_menu_number']).'</td>
                         </tr>
                     </tbody>';
